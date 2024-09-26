@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "399702781256",
+    "project_id": "assuregroupapp",
+    "storage_bucket": "assuregroupapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:399702781256:android:a89895b82b6ca61ca4d77d",
+        "android_client_info": {
+          "package_name": "com.building.assure_apps"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHLb-XFe0a-j-ywMM_VUhWxotPvqA6bFo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
