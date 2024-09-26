@@ -15,6 +15,7 @@ class BuildingModel {
   String? image; // New image field
   DateTime? createDateTime; // Auto-generated create time
   DateTime? updateDateTime; // Auto-updated when modified
+  String? status; // New field for status ('available' or 'booked')
 
   BuildingModel({
     required this.id,
@@ -29,8 +30,9 @@ class BuildingModel {
     this.unitCost,
     required this.totalCost,
     this.image,
-     this.createDateTime,
+    this.createDateTime,
     this.updateDateTime,
+     this.status="available", // Include status in the constructor
   });
 
   // Convert from Firestore document
@@ -54,6 +56,7 @@ class BuildingModel {
       updateDateTime: data['updateDateTime'] != null
           ? (data['updateDateTime'] as Timestamp).toDate()
           : null, // Nullable updateDateTime
+      status: data['status'] ?? 'available', // Default to 'available' if null
     );
   }
 
@@ -73,6 +76,7 @@ class BuildingModel {
       'image': image,
       'createDateTime': createDateTime,
       'updateDateTime': updateDateTime ?? FieldValue.serverTimestamp(), // Auto-updated
+      'status': status, // Include status in the Firestore document
     };
   }
 }

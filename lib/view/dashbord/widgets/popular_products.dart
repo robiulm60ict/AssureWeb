@@ -1,7 +1,9 @@
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../../configs/app_colors.dart';
+import '../../../configs/app_constants.dart';
 import '../../../configs/defaults.dart';
 import '../../../configs/ghaps.dart';
 import '../../../widgets/section_title.dart';
@@ -48,19 +50,19 @@ class PopularProducts extends StatelessWidget {
           gapH8,
           const Divider(),
           ListView.builder(
-            itemCount: 4,
+            itemCount:  buildingController.projects.length,
             shrinkWrap: true,
             padding: EdgeInsets.zero,
             physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (_, index) {
-              return PopularProductItem(
-                name: 'Building A ${index+1}',
-                price: '\$${23.80*index+1}',
-                imageSrc:
-              "https://img.freepik.com/free-photo/observation-urban-building-business-steel_1127-2397.jpg?w=1380&t=st=1727151056~exp=1727151656~hmac=bb4eeb95d8fac497295e408faa7cc9efc32d37b586f38070168ddca6e13b9071",
+              final project = buildingController.projects[index];
+              return  project.status.toString()=="available"?PopularProductItem(
+                name: project.projectName,
+                price:project.totalCost.toString()??"",
+                imageSrc: project.image.toString(),
                 isActive: index % 2 == 0,
                 onPressed: () {},
-              );
+              ):Container();
             },
           ),
           gapH16,

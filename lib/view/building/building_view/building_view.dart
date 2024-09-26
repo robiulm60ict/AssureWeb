@@ -15,7 +15,7 @@ class BuildingView extends StatelessWidget {
   const BuildingView({super.key});
 
   @override
- Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.bg,
       appBar: AppBar(
@@ -33,8 +33,10 @@ class BuildingView extends StatelessWidget {
           backgroundColor: AppColors.bg,
           title: const Text('Building')),
       body: Obx(() {
-        if (buildingController.projects.isEmpty) {
+        if (buildingController.isLoading.value == true) {
           return const Center(child: CircularProgressIndicator());
+        } else if (buildingController.projects.isEmpty) {
+          return const Center(child: Text("No Data"));
         }
         return ListView(
           children: [
@@ -63,6 +65,12 @@ class BuildingView extends StatelessWidget {
                         children: [Text("Product")],
                       ),
                     ),
+                    if (!Responsive.isMobile(context))
+                      const Expanded(
+                        child: Row(
+                          children: [Text("Status")],
+                        ),
+                      ),
                     if (!Responsive.isMobile(context))
                       const Expanded(
                         child: Row(
@@ -235,7 +243,7 @@ class BuildingView extends StatelessWidget {
                                                   borderRadius:
                                                       BorderRadius.circular(8)),
                                               child: Text(
-                                                "\$${project.totalCost}",
+                                                "\$${project.totalCost} BDT",
                                                 style: const TextStyle(
                                                     fontWeight:
                                                         FontWeight.w700),
@@ -247,6 +255,27 @@ class BuildingView extends StatelessWidget {
                               ],
                             ),
                           ),
+                          if (!Responsive.isMobile(context))
+                            Expanded(
+                              child: Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 5, horizontal: 14),
+                                    decoration: BoxDecoration(
+                                        color:project.status.toString()=="available"
+                                            ? Colors.green.shade200
+                                            : Colors.red.shade200,
+                                        borderRadius: BorderRadius.circular(8)),
+                                    child: Text(
+                                      "${project.status.toString().capitalize}",
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
                           if (!Responsive.isMobile(context))
                             Expanded(
                               child: Row(
@@ -281,7 +310,7 @@ class BuildingView extends StatelessWidget {
                                             borderRadius:
                                                 BorderRadius.circular(8)),
                                         child: Text(
-                                          "\$${project.totalCost}",
+                                          "${project.totalCost} BDT",
                                           style: const TextStyle(
                                               fontWeight: FontWeight.w700),
                                         ),
@@ -388,6 +417,7 @@ class BuildingView extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.primary,
         onPressed: () {
+          buildingController.clearData();
           context.go('/buildingSetup');
         },
         child: const Icon(
@@ -397,5 +427,4 @@ class BuildingView extends StatelessWidget {
       ),
     );
   }
-
 }

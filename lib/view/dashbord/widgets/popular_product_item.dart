@@ -59,7 +59,7 @@ class _PopularProductItemState extends State<PopularProductItem> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  widget.price,
+                 "${ widget.price} BDT",
                   style: Theme.of(context).textTheme.titleSmall!.copyWith(
                       fontWeight: FontWeight.w600,
                       fontSize: 15,

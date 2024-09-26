@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:assure_apps/configs/app_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import '../../widgets/snackbar.dart';
 
 class BuildingController extends GetxController {
   var projects = <BuildingModel>[].obs;
+  var isLoading=false.obs;
 
   final FirebaseFirestore fireStore = FirebaseFirestore.instance;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -28,6 +30,22 @@ class BuildingController extends GetxController {
 
   var imageUrl="";
 
+  clearData(){
+    prospectNameController.clear();
+    perSftPriceController.clear();
+    projectAddressController.clear();
+    projectNameController.clear();
+    totalCostController.clear();
+    unitCostController.clear();
+    totalUnitPriceController.clear();
+    carParkingController.clear();
+    appointmentSizeController.clear();
+    floorNoController.clear();
+    imageController.resizedImagePath.value="";
+    imageController.originalImagePath.value="";
+    imageUrl="";
+
+  }
   @override
   void onInit() {
     super.onInit();
@@ -68,11 +86,27 @@ class BuildingController extends GetxController {
     totalCostController.text = totalCost.toStringAsFixed(2); // Format to 2 decimal places
   }
   void fetchProjects() async {
-    final snapshot = await fireStore.collection('building').get();
-    projects.value = snapshot.docs
-        .map((doc) => BuildingModel.fromFirestore(doc.data(), doc.id))
-        .toList();
+    try {
+      isLoading.value = true; // Start loading
+      final snapshot = await fireStore.collection('building').get();
+
+      // Map the documents to BuildingModel instances
+      projects.value = snapshot.docs
+          .map((doc) => BuildingModel.fromFirestore(doc.data(), doc.id))
+          .toList();
+
+      // Optionally, you can print the fetched projects for debugging
+      print("Fetched Projects: ${projects.value.length}");
+
+    } catch (e) {
+      // Handle any errors that occur during fetching
+      print("Error fetching projects: $e");
+      // Optionally, you can show an error message to the user
+    } finally {
+      isLoading.value = false; // Stop loading
+    }
   }
+
 
   Future<void> uploadImageAndCreateProject(BuildingModel project, String? imagePath, BuildContext context) async {
     appLoader(context, "Building, please wait...");
@@ -97,9 +131,10 @@ class BuildingController extends GetxController {
       project.id = docRef.id;
       projects.add(project);
 
+      clearData();
       Navigator.pop(context);
       context.go("/buildingView");
-      successSnackBar("Building created successfully!");
+      // successSnackBar("Building created successfully!");
 
     } catch (e, stackTrace) {
       Navigator.pop(context);

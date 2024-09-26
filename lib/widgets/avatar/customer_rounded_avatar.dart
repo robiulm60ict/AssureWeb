@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-
+import 'package:flutter/material.dart'; // Make sure to import Material for Image.network
 import '../../configs/defaults.dart';
 
 class CustomerRoundedAvatar extends StatelessWidget {
@@ -12,19 +12,43 @@ class CustomerRoundedAvatar extends StatelessWidget {
   });
 
   final double height, width, radius;
-  final String imageSrc;
+  final String? imageSrc; // Make imageSrc nullable
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: height,
-      width: width,
-      clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(radius),
-        image: DecorationImage(
-          image: NetworkImage(imageSrc),
+    return ClipOval( // Using ClipOval to create a circular avatar
+      child: Container(
+        height: height,
+        width: width,
+        child: imageSrc != null && imageSrc!.isNotEmpty
+            ? Image.network(
+          imageSrc!,
           fit: BoxFit.cover,
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) return child; // If loading is done, show the child
+            return Center(
+              child: CircularProgressIndicator(
+                value: loadingProgress.expectedTotalBytes != null
+                    ? loadingProgress.cumulativeBytesLoaded /
+                    (loadingProgress.expectedTotalBytes ?? 1)
+                    : null,
+              ),
+            );
+          },
+          errorBuilder: (context, error, stackTrace) {
+            return Container(
+              height: height,
+              width: width,
+              alignment: Alignment.center,
+              child: const Icon(Icons.error, color: Colors.red),
+            );
+          },
+        )
+            : Container(
+          height: height,
+          width: width,
+          alignment: Alignment.center,
+          child: const Icon(Icons.person, color: Colors.grey), // Placeholder icon if no image
         ),
       ),
     );

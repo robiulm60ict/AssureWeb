@@ -30,7 +30,7 @@ class SaleBuildingListView extends StatelessWidget {
             ),
           ),
           backgroundColor: AppColors.bg,
-          title: const Text('Building')),
+          title: const Text('Available Building ')),
       body: Obx(() {
         if (buildingController.projects.isEmpty) {
           return const Center(child: CircularProgressIndicator());
@@ -65,6 +65,12 @@ class SaleBuildingListView extends StatelessWidget {
                     if (!Responsive.isMobile(context))
                       const Expanded(
                         child: Row(
+                          children: [Text("Status")],
+                        ),
+                      ),
+                    if (!Responsive.isMobile(context))
+                      const Expanded(
+                        child: Row(
                           children: [Text("Apartment Size")],
                         ),
                       ),
@@ -74,7 +80,6 @@ class SaleBuildingListView extends StatelessWidget {
                           child: Column(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [Text("Price")])),
-
                   ],
                 ),
               ),
@@ -84,7 +89,7 @@ class SaleBuildingListView extends StatelessWidget {
               itemCount: buildingController.projects.length,
               itemBuilder: (context, index) {
                 final project = buildingController.projects[index];
-                return Container(
+                return project.status.toString()=="available"?Container(
                   decoration: BoxDecoration(
                       color: AppColors.white,
                       borderRadius: BorderRadius.circular(8)),
@@ -101,9 +106,13 @@ class SaleBuildingListView extends StatelessWidget {
                         (Responsive.isMobile(context) ? 1 : 6.5),
                   ),
                   child: InkWell(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>BuildingSaleSetup(model: project,)));
-
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BuildingSaleSetup(
+                                    model: project,
+                                  )));
                     },
                     child: Row(
                       children: [
@@ -112,10 +121,8 @@ class SaleBuildingListView extends StatelessWidget {
                           child: Row(
                             children: [
                               Container(
-                                height:
-                                    Responsive.isMobile(context) ? 60 : 100,
-                                width:
-                                    Responsive.isMobile(context) ? 60 : 100,
+                                height: Responsive.isMobile(context) ? 60 : 100,
+                                width: Responsive.isMobile(context) ? 60 : 100,
                                 decoration: BoxDecoration(
                                   color: AppColors.bg,
                                   borderRadius: BorderRadius.circular(10),
@@ -127,8 +134,7 @@ class SaleBuildingListView extends StatelessWidget {
                                     fit: BoxFit.cover,
                                     loadingBuilder:
                                         (context, child, loadingProgress) {
-                                      if (loadingProgress == null)
-                                        return child;
+                                      if (loadingProgress == null) return child;
                                       return Center(
                                         child: CircularProgressIndicator(
                                           value: loadingProgress
@@ -143,8 +149,7 @@ class SaleBuildingListView extends StatelessWidget {
                                         ),
                                       );
                                     },
-                                    errorBuilder:
-                                        (context, error, stackTrace) {
+                                    errorBuilder: (context, error, stackTrace) {
                                       return Container(
                                         height: Responsive.isMobile(context)
                                             ? 60
@@ -219,10 +224,8 @@ class SaleBuildingListView extends StatelessWidget {
                                           ),
                                           gapW8,
                                           Container(
-                                            padding:
-                                                const EdgeInsets.symmetric(
-                                                    vertical: 5,
-                                                    horizontal: 14),
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 5, horizontal: 14),
                                             decoration: BoxDecoration(
                                                 color: index % 2 == 0
                                                     ? Colors.green.shade100
@@ -232,8 +235,7 @@ class SaleBuildingListView extends StatelessWidget {
                                             child: Text(
                                               "\$${project.totalCost}",
                                               style: const TextStyle(
-                                                  fontWeight:
-                                                      FontWeight.w700),
+                                                  fontWeight: FontWeight.w700),
                                             ),
                                           )
                                         ]),
@@ -242,6 +244,27 @@ class SaleBuildingListView extends StatelessWidget {
                             ],
                           ),
                         ),
+                        if (!Responsive.isMobile(context))
+                          Expanded(
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 5, horizontal: 14),
+                                  decoration: BoxDecoration(
+                                      color:project.status.toString()=="available"
+                                          ? Colors.green.shade200
+                                          : Colors.red.shade200,
+                                      borderRadius: BorderRadius.circular(8)),
+                                  child: Text(
+                                    "${project.status.toString().capitalize}",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
                         if (!Responsive.isMobile(context))
                           Expanded(
                             child: Row(
@@ -276,17 +299,16 @@ class SaleBuildingListView extends StatelessWidget {
                                           borderRadius:
                                               BorderRadius.circular(8)),
                                       child: Text(
-                                        "\$${project.totalCost}",
+                                        "${project.totalCost} BDT",
                                         style: const TextStyle(
                                             fontWeight: FontWeight.w700),
                                       ),
                                     )
                                   ])),
-
                       ],
                     ),
                   ),
-                );
+                ):Container();
               },
             ),
           ],
@@ -294,6 +316,4 @@ class SaleBuildingListView extends StatelessWidget {
       }),
     );
   }
-
 }
-
