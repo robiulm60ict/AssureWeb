@@ -379,13 +379,16 @@ class _BuildingSalesInstallmentScreenState
                                 },
                                 errorBuilder: (context, error, stackTrace) {
                                   return SizedBox(
-                                    height:
-                                        Responsive.isMobile(context) ? 60 : 100,
-                                    width:
-                                        Responsive.isMobile(context) ? 60 : 100,
-                                    child: const Icon(Icons.error,
-                                        color: Colors.red),
-                                  );
+                                      height: Responsive.isMobile(context)
+                                          ? 60
+                                          : 100,
+                                      width: Responsive.isMobile(context)
+                                          ? 60
+                                          : 100,
+                                      child: Image.network(
+                                        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+                                        fit: BoxFit.cover,
+                                      ));
                                 },
                               ),
                             ),
@@ -628,7 +631,7 @@ class _BuildingSalesInstallmentScreenState
                                 ),
                               ),
                               TextSpan(
-                                text: buildingSale['dueAmount'],
+                                text: buildingSale['dueAmount'].toString(),
                                 style: const TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.w600,
@@ -727,6 +730,9 @@ class _BuildingSalesInstallmentScreenState
                                 var installment =
                                     buildingSale['installmentPlan'][index];
                                 return DataRow(
+                                  color:installment['status']
+                                      .toString() !=
+                                      "Unpaid"? WidgetStateProperty.all(Colors.green.withOpacity(0.05)):WidgetStateProperty.all(Colors.red.withOpacity(0.05)),
                                   cells: <DataCell>[
                                     DataCell(Center(
                                         child: Text(
@@ -748,13 +754,27 @@ class _BuildingSalesInstallmentScreenState
                                             : IconButton(
                                                 onPressed: () {
                                                   //  buildingSaleController.updateInstallmentPlanStatus(, installment['id'], "Paid");
-                                                  print(
-                                                      widget.buildingSales['documentId']
-                                                          .toString());
+                                                  print(widget.buildingSales[
+                                                          'documentId']
+                                                      .toString());
                                                   print(installment['id']
                                                       .toString());
 
-                                                   buildingSaleController.updateInstallmentPlanStatus(widget.buildingSales['documentId'].toString(), installment['id'], "Paid",context);
+                                                  buildingSaleController.updateInstallmentPlanStatus(
+                                                      widget.buildingSales[
+                                                              'documentId']
+                                                          .toString(),
+                                                      installment['id'],
+                                                      "Paid",
+                                                      context,
+                                                      double.parse(buildingSale[
+                                                                      'dueAmount']
+                                                                  ?.toString() ??
+                                                              '0') -
+                                                          double.parse(installment[
+                                                                      'amount']
+                                                                  .toString() ??
+                                                              "0"));
                                                 },
                                                 icon: const HugeIcon(
                                                   icon: HugeIcons

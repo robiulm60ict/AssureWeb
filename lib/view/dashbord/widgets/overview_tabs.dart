@@ -1,4 +1,6 @@
+import 'package:assure_apps/configs/app_constants.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../../configs/app_colors.dart';
 import '../../../configs/defaults.dart';
@@ -55,13 +57,15 @@ class _OverviewTabsState extends State<OverviewTabs>
               color: AppColors.bgSecondayLight,
             ),
             tabs:  [
-              TabWithGrowth(
-                title: "Customers",
-                amount: "1,200",
-                growthPercentage: "20%",
+              Obx(
+            ()=> TabWithGrowth(
+                  title: "Customers",
+                  amount: customerController.customers.length.toString()??"",
+                  growthPercentage: "20%",
 
+                ),
               ),
-              TabWithGrowth(
+              const TabWithGrowth(
                 title: "Sale",
                 iconSrc: "assets/icons/activity_light.svg",
                 iconBgColor: AppColors.secondaryLavender,
@@ -75,20 +79,22 @@ class _OverviewTabsState extends State<OverviewTabs>
         gapH24,
         SizedBox(
           height: 200,
-          child: TabBarView(
-            controller: _tabController,
-            physics: const NeverScrollableScrollPhysics(),
-            children: const [
-              Center(child: CoustomersOverview()),
-                Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: AppDefaults.padding * 1.5,
-                  vertical: AppDefaults.padding,
-                ),
-                child: RevenueLineChart(),
-              ),
-            ],
-          ),
+          child:
+          CoustomersOverview()
+          // TabBarView(
+          //   controller: _tabController,
+          //   physics: const NeverScrollableScrollPhysics(),
+          //   children: const [
+          //     Center(child: CoustomersOverview()),
+          //       Padding(
+          //       padding: EdgeInsets.symmetric(
+          //         horizontal: AppDefaults.padding * 1.5,
+          //         vertical: AppDefaults.padding,
+          //       ),
+          //       child: RevenueLineChart(),
+          //     ),
+          //   ],
+          // ),
         ),
         // SizedBox(
         //   height: 240,

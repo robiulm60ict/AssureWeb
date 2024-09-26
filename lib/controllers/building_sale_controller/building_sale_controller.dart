@@ -24,39 +24,48 @@ class BuildingSaleController extends GetxController {
   final TextEditingController paymentBookingPercentageCountController =
       TextEditingController();
   final TextEditingController dueAmount = TextEditingController();
+  final TextEditingController percentageAmountController = TextEditingController();
 
   var totalAmount = 0.0.obs;
 
   // var paymentBookingPercentageCount = 0.0.obs;
   var result = 0.0.obs;
-
+  var percentageAmount=0.0.obs;
   double calculateResult(double totalAmount) {
-    // Get the percentage input as text
+    // Get the percentage input from the TextEditingController as text
     String paymentPercentageText = paymentBookingPercentageCountController.text;
 
-    // Check if the percentage input is valid
-    if (paymentPercentageText.isEmpty ||
-        double.tryParse(paymentPercentageText) == null) {
-      // If invalid, set dueAmount equal to totalAmount
+    // Check if the input is either empty or not a valid number
+    if (paymentPercentageText.isEmpty || double.tryParse(paymentPercentageText) == null) {
+      // If invalid, set dueAmount to totalAmount
       dueAmount.text = totalAmount.toStringAsFixed(2);
-      print(
-          'Invalid or empty percentage input, dueAmount is set to totalAmount');
+      print('Invalid or empty percentage input, dueAmount is set to totalAmount');
 
       // Store and return the totalAmount
       result.value = totalAmount;
       return result.value;
     }
 
-    // If the percentage is valid, parse and calculate the due amount
+    // If the percentage input is valid, parse it to a double
     double paymentBookingPercentage = double.parse(paymentPercentageText);
-    double due = totalAmount - (totalAmount * paymentBookingPercentage / 100);
 
-    // Update the dueAmount TextEditingController
+    // Calculate the percentage amount from the totalAmount
+     percentageAmount.value = totalAmount * paymentBookingPercentage / 100;
+
+    // Calculate the due amount (remaining amount after the percentage is deducted)
+    double due = totalAmount - percentageAmount.value;
+
+    // Update the dueAmount TextEditingController to display the due amount
     dueAmount.text = due.toStringAsFixed(2);
+
+    // Display the percentage amount (paymentBookingPercentage% of totalAmount)
+    percentageAmountController.text = percentageAmount.toStringAsFixed(2);
+    print('$paymentBookingPercentage% of Total Amount: $percentageAmount');
 
     // Store and return the calculated due amount
     result.value = due;
-    print(result.value);
+    print('Calculated due amount: $due');
+
     return result.value;
   }
 
@@ -285,7 +294,7 @@ class BuildingSaleController extends GetxController {
 
   // await updateInstallmentPlanStatus('YOUR_DOCUMENT_ID', 2, 'completed');
 
-  Future<void> updateInstallmentPlanStatus(String documentId, int installmentId, String newStatus,BuildContext context) async {
+  Future<void> updateInstallmentPlanStatus(String documentId, int installmentId, String newStatus,BuildContext context,dueAmount) async {
     try {
       // Reference to the document in Firestore
       DocumentReference docRef = fireStore.collection('buildingSale').doc(documentId);
@@ -308,6 +317,8 @@ class BuildingSaleController extends GetxController {
         // Update the document in Firestore with the new installment plan
         await docRef.update({
           'installmentPlan': installmentPlan,
+          'dueAmount': dueAmount,
+
         });
 
         fetchAllBuildingSales();
@@ -320,7 +331,7 @@ class BuildingSaleController extends GetxController {
       print("Failed to update installment plan: $e");
     }
   }
-  Future<void> uploadBuildingStates(String documentId, String newStatus) async {
+  Future<void> uploadBuildingStates(String documentId, String newStatus,) async {
     try {
       // Reference to the document in Firestore
       DocumentReference docRef = fireStore.collection('building').doc(documentId);
@@ -330,7 +341,10 @@ class BuildingSaleController extends GetxController {
 
       if (docSnapshot.exists) {
         // Update the status field
-        await docRef.update({'status': newStatus}); // Set new status here
+        await docRef.update({
+          'status': newStatus,
+
+        }); // Set new status here
 
         print("Building status updated successfully to $newStatus.");
         // successSnackBar(title: "Success", "Building status updated to $newStatus."); // Show success message
@@ -346,8 +360,8 @@ class BuildingSaleController extends GetxController {
 
 
   Future<void> uploadImageAndCreateBuildingSale(
-      String buildingId, String? imagePath, BuildContext context) async {
-    appLoader(context, "Building Sale, please wait...");
+      String buildingId, String? imagePath, BuildContext context,grandTotal) async {
+   appLoader(context, "Building Sale, please wait...");
 
     try {
       // Await the customer ID from the customer creation function
@@ -359,12 +373,11 @@ class BuildingSaleController extends GetxController {
         "buildingId": buildingId,
         "customerId": customerId,
         "installmentCount": installmentCountController.text,
-        "handoverDate": "2025-12-31T00:00:00.000Z",
+        "handoverDate": handoverDateController.text,
         "installmentPlan": installmentPlan,
         "bookingPaymentPercent": paymentBookingPercentageCountController.text,
         "dueAmount": dueAmount.text,
-        "totalCost": double.tryParse(dueAmount.text) ?? 0.0,
-        // Ensure totalCost is a double
+        "totalCost": grandTotal?? 0.0,
         "status": "Pending",
         "handOverDate": handoverDateController.text
       };

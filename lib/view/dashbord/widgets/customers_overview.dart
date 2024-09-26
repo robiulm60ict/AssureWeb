@@ -1,10 +1,11 @@
-
+import 'package:assure_apps/configs/app_constants.dart';
+import 'package:assure_apps/view/customer/customer_view.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../../configs/ghaps.dart';
 import '../../../responsive.dart';
 import '../../../widgets/avatar/customer_avaatar.dart';
-
 
 class CoustomersOverview extends StatelessWidget {
   const CoustomersOverview({
@@ -24,60 +25,68 @@ class CoustomersOverview extends StatelessWidget {
                   text: "Welcome ",
                   children: [
                     TextSpan(
-                      text: "857 customers",
+                      text: "${customerController.customers.length} customers",
                       style: TextStyle(
                         color: Theme.of(context).textTheme.titleLarge!.color,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    // const TextSpan(text: " with a \npersonal message 😎")
                   ],
                 ),
               ),
             ),
-            gapW16,
-            // OutlinedButton(
-            //   onPressed: () {},
-            //   child: Text(
-            //     Responsive.isMobile(context) ? 'Send' : "Send message",
-            //   ),
-            // ),
           ],
         ),
         gapH8,
         Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            CustomerAvatar(
-              name: "John Doe",
-              imageSrc:
-              "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg",
-              onPressed: () {},
-            ),
-            CustomerAvatar(
-              name: "Elbert",
-              imageSrc:
-              "https://t3.ftcdn.net/jpg/02/99/04/20/360_F_299042079_vGBD7wIlSeNl7vOevWHiL93G4koMM967.jpg",
-              onPressed: () {},
-            ),
-            if (!Responsive.isMobile(context))
-              CustomerAvatar(
-                name: "Joyce",
-                imageSrc:
-                "https://t4.ftcdn.net/jpg/03/83/25/83/360_F_383258331_D8imaEMl8Q3lf7EKU2Pi78Cn0R7KkW9o.jpg",
-                onPressed: () {},
+            Obx(
+              () => SizedBox(
+                height: 80, // Set a specific height for the ListView
+                child: ListView.separated(
+                  shrinkWrap: true,
+                  itemCount: customerController.customers.length > (Responsive.isMobile(context)?2:3)
+                      ? Responsive.isMobile(context)?2:3
+                      : customerController.customers.length,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    var customer = customerController.customers[index];
+                    return SizedBox(
+                      // height: 100,
+                      child: CustomerAvatar(
+                        name: customer.name,
+                        imageSrc: customer.image,
+                        onPressed: () {},
+                      ),
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.08,
+                    );
+                  },
+                ),
               ),
+            ),
             Column(
               children: [
                 OutlinedButton(
-                  onPressed: () {},
+
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const CustomerListView()));
+                  },
                   style: OutlinedButton.styleFrom(
-                    fixedSize: const Size(64, 64),
+                    fixedSize: const Size(50, 50),
                     shape: const CircleBorder(),
                   ),
                   child: const Icon(Icons.arrow_forward_outlined),
                 ),
-                gapH8,
+                gapH4,
                 const Text("View all"),
               ],
             )

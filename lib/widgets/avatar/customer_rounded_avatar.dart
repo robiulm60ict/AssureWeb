@@ -16,8 +16,10 @@ class CustomerRoundedAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipOval( // Using ClipOval to create a circular avatar
-      child: Container(
+    return ClipRRect( // Us// ing ClipOval to create a circular avatar
+      borderRadius: BorderRadius.circular(8),
+
+      child: SizedBox(
         height: height,
         width: width,
         child: imageSrc != null && imageSrc!.isNotEmpty
@@ -40,8 +42,11 @@ class CustomerRoundedAvatar extends StatelessWidget {
               height: height,
               width: width,
               alignment: Alignment.center,
-              child: const Icon(Icons.error, color: Colors.red),
-            );
+              child:ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+              child:
+              Image.network("https://img.freepik.com/free-photo/observation-urban-building-business-steel_1127-2397.jpg?t=st=1727338313~exp=1727341913~hmac=2e09cc7c51c7da785d7456f52aa5214acafe820f751d1e53d1a75e3cf4b69139&w=1380"),
+              ));
           },
         )
             : Container(

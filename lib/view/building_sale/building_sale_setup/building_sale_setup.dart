@@ -93,6 +93,12 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                         "Building Total Amount ${widget.model.totalCost.toString()}",
                         style: const TextStyle(fontWeight: FontWeight.w700),
                       ),
+                      Obx(
+                        ()=> Text(
+                          "Booking & Down Payment Amount ${buildingSaleController. percentageAmount.value}",
+                          style: const TextStyle(fontWeight: FontWeight.w700),
+                        ),
+                      ),
                       gapH8,
                       Row(
                         children: [
@@ -224,7 +230,6 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                               hintColor: AppColors.grey,
                               textColor: AppColors.textColorb1,
                               isRequired: false,
-
                               onChanged: (p0) {
                                 buildingSaleController
                                     .calculateResult(widget.model.totalCost);
@@ -273,7 +278,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                 Container(
                   width: double.infinity,
                   height: Responsive.isMobile(context)
-                      ? MediaQuery.of(context).size.height * 0.45
+                      ? MediaQuery.of(context).size.height * 0.48
                       : MediaQuery.of(context).size.height * 0.24,
                   decoration: BoxDecoration(
                       color: AppColors.white,
@@ -420,6 +425,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                             child: Column(
                               children: [
                                 Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Expanded(
                                       child: AppTextField(
@@ -436,7 +442,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                                         isRequired: true,
                                         validator: (value) {
                                           if (value!.isEmpty) {
-                                            return "Please enter your customer name";
+                                            return "Please enter name";
                                           }
                                           return null;
                                         },
@@ -461,7 +467,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                                         isRequired: true,
                                         validator: (value) {
                                           if (value!.isEmpty) {
-                                            return "Please enter your customer phone ";
+                                            return "Please enter phone ";
                                           }
                                           return null;
                                         },
@@ -472,6 +478,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                                 ),
                                 gapH8,
                                 Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Expanded(
                                       child: AppTextField(
@@ -512,7 +519,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                                         isRequired: true,
                                         validator: (value) {
                                           if (value!.isEmpty) {
-                                            return "Please enter your customer address ";
+                                            return "Please enter address ";
                                           }
                                           return null;
                                         },
@@ -724,7 +731,8 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                               .uploadImageAndCreateBuildingSale(
                                   widget.model.id,
                                   imageController.resizedImagePath.value,
-                                  context);
+                                  context,
+                                  widget.model.totalCost);
                         }
                       },
                       child: const Text("Building Sale")),

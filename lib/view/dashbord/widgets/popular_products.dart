@@ -1,4 +1,4 @@
-
+import 'package:assure_apps/view/building_sale/sale_view/sale_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -7,6 +7,8 @@ import '../../../configs/app_constants.dart';
 import '../../../configs/defaults.dart';
 import '../../../configs/ghaps.dart';
 import '../../../widgets/section_title.dart';
+import '../../building_sale/building_sale_setup/building_sale_setup.dart';
+import '../../building_sale/sale_building_list/building_view/sale_building_view.dart';
 import 'popular_product_item.dart';
 
 class PopularProducts extends StatelessWidget {
@@ -49,21 +51,32 @@ class PopularProducts extends StatelessWidget {
           ),
           gapH8,
           const Divider(),
-          ListView.builder(
-            itemCount:  buildingController.projects.length,
-            shrinkWrap: true,
-            padding: EdgeInsets.zero,
-            physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (_, index) {
-              final project = buildingController.projects[index];
-              return  project.status.toString()=="available"?PopularProductItem(
-                name: project.projectName,
-                price:project.totalCost.toString()??"",
-                imageSrc: project.image.toString(),
-                isActive: index % 2 == 0,
-                onPressed: () {},
-              ):Container();
-            },
+          Obx(
+            () => ListView.builder(
+              itemCount: buildingController.projects.length,
+              shrinkWrap: true,
+              padding: EdgeInsets.zero,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (_, index) {
+                final project = buildingController.projects[index];
+                return project.status.toString() == "available"
+                    ? PopularProductItem(
+                        name: project.projectName,
+                        price: project.totalCost.toString() ?? "",
+                        imageSrc: project.image.toString(),
+                        isActive: index % 2 == 0,
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => BuildingSaleSetup(
+                                        model: project,
+                                      )));
+                        },
+                      )
+                    : Container();
+              },
+            ),
           ),
           gapH16,
           Container(
@@ -72,7 +85,12 @@ class PopularProducts extends StatelessWidget {
             ),
             width: double.infinity,
             child: OutlinedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SaleBuildingListView()));
+              },
               child: Text(
                 "All Building",
                 style: Theme.of(context).textTheme.titleMedium,

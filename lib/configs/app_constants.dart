@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../controllers/auth/auth_Controller.dart';
 import '../controllers/building_controller/building_controller.dart';
 import '../controllers/building_sale_controller/building_sale_controller.dart';
+import '../controllers/customer_controller/customer_controller.dart';
 import '../controllers/image/image_controller.dart';
 import 'app_colors.dart';
 
@@ -15,6 +16,7 @@ AuthController authController = Get.put(AuthController());
 BuildingController buildingController = Get.put(BuildingController());
 GetImageController imageController = Get.put(GetImageController());
 BuildingSaleController buildingSaleController = Get.put(BuildingSaleController());
+CustomerController customerController = Get.put(CustomerController());
 Future<void>? launched;
 Column formInfo(String title) {
   return Column(

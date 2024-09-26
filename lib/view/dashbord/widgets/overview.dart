@@ -30,31 +30,31 @@ class Overview extends StatelessWidget {
                       Radius.circular(AppDefaults.borderRadius)),
                   border: Border.all(width: 2, color: AppColors.highlightLight),
                 ),
-                child: DropdownButton(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: AppDefaults.padding, vertical: 0),
-                  style: Theme.of(context).textTheme.labelLarge,
-                  borderRadius: const BorderRadius.all(
-                      Radius.circular(AppDefaults.borderRadius)),
-                  underline: const SizedBox(),
-                  value: "All time",
-                  items: const [
-                    DropdownMenuItem(
-                      value: "All time",
-                      child: Text("All time"),
-                    ),
-                    DropdownMenuItem(
-                      value: "This year",
-                      child: Text("This year"),
-                    ),
-                  ],
-                  onChanged: (value) {},
-                ),
+                // child: DropdownButton(
+                //   padding: const EdgeInsets.symmetric(
+                //       horizontal: AppDefaults.padding, vertical: 0),
+                //   style: Theme.of(context).textTheme.labelLarge,
+                //   borderRadius: const BorderRadius.all(
+                //       Radius.circular(AppDefaults.borderRadius)),
+                //   underline: const SizedBox(),
+                //   value: "All time",
+                //   items: const [
+                //     DropdownMenuItem(
+                //       value: "All time",
+                //       child: Text("All time"),
+                //     ),
+                //     DropdownMenuItem(
+                //       value: "This year",
+                //       child: Text("This year"),
+                //     ),
+                //   ],
+                //   onChanged: (value) {},
+                // ),
               ),
             ],
           ),
           gapH24,
-          const OverviewTabs(),
+           OverviewTabs(),
         ],
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:assure_apps/view/building_sale/sale_building_list/building_view/sale_building_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -9,6 +10,7 @@ import '../../configs/ghaps.dart';
 import '../../responsive.dart';
 import '../../view/building/building_view/building_view.dart';
 import '../../view/building_sale/sale_view/sale_view.dart';
+import '../../view/customer/customer_view.dart';
 import 'menu_tile.dart';
 
 class Sidebar extends StatelessWidget {
@@ -90,14 +92,16 @@ class Sidebar extends StatelessWidget {
 
                           },
                         ),
-                        MenuTile(
-                          isSubmenu: true,
-                          title: "Building List",
-                          count: buildingController.projects.length,
-                          onPressed: () {
-                            context.go('/buildingView');
+                        Obx(
+                          ()=> MenuTile(
+                            isSubmenu: true,
+                            title: "Building List",
+                            count: buildingController.projects.length,
+                            onPressed: () {
+                              context.go('/buildingView');
 
-                          },
+                            },
+                          ),
                         ),
 
                       ],
@@ -120,21 +124,24 @@ class Sidebar extends StatelessWidget {
                           isSubmenu: true,
                           title: "Building Sale",
                           onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>const SaleBuildingListView()));
 
-                            context.go('/saleBuildingListView');
+                            // context.go('/saleBuildingListView');
                             // context.go('/buildingSaleSetup');
 
                           },
                         ),
-                        MenuTile(
-                          isSubmenu: true,
-                          title: "Sale List",
-                          count: 16,
-                          onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>BuildingSalesScreen()));
-                            // context.go('/buildingView');
+                        Obx(
+                          ()=> MenuTile(
+                            isSubmenu: true,
+                            title: "Sale List",
+                            count: buildingSaleController.buildingSales.length,
+                            onPressed: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=>BuildingSalesScreen()));
+                              // context.go('/buildingView');
 
-                          },
+                            },
+                          ),
                         ),
 
                       ],
@@ -153,16 +160,17 @@ class Sidebar extends StatelessWidget {
                         ),
                       ),
                       children: [
-                        MenuTile(
-                          isSubmenu: true,
-                          title: "Building Create",
-                          onPressed: () {},
-                        ),
-                        MenuTile(
-                          isSubmenu: true,
-                          title: "Building List",
-                          count: 16,
-                          onPressed: () {},
+
+                        Obx(
+                        ()=> MenuTile(
+                            isSubmenu: true,
+                            title: "Customer List",
+                            count: customerController.customers.length,
+                            onPressed: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=>CustomerListView()));
+
+                            },
+                          ),
                         ),
 
                       ],
