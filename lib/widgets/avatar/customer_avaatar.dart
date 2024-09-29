@@ -38,10 +38,12 @@ class _CustomerAvatarState extends State<CustomerAvatar> {
           CircleAvatar(
             radius: Responsive.isMobile(context) ? 30 : 30, // Adjust radius based on mobile or desktop
             backgroundColor: AppColors.bg, // Set background color
-            child: ClipOval(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
               child: Image.network(
               widget.  imageSrc.toString(),
-                fit: BoxFit.cover,
+                fit: BoxFit.fill,  height: Responsive.isMobile(context) ? 70 : 100,
+                width: Responsive.isMobile(context) ? 70 : 100,
                 loadingBuilder: (context, child, loadingProgress) {
                   if (loadingProgress == null) {
                     return child; // Image has loaded
@@ -59,10 +61,14 @@ class _CustomerAvatarState extends State<CustomerAvatar> {
                   return SizedBox(
                     height: Responsive.isMobile(context) ? 70 : 100,
                     width: Responsive.isMobile(context) ? 70 : 100,
-                    child: Image.network(
-                      "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-                      fit: BoxFit.fill,
-                    ),
+                    child:  ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                       child:
+                        Image.network(
+                      "https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                      fit: BoxFit.fill,  height: Responsive.isMobile(context) ? 70 : 100,
+                          width: Responsive.isMobile(context) ? 70 : 100,
+                    )),
                   );
                 },
               ),

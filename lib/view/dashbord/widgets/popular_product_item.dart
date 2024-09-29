@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../../configs/app_colors.dart';
 import '../../../configs/defaults.dart';
@@ -12,12 +13,12 @@ class PopularProductItem extends StatefulWidget {
     required this.name,
     required this.price,
     required this.imageSrc,
-    this.isActive = true,
+    required this.isActive,
     this.onPressed,
   });
 
   final String name, price, imageSrc;
-  final bool isActive;
+  final String isActive;
   final Function()? onPressed;
 
   @override
@@ -65,24 +66,24 @@ class _PopularProductItemState extends State<PopularProductItem> {
                       fontSize: 15,
                       color: isHovered ? AppColors.primary : null),
                 ),
-                // gapH4,
-                // Chip(
-                //   backgroundColor: widget.isActive
-                //       ? AppColors.success.withOpacity(0.1)
-                //       : AppColors.error.withOpacity(0.1),
-                //   side: BorderSide.none,
-                //   padding: const EdgeInsets.symmetric(
-                //       horizontal: AppDefaults.padding * 0.25,
-                //       vertical: AppDefaults.padding * 0.25), label: null,
-                //   // label: Text(
-                //   //   widget.isActive ? "Active" : "Deactive",
-                //   //   style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                //   //       fontWeight: FontWeight.w700,
-                //   //       color: widget.isActive
-                //   //           ? AppColors.success
-                //   //           : AppColors.error),
-                //   // ),
-                // ),
+                gapH4,
+                Chip(
+                  backgroundColor: widget.isActive=="available"
+                      ? AppColors.success.withOpacity(0.1)
+                      : AppColors.error.withOpacity(0.1),
+                  side: BorderSide.none,
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AppDefaults.padding * 0.25,
+                      vertical: AppDefaults.padding * 0.25),
+                  label: Text(
+                    widget.isActive.toString().capitalize.toString(),
+                    style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: widget.isActive =="available"
+                            ? AppColors.success
+                            : AppColors.error),
+                  ),
+                ),
               ],
             )
           ],

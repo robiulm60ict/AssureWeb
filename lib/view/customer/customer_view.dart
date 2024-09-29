@@ -118,7 +118,7 @@ class CustomerListView extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(10),
                                   child: Image.network(
                                     customer.image.toString(),
-                                    fit: BoxFit.cover,
+                                    fit: BoxFit.fill,
                                     loadingBuilder: (context, child, loadingProgress) {
                                       if (loadingProgress == null) {
                                         return child;
@@ -134,8 +134,8 @@ class CustomerListView extends StatelessWidget {
                                     },
                                     errorBuilder: (context, error, stackTrace) {
                                       return Image.network(
-                                        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-                                        fit: BoxFit.cover,
+                                        "https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                                        fit: BoxFit.fill,
                                       );
                                     },
                                   ),

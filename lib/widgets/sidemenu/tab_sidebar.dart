@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hugeicons/hugeicons.dart';
 
@@ -8,6 +9,7 @@ import '../../configs/app_image.dart';
 import '../../configs/defaults.dart';
 import '../../configs/ghaps.dart';
 import 'icon_tile.dart';
+import 'menu_tile.dart';
 
 class TabSidebar extends StatelessWidget {
   const TabSidebar({super.key});
@@ -34,10 +36,16 @@ class TabSidebar extends StatelessWidget {
               width: 48,
               child: ListView(
                 //crossAxisAlignment: CrossAxisAlignment.center,
+
+
                 children: [
+                  IconButton(
+
+                      onPressed: (){}, icon: Icon(Icons.add)),
+
                   IconTile(
                     isActive: true,
-                    activeIconSrc: "assets/icons/home_filled.svg",
+                    activeIconSrc: "assets/icons/activity_light.svg",
                     inactiveIconSrc: "assets/icons/home_light.svg",
                     onPressed: () {},
                   ),

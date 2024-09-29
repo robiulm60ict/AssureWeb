@@ -126,8 +126,8 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                                         width: Responsive.isMobile(context)
                                             ? 60
                                             : 100,
-                                        child: const Icon(Icons.error,
-                                            color: Colors.red),
+                                        child:   Image.network(
+                                          "https://img.freepik.com/free-photo/observation-urban-building-business-steel_1127-2397.jpg?t=st=1727338313~exp=1727341913~hmac=2e09cc7c51c7da785d7456f52aa5214acafe820f751d1e53d1a75e3cf4b69139&w=1380",fit: BoxFit.fill,),
                                       );
                                     },
                                   ),
@@ -255,14 +255,9 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                           Expanded(
                             child: Row(
                               children: [
-                                const HugeIcon(
-                                  icon: HugeIcons.strokeRoundedMoney01,
-                                  color: Colors.black,
-                                  size: 24.0,
-                                ),
-                                gapW8,
+
                                 Text(
-                                  "${building['perSftPrice']} BDT",
+                                  "Per sqft ${building['perSftPrice']} BDT",
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold),
                                 )
@@ -401,7 +396,7 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                                           ? 60
                                           : 100,
                                       child: Image.network(
-                                        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+                                        "https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/man-person-icon.png",
                                         fit: BoxFit.cover,
                                       ));
                                 },
@@ -474,7 +469,7 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                                           ),
                                           gapW8,
                                           Text(
-                                            "${customer['email'] == "" ? customer['email'] : "N/A"}",
+                                            "${customer['email'] != "" ? customer['email'] : "N/A"}",
                                             style: const TextStyle(
                                                 fontWeight: FontWeight.bold),
                                           )
@@ -505,7 +500,7 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Text(
-                                  "${customer['email'] == "" ? customer['email'] : "N/A"}",
+                                  "${customer['email'] != "" ? customer['email'] : "N/A"}",
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold),
                                 )
@@ -705,21 +700,23 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                     ),
                     SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
+                        physics: ScrollPhysics(),
                         child: Container(
+                          width: MediaQuery.of(context).size.width,
                           decoration: BoxDecoration(
                             color: AppColors.white,
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          padding: EdgeInsets.symmetric(
-                            vertical: AppDefaults.padding *
-                                (Responsive.isMobile(context) ? 0.5 : 0.5),
-                            horizontal: AppDefaults.padding *
-                                (Responsive.isMobile(context) ? 1 : 2.5),
-                          ),
-                          margin: EdgeInsets.symmetric(
-                            horizontal: AppDefaults.padding *
-                                (Responsive.isMobile(context) ? 0.5 : 6.5),
-                          ),
+                          // padding: EdgeInsets.symmetric(
+                          //   vertical: AppDefaults.padding *
+                          //       (Responsive.isMobile(context) ? 0.5 : 0.5),
+                          //   horizontal: AppDefaults.padding *
+                          //       (Responsive.isMobile(context) ? 1 : 2.5),
+                          // ),
+                          // margin: EdgeInsets.symmetric(
+                          //   horizontal: AppDefaults.padding *
+                          //       (Responsive.isMobile(context) ? 0.5 : 6.5),
+                          // ),
                           child: DataTable(
                             columnSpacing:
                                 Responsive.isMobile(context) ? 20 : null,
@@ -762,12 +759,7 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                                                 ? const Text('Done')
                                                 : IconButton(
                                                     onPressed: () {
-                                                      //  buildingSaleController.updateInstallmentPlanStatus(, installment['id'], "Paid");
-                                                      // print(widget.buildingSales[
-                                                      //         'documentId']
-                                                      //     .toString());
-                                                      // print(installment['id']
-                                                      //     .toString());
+
 
                                                       buildingSaleController.updateInstallmentPlanStatus(
                                                           widget.buildingSales[
@@ -787,13 +779,7 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                                                                       .toString() ??
                                                                   "0"));
 
-                                                      print(buildingSale[
-                                                          'buildingId']);
-                                                      print(buildingSale[
-                                                          'customerId']);
-                                                      print(
-                                                          widget.buildingSales[
-                                                              'customerId']);
+
                                                       buildingSaleController.createSaleReport(
                                                           context,
                                                           buildingId: buildingSale[

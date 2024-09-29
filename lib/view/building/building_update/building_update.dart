@@ -476,7 +476,7 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                                           ),
                                         ),
                                       )
-                                    : buildingController.imageUrl != ""
+                                    : buildingController.imageUrl.toString().split("/").last != "null"
                                         ? Image.network(
                                             buildingController.imageUrl
                                                 .toString(),
@@ -536,6 +536,7 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                                             .unitCostController.text) ??
                                         0.0
                                     : 0.0,
+                                status: widget.model.status,
                                 totalCost: double.parse(buildingController
                                     .totalCostController.text),
                               ),

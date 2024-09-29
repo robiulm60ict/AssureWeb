@@ -32,7 +32,7 @@ class BuildingModel {
     this.image,
     this.createDateTime,
     this.updateDateTime,
-     this.status="available", // Include status in the constructor
+     this.status, // Include status in the constructor
   });
 
   // Convert from Firestore document
@@ -56,7 +56,7 @@ class BuildingModel {
       updateDateTime: data['updateDateTime'] != null
           ? (data['updateDateTime'] as Timestamp).toDate()
           : null, // Nullable updateDateTime
-      status: data['status'] ?? 'available', // Default to 'available' if null
+      status: data['status'], // Default to 'available' if null
     );
   }
 

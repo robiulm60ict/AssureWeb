@@ -89,7 +89,6 @@ class BuildingSalePaymentReportController extends GetxController {
     print("Start Date: $startDate");
     print("End Date: $endDate");
 
-    // Ensure startDate and endDate are not null
     if (startDate == null || endDate == null) {
       print("Start date or end date is null");
       isDateFilterLoading.value = false;
@@ -97,7 +96,6 @@ class BuildingSalePaymentReportController extends GetxController {
     }
 
     try {
-      // Convert the endDate to the end of the day (23:59:59)
       DateTime endOfDay = DateTime(
         endDate.year,
         endDate.month,
@@ -107,48 +105,68 @@ class BuildingSalePaymentReportController extends GetxController {
         59,
       );
 
-      // Firestore query to filter sales based on the given date range
       QuerySnapshot buildingSaleSnapshot = await fireStore
           .collection('BookingSalePaymentReport')
-          .where('DateTime',
-          isGreaterThanOrEqualTo: Timestamp.fromDate(startDate.toUtc()))
+          .where('DateTime', isGreaterThanOrEqualTo: Timestamp.fromDate(startDate.toUtc()))
           .where('DateTime', isLessThanOrEqualTo: Timestamp.fromDate(endOfDay.toUtc()))
           .get();
 
       List<Map<String, dynamic>> allBuildingSales = [];
       Map<String, double> dailySales = {}; // Group sales by date
 
+      // Collect customerIds and buildingIds for batch querying later
+      Set<String> customerIds = {};
+      Set<String> buildingIds = {};
+
       for (var doc in buildingSaleSnapshot.docs) {
-        String documentId = doc.id;
         Map<String, dynamic> buildingSaleData = doc.data() as Map<String, dynamic>;
+        String? customerId = buildingSaleData["customerId"];
+        String? buildingId = buildingSaleData["buildingId"];
+
+        if (customerId != null) customerIds.add(customerId);
+        if (buildingId != null) buildingIds.add(buildingId);
+
+        // Process sales data
         double amount = double.parse(buildingSaleData['Amount'].toString());
         Timestamp date = buildingSaleData['DateTime'];
 
-        // Format date as a string for daily grouping
         String saleDateString = date.toDate().toIso8601String().split("T")[0];
-        print(saleDateString);
-
-        // Add sales to the respective date
         dailySales[saleDateString] = (dailySales[saleDateString] ?? 0) + amount;
 
-        // Fetch additional customer and building data if needed
-        String? customerId = buildingSaleData["customerId"];
-        String? buildingId = buildingSaleData["buildingId"];
-        DocumentSnapshot customerDoc = await fireStore.collection('customer').doc(customerId).get();
-        DocumentSnapshot buildingDoc = await fireStore.collection('building').doc(buildingId).get();
-        Map<String, dynamic>? customerData = customerDoc.exists
-            ? customerDoc.data() as Map<String, dynamic>
-            : {};
-        Map<String, dynamic>? buildingData = buildingDoc.exists
-            ? buildingDoc.data() as Map<String, dynamic>
-            : {};
-
+        // Add the initial data
         allBuildingSales.add({
-          "documentId": documentId,
+          "documentId": doc.id,
           "SalePaymentReport": buildingSaleData,
-          "customer": customerData,
-          "building": buildingData,
+          "customer": null,  // Will fill after fetching customer data
+          "building": null,  // Will fill after fetching building data
         });
+      }
+
+      // Batch fetch customer and building data
+      Future<List<DocumentSnapshot>> customerFutures = Future.wait(
+          customerIds.map((id) => fireStore.collection('customer').doc(id).get()));
+      Future<List<DocumentSnapshot>> buildingFutures = Future.wait(
+          buildingIds.map((id) => fireStore.collection('building').doc(id).get()));
+
+      // Wait for all batches to complete
+      List<DocumentSnapshot> customerDocs = await customerFutures;
+      List<DocumentSnapshot> buildingDocs = await buildingFutures;
+
+      // Map fetched data by ID for quick lookup
+      Map<String, Map<String, dynamic>> customerDataMap = {
+        for (var doc in customerDocs) doc.id: doc.data() as Map<String, dynamic>
+      };
+      Map<String, Map<String, dynamic>> buildingDataMap = {
+        for (var doc in buildingDocs) doc.id: doc.data() as Map<String, dynamic>
+      };
+
+      // Update the sales list with fetched customer and building data
+      for (var sale in allBuildingSales) {
+        String? customerId = sale['SalePaymentReport']["customerId"];
+        String? buildingId = sale['SalePaymentReport']["buildingId"];
+
+        sale['customer'] = customerDataMap[customerId] ?? {};
+        sale['building'] = buildingDataMap[buildingId] ?? {};
       }
 
       // Convert daily sales map to a list for the chart
@@ -156,13 +174,96 @@ class BuildingSalePaymentReportController extends GetxController {
       isDateFilterLoading.value = false;
 
       // Update the building sales list
-      print( buildingSalesReport.value.length);
+      print(buildingSalesReport.value.length);
       buildingSalesReport.value = allBuildingSales;
     } catch (e) {
       isDateFilterLoading.value = false;
       print("Error fetching building sales data: $e");
     }
   }
+
+// Future<void> fetchAllBuildingSalesDateRange({
+  //   required DateTime? startDate,
+  //   required DateTime? endDate,
+  // }) async {
+  //   isDateFilterLoading.value = true;
+  //   print("Start Date: $startDate");
+  //   print("End Date: $endDate");
+  //
+  //   // Ensure startDate and endDate are not null
+  //   if (startDate == null || endDate == null) {
+  //     print("Start date or end date is null");
+  //     isDateFilterLoading.value = false;
+  //     return;
+  //   }
+  //
+  //   try {
+  //     // Convert the endDate to the end of the day (23:59:59)
+  //     DateTime endOfDay = DateTime(
+  //       endDate.year,
+  //       endDate.month,
+  //       endDate.day,
+  //       23,
+  //       59,
+  //       59,
+  //     );
+  //
+  //     // Firestore query to filter sales based on the given date range
+  //     QuerySnapshot buildingSaleSnapshot = await fireStore
+  //         .collection('BookingSalePaymentReport')
+  //         .where('DateTime',
+  //         isGreaterThanOrEqualTo: Timestamp.fromDate(startDate.toUtc()))
+  //         .where('DateTime', isLessThanOrEqualTo: Timestamp.fromDate(endOfDay.toUtc()))
+  //         .get();
+  //
+  //     List<Map<String, dynamic>> allBuildingSales = [];
+  //     Map<String, double> dailySales = {}; // Group sales by date
+  //
+  //     for (var doc in buildingSaleSnapshot.docs) {
+  //       String documentId = doc.id;
+  //       Map<String, dynamic> buildingSaleData = doc.data() as Map<String, dynamic>;
+  //       double amount = double.parse(buildingSaleData['Amount'].toString());
+  //       Timestamp date = buildingSaleData['DateTime'];
+  //
+  //       // Format date as a string for daily grouping
+  //       String saleDateString = date.toDate().toIso8601String().split("T")[0];
+  //       print(saleDateString);
+  //
+  //       // Add sales to the respective date
+  //       dailySales[saleDateString] = (dailySales[saleDateString] ?? 0) + amount;
+  //
+  //       // Fetch additional customer and building data if needed
+  //       String? customerId = buildingSaleData["customerId"];
+  //       String? buildingId = buildingSaleData["buildingId"];
+  //       DocumentSnapshot customerDoc = await fireStore.collection('customer').doc(customerId).get();
+  //       DocumentSnapshot buildingDoc = await fireStore.collection('building').doc(buildingId).get();
+  //       Map<String, dynamic>? customerData = customerDoc.exists
+  //           ? customerDoc.data() as Map<String, dynamic>
+  //           : {};
+  //       Map<String, dynamic>? buildingData = buildingDoc.exists
+  //           ? buildingDoc.data() as Map<String, dynamic>
+  //           : {};
+  //
+  //       allBuildingSales.add({
+  //         "documentId": documentId,
+  //         "SalePaymentReport": buildingSaleData,
+  //         "customer": customerData,
+  //         "building": buildingData,
+  //       });
+  //     }
+  //
+  //     // Convert daily sales map to a list for the chart
+  //     salesData.value = dailySales.values.toList();
+  //     isDateFilterLoading.value = false;
+  //
+  //     // Update the building sales list
+  //     print( buildingSalesReport.value.length);
+  //     buildingSalesReport.value = allBuildingSales;
+  //   } catch (e) {
+  //     isDateFilterLoading.value = false;
+  //     print("Error fetching building sales data: $e");
+  //   }
+  // }
 
 
 }

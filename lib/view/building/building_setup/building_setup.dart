@@ -503,6 +503,7 @@ class _BuildingSetupState extends State<BuildingSetup> {
                                           .carParkingController.text) ??
                                       0.0
                                   : 0.0,
+                              status: "available",
                               unitCost: buildingController
                                       .unitCostController.text.isNotEmpty
                                   ? double.tryParse(buildingController

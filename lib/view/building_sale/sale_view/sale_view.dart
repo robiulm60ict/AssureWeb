@@ -230,7 +230,7 @@ class BuildingSalesScreen extends StatelessWidget {
                                                     horizontal: 14),
                                                 decoration: BoxDecoration(
                                                     color
-                                                        : Colors.red.shade100,
+                                                        : Colors.grey.shade100,
                                                     borderRadius:
                                                     BorderRadius.circular(8)),
                                                 child: Text(
@@ -277,7 +277,7 @@ class BuildingSalesScreen extends StatelessWidget {
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 5, horizontal: 14),
                                   decoration: BoxDecoration(
-                                      color: Colors.red.shade100,
+                                      color: Colors.grey.shade100,
                                       borderRadius:
                                       BorderRadius.circular(8)),
                                   child: Text(

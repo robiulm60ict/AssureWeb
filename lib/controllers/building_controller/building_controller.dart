@@ -238,10 +238,10 @@ class BuildingController extends GetxController {
 
       // Update the project document in Firestore with the new data
       await fireStore.collection('building').doc(project.id).update(project.toFirestore());
-      Navigator.pop(context);
+      // Navigator.pop(context);
       // context.go('/buildingView');
       fetchProjects(); // Refresh the project list
-      AppRoutes.push(context, page: const BuildingView());
+      AppRoutes.pushReplacement(context, page: const BuildingView());
 
     } catch (e) {
       Navigator.pop(context);

@@ -32,7 +32,7 @@ class PopularProducts extends StatelessWidget {
               horizontal: AppDefaults.padding * 0.5,
             ),
             child: SectionTitle(
-              title: "Available Building",
+              title: "Popular Building",
               color: AppColors.secondaryLavender,
             ),
           ),
@@ -45,7 +45,7 @@ class PopularProducts extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Products', style: Theme.of(context).textTheme.labelSmall),
-                Text('Earning', style: Theme.of(context).textTheme.labelSmall),
+                Text('Price', style: Theme.of(context).textTheme.labelSmall),
               ],
             ),
           ),
@@ -53,24 +53,23 @@ class PopularProducts extends StatelessWidget {
           const Divider(),
           Obx(
             () => ListView.builder(
-              itemCount: buildingController.projects.length,
+              itemCount: buildingController.projects.length<3?buildingController.projects.length:4,
               shrinkWrap: true,
               padding: EdgeInsets.zero,
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (_, index) {
                 final project = buildingController.projects[index];
-                return project.status.toString() == "available"
-                    ? PopularProductItem(
+                return PopularProductItem(
                         name: project.projectName,
                         price: project.totalCost.toString() ?? "",
                         imageSrc: project.image.toString(),
-                        isActive: index % 2 == 0,
+                        isActive: project.status.toString(),
                         onPressed: () {
                           AppRoutes.push(context, page: BuildingSaleSetup(model: project,));
 
                         },
                       )
-                    : Container();
+                    ;
               },
             ),
           ),

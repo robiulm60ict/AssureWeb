@@ -1,5 +1,6 @@
 import 'package:assure_apps/configs/app_colors.dart';
 import 'package:assure_apps/configs/ghaps.dart';
+import 'package:assure_apps/configs/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -114,14 +115,8 @@ class SaleBuildingListView extends StatelessWidget {
                   ),
                   child: InkWell(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => BuildingSaleSetup(
-                            model: project,
-                          ),
-                        ),
-                      );
+                      AppRoutes.push(context, page: BuildingSaleSetup(model: project,));
+
                     },
                     child: Row(
                       children: [

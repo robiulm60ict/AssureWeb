@@ -2,6 +2,7 @@ import 'package:assure_apps/view/building/building_setup/building_setup.dart';
 import 'package:assure_apps/view/building/building_view/building_view.dart';
 import 'package:assure_apps/view/building_sale/sale_building_list/building_view/sale_building_view.dart';
 import 'package:assure_apps/view/dashbord/dashbord_page.dart';
+import 'package:assure_apps/view/entry_point.dart';
 import 'package:assure_apps/view/sign_in_page/sign_in_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -79,7 +80,7 @@ class Sidebar extends StatelessWidget {
                       activeIconSrc: "assets/icons/home_filled.svg",
                       inactiveIconSrc: "assets/icons/home_light.svg",
                       onPressed: () {
-                        AppRoutes.push(context, page: const DashboardPage());
+                        // AppRoutes.pushReplacement(context, page: const EntryPoint());
                       },
                     ),
                     ExpansionTile(

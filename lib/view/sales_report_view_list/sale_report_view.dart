@@ -25,12 +25,14 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
   DateTime? startDate;
   DateTime? endDate;
   DateTime now = DateTime.now();
+
   @override
   void initState() {
     super.initState();
     startDate = DateTime(now.year, now.month, 1);
     endDate = DateTime(now.year, now.month + 1, 0);
-    controller.fetchAllBuildingSalesDateRange(startDate: startDate, endDate: endDate);
+    controller.fetchAllBuildingSalesDateRange(
+        startDate: startDate, endDate: endDate);
   }
 
   Future<void> _selectDateRange(StateSetter setState) async {
@@ -51,7 +53,8 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
       });
       // Add your controller method here
 
-      controller.fetchAllBuildingSalesDateRange(startDate: startDate, endDate: endDate);
+      controller.fetchAllBuildingSalesDateRange(
+          startDate: startDate, endDate: endDate);
     }
   }
 
@@ -68,8 +71,6 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
           InkWell(
             onTapDown: (TapDownDetails details) {
               _showFilterMenu(context, details.globalPosition);
-
-
             },
             child: Container(
               margin: const EdgeInsets.only(left: 5),
@@ -78,34 +79,32 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
                 color: const Color.fromARGB(255, 248, 248, 248),
                 borderRadius: BorderRadius.circular(5),
                 border: Border.all(
-                    color: const Color.fromARGB(38, 0, 0, 0),
-                    width: 0.3),
+                    color: const Color.fromARGB(38, 0, 0, 0), width: 0.3),
               ),
-              child:  const Row(
+              child: const Row(
                 children: [
-                  Icon(Iconsax.setting_3,
-                      size: 20, color: AppColors.primary),
+                  Icon(Iconsax.setting_3, size: 20, color: AppColors.primary),
                   SizedBox(
                     width: 6,
                   ),
                   Text(
                     "Filter",
                     style: TextStyle(
-                        fontWeight: FontWeight.w300,
-                        color: AppColors.grey),
+                        fontWeight: FontWeight.w300, color: AppColors.grey),
                   )
                 ],
               ),
             ),
-          ),  Responsive.isMobile(context)? gapW16:gapW24,
-          if(!Responsive.isMobile(context))gapW24
+          ),
+          Responsive.isMobile(context) ? gapW16 : gapW24,
+          if (!Responsive.isMobile(context)) gapW24
         ],
       ),
       body: Obx(() {
         // Use the reactive buildingSales variable
-        if (controller.isDateFilterLoading.value==true) {
+        if (controller.isDateFilterLoading.value == true) {
           return const Center(child: CircularProgressIndicator());
-        }else  if (controller.buildingSalesReport.isEmpty) {
+        } else if (controller.buildingSalesReport.isEmpty) {
           return const Center(child: Text("No Date"));
         }
 
@@ -139,7 +138,7 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
                     if (!Responsive.isMobile(context))
                       const Expanded(
                         child: Row(
-                          children: [Text("Deu Amount")],
+                          children: [Text("Date & Time")],
                         ),
                       ),
                     if (!Responsive.isMobile(context))
@@ -147,7 +146,7 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
                           flex: 2,
                           child: Column(
                               mainAxisAlignment: MainAxisAlignment.end,
-                              children: [Text("Price")])),
+                              children: [Text("Amount")])),
                   ],
                 ),
               ),
@@ -158,28 +157,10 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
               itemBuilder: (context, index) {
                 final buildingSale =
                     controller.buildingSalesReport[index]["SalePaymentReport"];
-                final building = controller.buildingSales[index]["building"];
-                final customer = controller.buildingSales[index]["customer"];
-                //
-                // // Log the data for debugging
-                // print("Building Sale: $buildingSale");
-                // print("Building: $building");
-                // print("Customer: $customer");
-                //
-                // // Safeguard against null values
-                // final projectName = building?['projectName'] ?? 'Unknown';
-                // final totalCost = buildingSale?['totalCost']?.toString() ?? '0';
-                // final status = buildingSale?['status'] ?? 'Unknown';
-                // final customerName = customer?['name'] ?? 'Unknown';
-                //
-                // return ListTile(
-                //   title: Text("Building Sale ID: $projectName"),
-                //   subtitle: Text(
-                //     "Customer Name: $customerName\n"
-                //         "Total Cost: $totalCost\n"
-                //         "Status: $status",
-                //   ),
-                // );
+                final building =
+                    controller.buildingSalesReport[index]["building"];
+                final customer =
+                    controller.buildingSalesReport[index]["customer"];
 
                 return Container(
                   decoration: BoxDecoration(
@@ -252,6 +233,12 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
                                         child: Image.network(
                                           "https://img.freepik.com/free-photo/observation-urban-building-business-steel_1127-2397.jpg?t=st=1727338313~exp=1727341913~hmac=2e09cc7c51c7da785d7456f52aa5214acafe820f751d1e53d1a75e3cf4b69139&w=1380",
                                           fit: BoxFit.fill,
+                                          height: Responsive.isMobile(context)
+                                              ? 60
+                                              : 100,
+                                          width: Responsive.isMobile(context)
+                                              ? 60
+                                              : 100,
                                         ),
                                       );
                                     },
@@ -299,29 +286,22 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
                                   gapH4,
                                   if (Responsive.isMobile(context))
                                     Container(
-                                      padding:
-                                      const EdgeInsets.symmetric(
-                                          vertical: 5,
-                                          horizontal: 14),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 5, horizontal: 14),
                                       decoration: BoxDecoration(
-                                          color: Colors.red.shade100,
+                                          // color: Colors.red.shade100,
                                           borderRadius:
-                                          BorderRadius.circular(
-                                              8)),
+                                              BorderRadius.circular(8)),
                                       child: Text(
-                                        DateFormat(
-                                            "dd:MM:yyyy : hh:mm a")
-                                            .format((buildingSale[
-                                        'DateTime']
-                                        as Timestamp)
-                                            .toDate()),
+                                        DateFormat("dd:MM:yyyy : hh:mm a")
+                                            .format((buildingSale['DateTime']
+                                                    as Timestamp)
+                                                .toDate()),
                                         style: const TextStyle(
-                                            fontWeight:
-                                            FontWeight.w700),
+                                            fontWeight: FontWeight.w700),
                                       ),
                                     ),
-                                  if (Responsive.isMobile(context))
-                                    gapH4,
+                                  if (Responsive.isMobile(context)) gapH4,
                                   if (Responsive.isMobile(context))
                                     Container(
                                       padding: const EdgeInsets.symmetric(
@@ -351,7 +331,7 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 5, horizontal: 14),
                                   decoration: BoxDecoration(
-                                      color: Colors.red.shade100,
+                                      color: Colors.grey.shade100,
                                       borderRadius: BorderRadius.circular(8)),
                                   child: Text(
                                     DateFormat("dd:MM:yyyy : hh:mm a").format(
@@ -432,7 +412,6 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
                     color: Colors.white,
                     child: Column(
                       children: [
-
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
@@ -467,8 +446,8 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
                             setState(() {
                               startDate = DateTime(now.year, now.month, 1);
                               endDate = DateTime(now.year, now.month + 1, 0);
-                              controller.fetchAllBuildingSalesDateRange(startDate: startDate, endDate: endDate);
-
+                              controller.fetchAllBuildingSalesDateRange(
+                                  startDate: startDate, endDate: endDate);
                             });
                             Navigator.of(context).pop();
                           },

@@ -58,10 +58,17 @@ void showAlertDialog(BuildingModel project, BuildContext context) {
                           );
                         },
                         errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            height: Responsive.isMobile(context) ? 60 : 100,
-                            width: Responsive.isMobile(context) ? 60 : 100,
-                            child: const Icon(Icons.error, color: Colors.red),
+                          return SizedBox(
+                            height: Responsive.isMobile(context)
+                                ? 60
+                                : 100,
+                            width: Responsive.isMobile(context)
+                                ? 60
+                                : 100,
+                            child: Image.network(
+                              "https://img.freepik.com/free-photo/observation-urban-building-business-steel_1127-2397.jpg?t=st=1727338313~exp=1727341913~hmac=2e09cc7c51c7da785d7456f52aa5214acafe820f751d1e53d1a75e3cf4b69139&w=1380",
+                              fit: BoxFit.fill,
+                            ),
                           );
                         },
                       ),
