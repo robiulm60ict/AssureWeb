@@ -4,7 +4,6 @@ import 'package:assure_apps/configs/ghaps.dart';
 import 'package:assure_apps/model/buliding_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 import '../../../configs/app_colors.dart';

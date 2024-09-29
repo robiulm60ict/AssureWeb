@@ -1,8 +1,10 @@
 import 'package:assure_apps/configs/app_image.dart';
 import 'package:assure_apps/configs/ghaps.dart';
+import 'package:assure_apps/configs/routes.dart';
+import 'package:assure_apps/view/entry_point.dart';
+import 'package:assure_apps/view/sign_in_page/sign_in_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -50,9 +52,12 @@ class SplashScreenState extends State<SplashScreen>
   pageRoute()async{
     final myData = await LocalDB.getLoginInfo();
     if (myData == null) {
-      context.go('/sign-in');
+      AppRoutes.push(context, page: SignInPage());
+   //   context.go('/sign-in');
     } else {
-      context.go('/entry-point');
+      AppRoutes.push(context, page: EntryPoint());
+
+      //   context.go('/entry-point');
     }
 
   }

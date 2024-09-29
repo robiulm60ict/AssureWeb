@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
 import '../../model/buliding_model.dart';
 import '../../view/building_sale/sale_view/sale_view.dart';
 import '../../widgets/app_loader.dart';
@@ -24,22 +23,26 @@ class BuildingSaleController extends GetxController {
   final TextEditingController paymentBookingPercentageCountController =
       TextEditingController();
   final TextEditingController dueAmount = TextEditingController();
-  final TextEditingController percentageAmountController = TextEditingController();
+  final TextEditingController percentageAmountController =
+      TextEditingController();
 
   var totalAmount = 0.0.obs;
 
   // var paymentBookingPercentageCount = 0.0.obs;
   var result = 0.0.obs;
-  var percentageAmount=0.0.obs;
+  var percentageAmount = 0.0.obs;
+
   double calculateResult(double totalAmount) {
     // Get the percentage input from the TextEditingController as text
     String paymentPercentageText = paymentBookingPercentageCountController.text;
 
     // Check if the input is either empty or not a valid number
-    if (paymentPercentageText.isEmpty || double.tryParse(paymentPercentageText) == null) {
+    if (paymentPercentageText.isEmpty ||
+        double.tryParse(paymentPercentageText) == null) {
       // If invalid, set dueAmount to totalAmount
       dueAmount.text = totalAmount.toStringAsFixed(2);
-      print('Invalid or empty percentage input, dueAmount is set to totalAmount');
+      print(
+          'Invalid or empty percentage input, dueAmount is set to totalAmount');
 
       // Store and return the totalAmount
       result.value = totalAmount;
@@ -50,7 +53,7 @@ class BuildingSaleController extends GetxController {
     double paymentBookingPercentage = double.parse(paymentPercentageText);
 
     // Calculate the percentage amount from the totalAmount
-     percentageAmount.value = totalAmount * paymentBookingPercentage / 100;
+    percentageAmount.value = totalAmount * paymentBookingPercentage / 100;
 
     // Calculate the due amount (remaining amount after the percentage is deducted)
     double due = totalAmount - percentageAmount.value;
@@ -129,6 +132,21 @@ class BuildingSaleController extends GetxController {
     fetchAllBuildingSales(); // Fetch projects on initialization
   }
 
+  clearData() {
+    paymentBookingPercentageCountController.clear();
+    customerNameController.clear();
+    customerPhoneController.clear();
+    customerEmailController.clear();
+    installmentDateController.clear();
+    handoverDateController.clear();
+    amountInstallmentController.clear();
+    installmentDateController.clear();
+    installmentCountController.clear();
+    customerAddressController.clear();
+    dueAmount.clear();
+    percentageAmountController.clear();
+  }
+
   @override
   void onClose() {
     // Dispose of the controllers
@@ -142,18 +160,22 @@ class BuildingSaleController extends GetxController {
   Future<void> fetchAllBuildingSales() async {
     try {
       // Fetch all building sale documents
-      QuerySnapshot buildingSaleSnapshot = await fireStore.collection('buildingSale').get();
+      QuerySnapshot buildingSaleSnapshot =
+          await fireStore.collection('buildingSale').get();
       List<Map<String, dynamic>> allBuildingSales = [];
 
       for (var doc in buildingSaleSnapshot.docs) {
         // Get document ID
         String documentId = doc.id;
-        Map<String, dynamic> buildingSaleData = doc.data() as Map<String, dynamic>;
+        Map<String, dynamic> buildingSaleData =
+            doc.data() as Map<String, dynamic>;
         String? customerId = buildingSaleData["customerId"];
-        String? buildingId = buildingSaleData["buildingId"]; // Get the buildingId from the building sale data
+        String? buildingId = buildingSaleData[
+            "buildingId"]; // Get the buildingId from the building sale data
 
         // Fetch customer data using the customer ID
-        DocumentSnapshot customerDoc = await fireStore.collection('customer').doc(customerId).get();
+        DocumentSnapshot customerDoc =
+            await fireStore.collection('customer').doc(customerId).get();
         Map<String, dynamic>? customerData;
 
         if (customerDoc.exists) {
@@ -164,7 +186,8 @@ class BuildingSaleController extends GetxController {
         }
 
         // Fetch building data using the building ID
-        DocumentSnapshot buildingDoc = await fireStore.collection('building').doc(buildingId).get();
+        DocumentSnapshot buildingDoc =
+            await fireStore.collection('building').doc(buildingId).get();
         Map<String, dynamic>? buildingData;
 
         if (buildingDoc.exists) {
@@ -190,52 +213,67 @@ class BuildingSaleController extends GetxController {
     }
   }
 
+  var buildingSaleData = <String, dynamic>{}.obs; // Observable map for building sale data
+  var isLoading = true.obs; // Observable loading state
+
+  // Method to fetch building sale details using documentId
+  Future<void> fetchSingleBuildingSale(String documentId) async {
+    isLoading.value = true; // Set loading to true
+    try {
+      final data = await _fetchSingleBuildingSaleFromFirestore(documentId);
+      if (data != null) {
+        buildingSaleData.value = data; // Set fetched data to observable
+      } else {
+        print("No data found for document ID: $documentId");
+      }
+    } catch (error) {
+      // Handle error if needed
+      print("Error fetching building sale: $error");
+    } finally {
+      isLoading.value = false; // Set loading to false after fetching
+    }
+  }
+
+  // Private method to handle fetching from Firestore
+  Future<Map<String, dynamic>?> _fetchSingleBuildingSaleFromFirestore(String documentId) async {
+    try {
+      DocumentSnapshot doc = await fireStore.collection('buildingSale').doc(documentId).get();
+
+      if (doc.exists) {
+        Map<String, dynamic> buildingSaleData = doc.data() as Map<String, dynamic>;
+        String? customerId = buildingSaleData["customerId"];
+        String? buildingId = buildingSaleData["buildingId"];
+
+        // Fetch customer data
+        DocumentSnapshot customerDoc = await fireStore.collection('customer').doc(customerId).get();
+        Map<String, dynamic>? customerData = customerDoc.exists
+            ? customerDoc.data() as Map<String, dynamic>
+            : null;
+
+        // Fetch building data
+        DocumentSnapshot buildingDoc = await fireStore.collection('building').doc(buildingId).get();
+        Map<String, dynamic>? buildingData = buildingDoc.exists
+            ? buildingDoc.data() as Map<String, dynamic>
+            : null;
+
+        // Combine data into one map
+        return {
+          "documentId": documentId,
+          "buildingSale": buildingSaleData,
+          "customer": customerData,
+          "building": buildingData,
+        };
+      } else {
+        print("Building sale not found for ID: $documentId");
+        return null;
+      }
+    } catch (e) {
+      print("Error fetching single building sale data: $e");
+      return null;
+    }
+  }
 
   RxList<Map<String, dynamic>> installmentPlan = <Map<String, dynamic>>[].obs;
-
-  // void installmentNumberData() {
-  //   // Clear previous installment plans if necessary
-  //   installmentPlan.clear();
-  //
-  //   int installmentCount = int.tryParse(installmentCountController.text) ?? 0;
-  //
-  //   // Get the base due date from the controller
-  //   String baseDueDate =
-  //       installmentDateController.text; // Expecting format "YYYY-MM-DD"
-  //
-  //   // Generate installment plan based on installment count
-  //   for (int i = 0; i < installmentCount; i++) {
-  //     // Extract the year, month, and day from the baseDueDate
-  //     DateTime baseDate = DateTime.parse(baseDueDate);
-  //     // Set the installment due date based on the base date
-  //     DateTime installmentDate =
-  //         DateTime(baseDate.year, baseDate.month + i, baseDate.day);
-  //
-  //     // Format the due date as "YYYY-MM-DD"
-  //     String dueDate =
-  //         "${installmentDate.toIso8601String().substring(0, 10)}"; // or use any other formatting as needed
-  //
-  //     // Fetch the amount dynamically from the controller
-  //     double amount = double.tryParse(amountInstallmentController.text) ?? 0.0;
-  //
-  //     // Create the installment entry
-  //     var installmentEntry = {
-  //       "id": i + 1,
-  //       "dueDate": dueDate,
-  //       "amount": amount,
-  //       "status": "pending",
-  //     };
-  //
-  //     // Add to the installment plan list
-  //     installmentPlan.add(installmentEntry);
-  //
-  //     // Print the installment entry for debugging
-  //     print("Installment Entry: $installmentEntry");
-  //   }
-  //
-  //   // Print the entire installment plan after creation
-  //   print("Complete Installment Plan: $installmentPlan");
-  // }
 
   void installmentNumberData() {
     // Clear previous installment plans if necessary
@@ -244,7 +282,8 @@ class BuildingSaleController extends GetxController {
     int installmentCount = int.tryParse(installmentCountController.text) ?? 0;
 
     // Get the base due date from the controller
-    String baseDueDate = installmentDateController.text; // Expecting format "YYYY-MM-DD"
+    String baseDueDate =
+        installmentDateController.text; // Expecting format "YYYY-MM-DD"
 
     // Ensure the base date is not empty or invalid
     if (baseDueDate.isEmpty) {
@@ -262,10 +301,11 @@ class BuildingSaleController extends GetxController {
       }
 
       // Set the installment due date based on the base date
-      DateTime installmentDate = DateTime(baseDate.year, baseDate.month + i, baseDate.day);
+      DateTime installmentDate =
+          DateTime(baseDate.year, baseDate.month + i, baseDate.day);
 
       // Format the due date as "YYYY-MM-DD"
-      String dueDate = "${installmentDate.toIso8601String().substring(0, 10)}";
+      String dueDate = installmentDate.toIso8601String().substring(0, 10);
 
       // Fetch the amount dynamically from the controller
       double amount = double.tryParse(amountInstallmentController.text) ?? 0.0;
@@ -291,13 +331,14 @@ class BuildingSaleController extends GetxController {
 
 // Date picker function to handle user input
 
-
   // await updateInstallmentPlanStatus('YOUR_DOCUMENT_ID', 2, 'completed');
 
-  Future<void> updateInstallmentPlanStatus(String documentId, int installmentId, String newStatus,BuildContext context,dueAmount) async {
+  Future<void> updateInstallmentPlanStatus(String documentId,singleDocumentId, int installmentId,
+      String newStatus, BuildContext context, dueAmount) async {
     try {
       // Reference to the document in Firestore
-      DocumentReference docRef = fireStore.collection('buildingSale').doc(documentId);
+      DocumentReference docRef =
+          fireStore.collection('buildingSale').doc(documentId);
 
       // Fetch the current data of the document
       DocumentSnapshot docSnapshot = await docRef.get();
@@ -318,11 +359,11 @@ class BuildingSaleController extends GetxController {
         await docRef.update({
           'installmentPlan': installmentPlan,
           'dueAmount': dueAmount,
-
         });
 
+        fetchSingleBuildingSale(documentId);
         fetchAllBuildingSales();
-        Navigator.pop(context);
+        // Navigator.pop(context);
         print("Installment plan with id $installmentId updated successfully.");
       } else {
         print("Document does not exist.");
@@ -331,10 +372,15 @@ class BuildingSaleController extends GetxController {
       print("Failed to update installment plan: $e");
     }
   }
-  Future<void> uploadBuildingStates(String documentId, String newStatus,) async {
+
+  Future<void> uploadBuildingStates(
+    String documentId,
+    String newStatus,
+  ) async {
     try {
       // Reference to the document in Firestore
-      DocumentReference docRef = fireStore.collection('building').doc(documentId);
+      DocumentReference docRef =
+          fireStore.collection('building').doc(documentId);
 
       // Fetch the current data of the document
       DocumentSnapshot docSnapshot = await docRef.get();
@@ -343,7 +389,6 @@ class BuildingSaleController extends GetxController {
         // Update the status field
         await docRef.update({
           'status': newStatus,
-
         }); // Set new status here
 
         print("Building status updated successfully to $newStatus.");
@@ -358,10 +403,9 @@ class BuildingSaleController extends GetxController {
     }
   }
 
-
-  Future<void> uploadImageAndCreateBuildingSale(
-      String buildingId, String? imagePath, BuildContext context,grandTotal) async {
-   appLoader(context, "Building Sale, please wait...");
+  Future<void> uploadImageAndCreateBuildingSale(String buildingId,
+      String? imagePath, BuildContext context, grandTotal) async {
+    appLoader(context, "Building Sale, please wait...");
 
     try {
       // Await the customer ID from the customer creation function
@@ -373,11 +417,12 @@ class BuildingSaleController extends GetxController {
         "buildingId": buildingId,
         "customerId": customerId,
         "installmentCount": installmentCountController.text,
+        "bookDownPayment": percentageAmount.value,
         "handoverDate": handoverDateController.text,
         "installmentPlan": installmentPlan,
         "bookingPaymentPercent": paymentBookingPercentageCountController.text,
         "dueAmount": dueAmount.text,
-        "totalCost": grandTotal?? 0.0,
+        "totalCost": grandTotal ?? 0.0,
         "status": "Pending",
         "handOverDate": handoverDateController.text
       };
@@ -386,10 +431,14 @@ class BuildingSaleController extends GetxController {
       // Save the building sale to Firestore
       DocumentReference docRef =
           await fireStore.collection('buildingSale').add(body);
-      uploadBuildingStates(buildingId,"Book");
+      uploadBuildingStates(buildingId, "Book");
+      createSaleReport(context,buildingId: buildingId,customerId: customerId,amount:percentageAmount.value,paymentType: "Booking" );
+
       buildingController.fetchProjects();
+      clearData();
       Navigator.pop(context);
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>BuildingSalesScreen()));
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => BuildingSalesScreen()));
       // context.go("/buildingView");
       successSnackBar("Building Sale created successfully!");
     } catch (e, stackTrace) {
@@ -400,9 +449,45 @@ class BuildingSaleController extends GetxController {
     }
   }
 
+  Future createSaleReport(
+       BuildContext context, {buildingId, customerId,amount,paymentType}) async {
+    // appLoader(context, "Creating Sale Report, please wait...");
+
+    try {
+
+
+      // Prepare customer data to be saved
+      Map<String, dynamic> customerBody = {
+        "buildingId": buildingId,
+        "customerId": customerId,
+        "DateTime": DateTime.now(),
+        "Amount": amount,
+        "paymentType":paymentType,
+
+
+
+      };
+
+      // Save the customer to Firestore
+      DocumentReference docRef =
+      await fireStore.collection('BookingSalePaymentReport').add(customerBody);
+
+      // Navigator.pop(context);
+      // successSnackBar("Customer created successfully!");
+
+      // Return the created customer ID
+    } catch (e, stackTrace) {
+      Navigator.pop(context);
+      // wrongSnackBar(title: "Exception", "Failed to create customer: $e");
+      print("Error adding customer: $e");
+      print("StackTrace: $stackTrace");
+      return null; // Return null if there was an error
+    }
+  }
+
   Future<String?> uploadImageAndCreateCustomer(
       String? imagePath, BuildContext context) async {
-    appLoader(context, "Creating Customer, please wait...");
+    // appLoader(context, "Creating Customer, please wait...");
 
     try {
       String? imageUrl;
@@ -427,7 +512,7 @@ class BuildingSaleController extends GetxController {
       DocumentReference docRef =
           await fireStore.collection('customer').add(customerBody);
 
-      Navigator.pop(context);
+      // Navigator.pop(context);
       successSnackBar("Customer created successfully!");
 
       // Return the created customer ID

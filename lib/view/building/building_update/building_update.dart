@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:assure_apps/configs/ghaps.dart';
+import 'package:assure_apps/configs/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 import '../../../configs/app_colors.dart';
@@ -15,9 +15,9 @@ import '../../../responsive.dart';
 import '../../../widgets/app_text_field.dart';
 
 class BuildingUpdate extends StatefulWidget {
-  BuildingUpdate({super.key, this.model});
+  BuildingUpdate({super.key, required this.model});
 
-  BuildingModel? model;
+  BuildingModel model;
 
   @override
   State<BuildingUpdate> createState() => _BuildingUpdateState();
@@ -28,26 +28,26 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
   void initState() {
     if (widget.model != null) {
       buildingController.prospectNameController.text =
-          widget.model?.prospectName.toString() ?? "";
+          widget.model.prospectName.toString() ?? "";
       buildingController.projectNameController.text =
-          widget.model?.projectName.toString() ?? "";
+          widget.model.projectName.toString() ?? "";
       buildingController.projectAddressController.text =
-          widget.model?.projectAddress.toString() ?? "";
+          widget.model.projectAddress.toString() ?? "";
       buildingController.floorNoController.text =
-          widget.model?.floorNo.toString() ?? "";
+          widget.model.floorNo.toString() ?? "";
       buildingController.appointmentSizeController.text =
-          widget.model?.appointmentSize.toString() ?? "";
+          widget.model.appointmentSize.toString() ?? "";
       buildingController.perSftPriceController.text =
-          widget.model?.perSftPrice.toString() ?? "";
+          widget.model.perSftPrice.toString() ?? "";
       buildingController.totalUnitPriceController.text =
-          widget.model?.totalUnitPrice.toString() ?? "";
+          widget.model.totalUnitPrice.toString() ?? "";
       buildingController.carParkingController.text =
-          widget.model?.carParking.toString() ?? "";
+          widget.model.carParking.toString() ?? "";
       buildingController.unitCostController.text =
-          widget.model?.unitCost.toString() ?? "";
+          widget.model.unitCost.toString() ?? "";
       buildingController.totalCostController.text =
-          widget.model?.totalCost.toString() ?? "";
-      buildingController.imageUrl = widget.model?.image.toString() ?? "";
+          widget.model.totalCost.toString() ?? "";
+      buildingController.imageUrl = widget.model.image.toString() ?? "";
     }
     // TODO: implement initState
     super.initState();
@@ -59,7 +59,7 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
       backgroundColor: AppColors.bg,
       body: Form(
         key: buildingController.formKey,
-        child: Column(
+        child: ListView(
           children: [
             Container(
               padding: const EdgeInsets.symmetric(
@@ -72,8 +72,7 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                   children: [
                     IconButton(
                         onPressed: () {
-                          context.go('/buildingView');
-                          // context.go('/entry-point');
+                      AppRoutes.pop(context);
                         },
                         icon: const HugeIcon(
                           icon: HugeIcons.strokeRoundedArrowLeft02,

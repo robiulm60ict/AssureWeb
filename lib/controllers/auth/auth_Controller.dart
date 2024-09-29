@@ -1,11 +1,11 @@
 import 'package:assure_apps/view/entry_point.dart';
+import 'package:assure_apps/view/sign_in_page/sign_in_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../configs/database/login.dart';
+import '../../configs/routes.dart';
 import '../../widgets/app_loader.dart';
 
 class AuthController extends GetxController {
@@ -32,9 +32,11 @@ class AuthController extends GetxController {
 
   void _setInitialScreen(User? user) {
     if (user == null) {
-      GoRouter.of(Get.context!).go('/login'); // Redirect to login
+      // AppRoutes.push(context, page:  SignInPage());
+
+      // GoRouter.of(Get.context!).go('/login'); // Redirect to login
     } else {
-      GoRouter.of(Get.context!).go('/entry-point'); // Redirect to entry point
+     // GoRouter.of(Get.context!).go('/entry-point'); // Redirect to entry point
     }
   }
 
@@ -43,7 +45,7 @@ class AuthController extends GetxController {
       await auth.createUserWithEmailAndPassword(email: email, password: password).then((v) async{
 
 
-        GoRouter.of(Get.context!).go('/entry-point'); // Redirect after registration
+       // GoRouter.of(Get.context!).go('/entry-point'); // Redirect after registration
       });
     } catch (e) {
       Get.snackbar("Error", e.toString());
@@ -75,9 +77,11 @@ class AuthController extends GetxController {
     }
   }
 
-  void logout() async {
+  void logout(BuildContext context) async {
     await auth.signOut().then((_) {
-      GoRouter.of(Get.context!).go('/login'); // Redirect to login after logout
+      AppRoutes.push(context, page:  SignInPage());
+
+      // GoRouter.of(Get.context!).go('/login'); // Redirect to login after logout
     });
   }
 }

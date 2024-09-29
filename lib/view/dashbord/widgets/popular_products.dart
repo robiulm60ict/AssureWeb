@@ -1,4 +1,4 @@
-import 'package:assure_apps/view/building_sale/sale_view/sale_view.dart';
+import 'package:assure_apps/configs/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -66,12 +66,8 @@ class PopularProducts extends StatelessWidget {
                         imageSrc: project.image.toString(),
                         isActive: index % 2 == 0,
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => BuildingSaleSetup(
-                                        model: project,
-                                      )));
+                          AppRoutes.push(context, page: BuildingSaleSetup(model: project,));
+
                         },
                       )
                     : Container();
@@ -86,10 +82,9 @@ class PopularProducts extends StatelessWidget {
             width: double.infinity,
             child: OutlinedButton(
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SaleBuildingListView()));
+                AppRoutes.push(context, page: const SaleBuildingListView());
+
+
               },
               child: Text(
                 "All Building",

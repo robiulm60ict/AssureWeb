@@ -1,3 +1,4 @@
+import 'package:assure_apps/configs/routes.dart';
 import 'package:assure_apps/view/building_sale/sale_view/sale_details_installment_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -118,7 +119,9 @@ class BuildingSalesScreen extends StatelessWidget {
                   ),
                   child: InkWell(
                     onTap: (){
-                     Navigator.push(context, MaterialPageRoute(builder: (context)=>BuildingSalesInstallmentScreen(buildingSales: controller.buildingSales[index],)));
+
+                      AppRoutes.pushReplacement(context, page: BuildingSaleDetailScreen(documentId: controller.buildingSales[index]['documentId'],buildingSales: controller.buildingSales[index],));
+                      // AppRoutes.pushReplacement(context, page: BuildingSalesInstallmentScreen(buildingSales: controller.buildingSales[index],));
 
                     },
                     child: Row(
@@ -180,6 +183,7 @@ class BuildingSalesScreen extends StatelessWidget {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+
                                   RichText(
                                       text: TextSpan(children: [
                                         TextSpan(
@@ -230,7 +234,7 @@ class BuildingSalesScreen extends StatelessWidget {
                                                     borderRadius:
                                                     BorderRadius.circular(8)),
                                                 child: Text(
-                                                  "${buildingSale['dueAmount']} BDT",
+                                                  "${double.parse(buildingSale['dueAmount'].toString()).toStringAsFixed(2)} BDT",
                                                   style: const TextStyle(
                                                       fontWeight:
                                                       FontWeight.w700),
@@ -277,7 +281,7 @@ class BuildingSalesScreen extends StatelessWidget {
                                       borderRadius:
                                       BorderRadius.circular(8)),
                                   child: Text(
-                                    "${buildingSale['dueAmount']} BDT",
+                                    "${double.parse(buildingSale['dueAmount'].toString()).toStringAsFixed(2)} BDT",
                                     style: const TextStyle(
                                         fontWeight: FontWeight.w700),
                                   ),

@@ -2,8 +2,10 @@ import 'dart:math';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../../configs/app_colors.dart';
+import '../../../configs/app_constants.dart';
 import '../../../configs/defaults.dart';
 import '../../../configs/ghaps.dart';
 import '../../../responsive.dart';
@@ -31,37 +33,37 @@ class ProductOverviews extends StatelessWidget {
                 color: AppColors.secondaryLavender,
               ),
               const Spacer(),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(
-                      Radius.circular(AppDefaults.borderRadius)),
-                  border: Border.all(width: 2, color: AppColors.highlightLight),
-                ),
-                child: DropdownButton(
-                  padding:  EdgeInsets.symmetric(
-                      horizontal: Responsive.isMobile(context)?4:   AppDefaults.padding, vertical: 0),
-                  style: Theme.of(context).textTheme.labelLarge,
-                  borderRadius: const BorderRadius.all(
-                      Radius.circular(AppDefaults.borderRadius)),
-                  underline: const SizedBox(),
-                  value: "Last 7 days",
-                  items: const [
-                    DropdownMenuItem(
-                      value: "Last 7 days",
-                      child: Text("Last 7 days"),
-                    ),
-                    DropdownMenuItem(
-                      value: "All time",
-                      child: Text("All time"),
-                    ),
-                  ],
-                  onChanged: (value) {},
-                ),
-              ),
+              // Container(
+              //   decoration: BoxDecoration(
+              //     borderRadius: const BorderRadius.all(
+              //         Radius.circular(AppDefaults.borderRadius)),
+              //     border: Border.all(width: 2, color: AppColors.highlightLight),
+              //   ),
+              //   child: DropdownButton(
+              //     padding:  EdgeInsets.symmetric(
+              //         horizontal: Responsive.isMobile(context)?4:   AppDefaults.padding, vertical: 0),
+              //     style: Theme.of(context).textTheme.labelLarge,
+              //     borderRadius: const BorderRadius.all(
+              //         Radius.circular(AppDefaults.borderRadius)),
+              //     underline: const SizedBox(),
+              //     value: "Last 7 days",
+              //     items: const [
+              //       DropdownMenuItem(
+              //         value: "Last 7 days",
+              //         child: Text("Last 7 days"),
+              //       ),
+              //       DropdownMenuItem(
+              //         value: "All time",
+              //         child: Text("All time"),
+              //       ),
+              //     ],
+              //     onChanged: (value) {},
+              //   ),
+              // ),
             ],
           ),
           gapH24,
-          const BarChartSample8(),
+          BuildingSalesViewReport(),
         ],
       ),
     );
@@ -222,3 +224,112 @@ class BarChartSample1State extends State<BarChartSample8> {
     );
   }
 }
+
+
+class BuildingSalesViewReport extends StatefulWidget {
+  const BuildingSalesViewReport({super.key});
+
+  // Define bar chart color properties
+  final Color barBackgroundColor = AppColors.bgSecondayLight;
+  final Color barColor = AppColors.secondaryMintGreen;
+
+  @override
+  State<BuildingSalesViewReport> createState() => _BuildingSalesViewReportState();
+}
+
+class _BuildingSalesViewReportState extends State<BuildingSalesViewReport> {
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+        borderRadius: const BorderRadius.all(
+        Radius.circular(AppDefaults.borderRadius)),
+    border: Border.all(width: 2, color: AppColors.highlightLight)),
+      height: 320,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          // BarChart displaying dynamic data
+          Obx(() => Expanded(
+            child: BarChart(dynamicData()),
+          )),
+        ],
+      ),
+    );
+  }
+
+  // Function to generate BarChartGroupData for each bar
+  BarChartGroupData makeGroupData(int x, double y) {
+    return BarChartGroupData(
+      x: x,
+      barRods: [
+        BarChartRodData(
+          toY: y,
+          color: (x % 2 == 0)
+              ? AppColors.secondaryPeach
+              : (x % 3 == 0)
+              ? AppColors.primary
+              : widget.barColor,
+          borderRadius: BorderRadius.circular(2),
+          width: Responsive.isMobile(context) ? 20 : 40,
+        ),
+      ],
+    );
+  }
+
+  // Function to build the BarChart with dynamic data
+  BarChartData dynamicData() {
+    return BarChartData(
+      maxY: reportController.salesData.isNotEmpty
+          ? reportController.salesData.reduce((a, b) => a > b ? a : b) + 10 // Dynamic max value based on sales data
+          : 30, // Default max value if no sales data available
+      barTouchData: BarTouchData(
+        enabled: true, // Enable touch interaction on the bar chart
+      ),
+      titlesData: FlTitlesData(
+        show: true,
+        bottomTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            getTitlesWidget: (value, meta) {
+              final int index = value.toInt();
+              // Ensure the index is within the bounds of the sales data list
+              if (index < reportController.salesData.length) {
+                return SideTitleWidget(
+                  axisSide: meta.axisSide,
+                  child: Text('Day ${index + 1}'), // Display 'Day' followed by the correct index
+                );
+              } else {
+                return SideTitleWidget(
+                  axisSide: meta.axisSide,
+                  child: const Text(''), // Display nothing if the index is out of bounds
+                );
+              }
+            },
+            reservedSize: 38, // Space reserved for the bottom titles
+          ),
+        ),
+        leftTitles: const AxisTitles(
+          sideTitles: SideTitles(
+            reservedSize: 38,
+            showTitles: true, // Display titles on the left side (Y-axis)
+          ),
+        ),
+      ),
+      borderData: FlBorderData(show: false), // Disable the border around the chart
+      barGroups: List.generate(
+        reportController.salesData.length,
+            (i) => makeGroupData(i, reportController.salesData[i]), // Generate bar data for each day
+      ),
+      gridData: FlGridData(
+        show: true,
+        drawVerticalLine: false, // Disable vertical grid lines
+      ),
+    );
+  }
+}
+

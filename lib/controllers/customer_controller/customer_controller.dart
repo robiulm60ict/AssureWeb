@@ -18,12 +18,12 @@ class CustomerController extends GetxController {
   void onInit() {
     super.onInit();
 
-    fetchProjects(); // Fetch projects on initialization
+    fetchCustomer(); // Fetch projects on initialization
   }
 
 
 
-  void fetchProjects() async {
+  void fetchCustomer() async {
     try {
       isLoading.value = true; // Start loading
       final snapshot = await fireStore.collection('customer').get();
@@ -34,7 +34,7 @@ class CustomerController extends GetxController {
           .toList();
 
       // Optionally, you can print the fetched projects for debugging
-      print("Fetched Projects: ${customers.value.length}");
+      print("Fetched customers: ${customers.length}");
 
     } catch (e) {
       // Handle any errors that occur during fetching

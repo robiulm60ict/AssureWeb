@@ -19,19 +19,21 @@ class CoustomersOverview extends StatelessWidget {
       children: [
         Row(
           children: [
-            Expanded(
-              child: Text.rich(
-                TextSpan(
-                  text: "Welcome ",
-                  children: [
-                    TextSpan(
-                      text: "${customerController.customers.length} customers",
-                      style: TextStyle(
-                        color: Theme.of(context).textTheme.titleLarge!.color,
-                        fontWeight: FontWeight.w600,
+            Obx(
+        ()=> Expanded(
+                child: Text.rich(
+                  TextSpan(
+                    text: "Welcome ",
+                    children: [
+                      TextSpan(
+                        text: "${customerController.customers.length} customers",
+                        style: TextStyle(
+                          color: Theme.of(context).textTheme.titleLarge!.color,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

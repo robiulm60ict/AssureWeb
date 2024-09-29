@@ -65,14 +65,14 @@ class _OverviewTabsState extends State<OverviewTabs>
 
                 ),
               ),
-              const TabWithGrowth(
-                title: "Sale",
-                iconSrc: "assets/icons/activity_light.svg",
-                iconBgColor: AppColors.secondaryLavender,
-                amount: "\$128K",
-                growthPercentage: "2.7%",
-                isPositiveGrowth: false,
-              ),
+            Obx(()=>   TabWithGrowth(
+              title: "Sale",
+              iconSrc: "assets/icons/activity_light.svg",
+              iconBgColor: AppColors.secondaryLavender,
+              amount:reportController. totalSalesAmount.value.toStringAsFixed(2),
+              growthPercentage: "2.7%",
+              isPositiveGrowth: false,
+            ),)
             ],
           ),
         ),

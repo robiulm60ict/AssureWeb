@@ -2,7 +2,6 @@ import 'package:assure_apps/configs/app_colors.dart';
 import 'package:assure_apps/configs/ghaps.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 import '../../../../configs/app_constants.dart';
@@ -200,22 +199,26 @@ class CustomerListView extends StatelessWidget {
                                             ],
                                           ),
                                           gapW8,
-                                          Row(
-                                            children: [
-                                              const HugeIcon(
-                                                icon: HugeIcons.strokeRoundedMail01,
-                                                color: Colors.black,
-                                                size: 18.0,
-                                              ),
-                                              gapW8,
-                                              Text(
-                                                customer.email == "" ? customer.email : "N/A",
-                                                style: const TextStyle(
-                                                    fontWeight: FontWeight.bold),
-                                              )
-                                            ],
-                                          ),
                                         ]),
+                                  if (Responsive.isMobile(context))
+                                    gapH4,
+                                  if (Responsive.isMobile(context))
+                                  Row(
+                                    children: [
+                                      const HugeIcon(
+                                        icon: HugeIcons.strokeRoundedMail01,
+                                        color: Colors.black,
+                                        size: 18.0,
+                                      ),
+                                      gapW8,
+                                      Text(
+                                        customer.email != "" ? customer.email : "N/A",
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      )
+                                    ],
+                                  ),
+
                                 ],
                               ),
                             ],
@@ -240,7 +243,7 @@ class CustomerListView extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     Text(
-                                      customer.email == "" ? customer.email : "N/A",
+                                      customer.email != "" ? customer.email : "N/A",
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold),
                                     )

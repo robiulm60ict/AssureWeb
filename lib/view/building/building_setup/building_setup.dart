@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:assure_apps/configs/app_image.dart';
 import 'package:assure_apps/configs/ghaps.dart';
+import 'package:assure_apps/configs/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 import '../../../configs/app_colors.dart';
@@ -47,7 +47,8 @@ class _BuildingSetupState extends State<BuildingSetup> {
                   children: [
                     IconButton(
                         onPressed: () {
-                          context.go('/entry-point');
+
+                          AppRoutes.pop(context);
                         },
                         icon: const HugeIcon(
                           icon: HugeIcons.strokeRoundedArrowLeft02,

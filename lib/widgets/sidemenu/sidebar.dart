@@ -1,16 +1,22 @@
+import 'package:assure_apps/view/building/building_setup/building_setup.dart';
+import 'package:assure_apps/view/building/building_view/building_view.dart';
 import 'package:assure_apps/view/building_sale/sale_building_list/building_view/sale_building_view.dart';
+import 'package:assure_apps/view/dashbord/dashbord_page.dart';
+import 'package:assure_apps/view/sign_in_page/sign_in_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 import '../../configs/app_constants.dart';
+import '../../configs/database/login.dart';
 import '../../configs/defaults.dart';
 import '../../configs/ghaps.dart';
+import '../../configs/routes.dart';
 import '../../responsive.dart';
-import '../../view/building/building_view/building_view.dart';
 import '../../view/building_sale/sale_view/sale_view.dart';
 import '../../view/customer/customer_view.dart';
+import '../../view/sales_report_view_list/sale_report_view.dart';
+import '../app_alert_dialog.dart';
 import 'menu_tile.dart';
 
 class Sidebar extends StatelessWidget {
@@ -45,13 +51,17 @@ class Sidebar extends StatelessWidget {
                     ),
                   ),
                 const Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: AppDefaults.padding,
-                    vertical: AppDefaults.padding * 1.5,
-                  ),
-                  child: HugeIcon(icon: HugeIcons.strokeRoundedBuilding05, color: Colors.black ,size: 40.0,)
-                  //  child: Image.asset(AppImage.logo,height: MediaQuery.of(context).size.height*0.20,),
-                ),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: AppDefaults.padding,
+                      vertical: AppDefaults.padding * 1.5,
+                    ),
+                    child: HugeIcon(
+                      icon: HugeIcons.strokeRoundedBuilding05,
+                      color: Colors.black,
+                      size: 40.0,
+                    )
+                    //  child: Image.asset(AppImage.logo,height: MediaQuery.of(context).size.height*0.20,),
+                    ),
               ],
             ),
             const Divider(),
@@ -68,7 +78,9 @@ class Sidebar extends StatelessWidget {
                       title: "Home",
                       activeIconSrc: "assets/icons/home_filled.svg",
                       inactiveIconSrc: "assets/icons/home_light.svg",
-                      onPressed: () {},
+                      onPressed: () {
+                        AppRoutes.push(context, page: const DashboardPage());
+                      },
                     ),
                     ExpansionTile(
                       leading: const HugeIcon(
@@ -88,22 +100,24 @@ class Sidebar extends StatelessWidget {
                           isSubmenu: true,
                           title: "Building Create",
                           onPressed: () {
-                            context.go('/buildingSetup');
+                            AppRoutes.push(context, page: BuildingSetup());
 
+                            // context.go('/buildingSetup');
                           },
                         ),
                         Obx(
-                          ()=> MenuTile(
+                          () => MenuTile(
                             isSubmenu: true,
                             title: "Building List",
                             count: buildingController.projects.length,
                             onPressed: () {
-                              context.go('/buildingView');
+                              AppRoutes.push(context,
+                                  page: const BuildingView());
 
+                              // context.go('/buildingView');
                             },
                           ),
                         ),
-
                       ],
                     ),
                     ExpansionTile(
@@ -122,28 +136,23 @@ class Sidebar extends StatelessWidget {
                       children: [
                         MenuTile(
                           isSubmenu: true,
-                          title: "Building Sale",
+                          title: "Available Building",
                           onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>const SaleBuildingListView()));
-
-                            // context.go('/saleBuildingListView');
-                            // context.go('/buildingSaleSetup');
-
+                            AppRoutes.push(context,
+                                page: const SaleBuildingListView());
                           },
                         ),
                         Obx(
-                          ()=> MenuTile(
+                          () => MenuTile(
                             isSubmenu: true,
                             title: "Sale List",
                             count: buildingSaleController.buildingSales.length,
                             onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=>BuildingSalesScreen()));
-                              // context.go('/buildingView');
-
+                              AppRoutes.push(context,
+                                  page: BuildingSalesScreen());
                             },
                           ),
                         ),
-
                       ],
                     ),
                     ExpansionTile(
@@ -160,22 +169,92 @@ class Sidebar extends StatelessWidget {
                         ),
                       ),
                       children: [
-
                         Obx(
-                        ()=> MenuTile(
+                          () => MenuTile(
                             isSubmenu: true,
                             title: "Customer List",
                             count: customerController.customers.length,
                             onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=>CustomerListView()));
-
+                              AppRoutes.push(context,
+                                  page: const CustomerListView());
                             },
                           ),
                         ),
-
                       ],
                     ),
-
+                    ExpansionTile(
+                      leading: const HugeIcon(
+                        icon: HugeIcons.strokeRoundedSaleTag01,
+                        color: Colors.black,
+                        size: 24.0,
+                      ),
+                      title: Text(
+                        "Sales Manage",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: Theme.of(context).textTheme.bodyMedium!.color,
+                        ),
+                      ),
+                      children: [
+                        Obx(
+                          () => MenuTile(
+                            isSubmenu: true,
+                            title: "Sales report List",
+                            count: reportController.buildingSales.length,
+                            onPressed: () {
+                              AppRoutes.push(context,
+                                  page: SalesReportScreen());
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                          color: Colors.grey.shade300,
+                          borderRadius: BorderRadius.circular(8)),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12, horizontal: 10),
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 4),
+                      child: InkWell(
+                        onTap: () {
+                          appAlertDialog(context, "Are you sure to logout?",
+                              title: "Logout",
+                              actions: [
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text("Dismiss")),
+                                TextButton(
+                                    onPressed: () {
+                                      LocalDB.delLoginInfo();
+                                      AppRoutes.pushAndRemoveUntil(context,
+                                          page: SignInPage());
+                                    },
+                                    child: const Text(
+                                      "Logout",
+                                      style: TextStyle(color: Colors.red),
+                                    ))
+                              ]);
+                        },
+                        child: const Row(
+                          children: [
+                            HugeIcon(
+                              icon: HugeIcons.strokeRoundedLogout01,
+                              color: Colors.black,
+                              size: 24.0,
+                            ),
+                            gapW16,
+                            Text(
+                              "LogOut",
+                              style: TextStyle(fontWeight: FontWeight.w700),
+                            )
+                          ],
+                        ),
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -186,15 +265,17 @@ class Sidebar extends StatelessWidget {
     );
   }
 }
+
 class InstallmentTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Installment Table'),
+        title: const Text('Installment Table'),
       ),
       body: SingleChildScrollView(
-        scrollDirection: Axis.horizontal, // Allows horizontal scrolling if needed
+        scrollDirection: Axis.horizontal,
+        // Allows horizontal scrolling if needed
         child: DataTable(
           columns: const <DataColumn>[
             DataColumn(

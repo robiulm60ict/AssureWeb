@@ -1,11 +1,12 @@
 import 'dart:io';
 
 import 'package:assure_apps/configs/app_constants.dart';
+import 'package:assure_apps/configs/routes.dart';
+import 'package:assure_apps/view/building/building_view/building_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
 import '../../model/buliding_model.dart';
 import '../../widgets/app_loader.dart';
 import '../../widgets/snackbar.dart';
@@ -133,7 +134,8 @@ class BuildingController extends GetxController {
 
       clearData();
       Navigator.pop(context);
-      context.go("/buildingView");
+      AppRoutes.push(context, page: const BuildingView());
+      // context.go("/buildingView");
       // successSnackBar("Building created successfully!");
 
     } catch (e, stackTrace) {
@@ -237,8 +239,9 @@ class BuildingController extends GetxController {
       // Update the project document in Firestore with the new data
       await fireStore.collection('building').doc(project.id).update(project.toFirestore());
       Navigator.pop(context);
-      context.go('/buildingView');
+      // context.go('/buildingView');
       fetchProjects(); // Refresh the project list
+      AppRoutes.push(context, page: const BuildingView());
 
     } catch (e) {
       Navigator.pop(context);
