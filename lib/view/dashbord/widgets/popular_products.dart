@@ -1,4 +1,6 @@
 import 'package:assure_apps/configs/routes.dart';
+import 'package:assure_apps/view/building/building_view/building_view.dart';
+import 'package:assure_apps/widgets/app_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -52,7 +54,7 @@ class PopularProducts extends StatelessWidget {
           gapH8,
           const Divider(),
           Obx(
-            () => ListView.builder(
+            () =>buildingController.isLoading.value==true?AppShimmerProduct(): ListView.builder(
               itemCount: buildingController.projects.length<3?buildingController.projects.length:4,
               shrinkWrap: true,
               padding: EdgeInsets.zero,
@@ -81,7 +83,7 @@ class PopularProducts extends StatelessWidget {
             width: double.infinity,
             child: OutlinedButton(
               onPressed: () {
-                AppRoutes.push(context, page: const SaleBuildingListView());
+                AppRoutes.push(context, page: const BuildingView());
 
 
               },

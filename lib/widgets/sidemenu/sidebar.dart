@@ -201,7 +201,7 @@ class Sidebar extends StatelessWidget {
                           () => MenuTile(
                             isSubmenu: true,
                             title: "Sales report List",
-                            count: reportController.buildingSales.length,
+                            count: reportController.buildingSalesReport.length,
                             onPressed: () {
                               AppRoutes.push(context,
                                   page: SalesReportScreen());

@@ -18,7 +18,7 @@ class CustomerListView extends StatelessWidget {
       appBar: AppBar(
           leading: IconButton(
             onPressed: () {
-            Navigator.pop(context);
+              Navigator.pop(context);
               // GoRouter.of(context).pop(); // Navigate back
             },
             icon: const HugeIcon(
@@ -81,7 +81,7 @@ class CustomerListView extends StatelessWidget {
               itemCount: customerController.customers.length,
               itemBuilder: (context, index) {
                 final customer = customerController.customers[index];
-                return             Container(
+                return Container(
                   decoration: BoxDecoration(
                       color: AppColors.white,
                       borderRadius: BorderRadius.circular(8)),
@@ -119,74 +119,82 @@ class CustomerListView extends StatelessWidget {
                                   child: Image.network(
                                     customer.image.toString(),
                                     fit: BoxFit.fill,
-                                    loadingBuilder: (context, child, loadingProgress) {
+                                    loadingBuilder:
+                                        (context, child, loadingProgress) {
                                       if (loadingProgress == null) {
                                         return child;
                                       }
                                       return Center(
                                         child: CircularProgressIndicator(
-                                          value: loadingProgress.expectedTotalBytes != null
-                                              ? loadingProgress.cumulativeBytesLoaded /
-                                              (loadingProgress.expectedTotalBytes ?? 1)
+                                          value: loadingProgress
+                                                      .expectedTotalBytes !=
+                                                  null
+                                              ? loadingProgress
+                                                      .cumulativeBytesLoaded /
+                                                  (loadingProgress
+                                                          .expectedTotalBytes ??
+                                                      1)
                                               : null,
                                         ),
                                       );
                                     },
                                     errorBuilder: (context, error, stackTrace) {
-                                      return Image.network(
-                                        "https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                                      return Image.asset(
+                                        "assets/icons/noimageperson.jpg",
                                         fit: BoxFit.fill,
                                       );
                                     },
                                   ),
                                 ),
                               ),
-
                               Responsive.isMobile(context) ? gapW8 : gapW16,
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   RichText(
                                       text: TextSpan(children: [
-                                        TextSpan(
-                                          text: customer.name.toString().capitalize,
-                                          style: const TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w600,
-                                            // fontSize: 20,
-                                          ),
-                                        ),
-                                      ])),
+                                    TextSpan(
+                                      text: customer.name.toString().capitalize,
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w600,
+                                        // fontSize: 20,
+                                      ),
+                                    ),
+                                  ])),
                                   gapH4,
                                   RichText(
                                       text: TextSpan(children: [
-                                        const TextSpan(
-                                          text: "Address : ",
-                                          style: TextStyle(
-                                            color: Colors.black45,
-                                            fontWeight: FontWeight.w400,
-                                            // fontSize: 20,
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text:
-                                          customer.address.toString().capitalize,
-                                          style: const TextStyle(
-                                            color: Colors.black45,
-                                            fontWeight: FontWeight.w400,
-                                            // fontSize: 20,
-                                          ),
-                                        ),
-                                      ])),
+                                    const TextSpan(
+                                      text: "Address : ",
+                                      style: TextStyle(
+                                        color: Colors.black45,
+                                        fontWeight: FontWeight.w400,
+                                        // fontSize: 20,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: customer.address
+                                          .toString()
+                                          .capitalize,
+                                      style: const TextStyle(
+                                        color: Colors.black45,
+                                        fontWeight: FontWeight.w400,
+                                        // fontSize: 20,
+                                      ),
+                                    ),
+                                  ])),
                                   gapH4,
                                   if (Responsive.isMobile(context))
                                     Row(
-                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
                                         children: [
                                           Row(
                                             children: [
                                               const HugeIcon(
-                                                icon: HugeIcons.strokeRoundedCall,
+                                                icon:
+                                                    HugeIcons.strokeRoundedCall,
                                                 color: Colors.black,
                                                 size: 18.0,
                                               ),
@@ -194,31 +202,32 @@ class CustomerListView extends StatelessWidget {
                                               Text(
                                                 customer.phone,
                                                 style: const TextStyle(
-                                                    fontWeight: FontWeight.bold),
+                                                    fontWeight:
+                                                        FontWeight.bold),
                                               )
                                             ],
                                           ),
                                           gapW8,
                                         ]),
+                                  if (Responsive.isMobile(context)) gapH4,
                                   if (Responsive.isMobile(context))
-                                    gapH4,
-                                  if (Responsive.isMobile(context))
-                                  Row(
-                                    children: [
-                                      const HugeIcon(
-                                        icon: HugeIcons.strokeRoundedMail01,
-                                        color: Colors.black,
-                                        size: 18.0,
-                                      ),
-                                      gapW8,
-                                      Text(
-                                        customer.email != "" ? customer.email : "N/A",
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      )
-                                    ],
-                                  ),
-
+                                    Row(
+                                      children: [
+                                        const HugeIcon(
+                                          icon: HugeIcons.strokeRoundedMail01,
+                                          color: Colors.black,
+                                          size: 18.0,
+                                        ),
+                                        gapW8,
+                                        Text(
+                                          customer.email != ""
+                                              ? customer.email
+                                              : "N/A",
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        )
+                                      ],
+                                    ),
                                 ],
                               ),
                             ],
@@ -230,8 +239,8 @@ class CustomerListView extends StatelessWidget {
                               children: [
                                 Text(
                                   customer.phone,
-                                  style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
                                 )
                               ],
                             ),
@@ -243,7 +252,9 @@ class CustomerListView extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     Text(
-                                      customer.email != "" ? customer.email : "N/A",
+                                      customer.email != ""
+                                          ? customer.email
+                                          : "N/A",
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold),
                                     )
@@ -252,7 +263,6 @@ class CustomerListView extends StatelessWidget {
                     ),
                   ),
                 );
-
               },
             ),
           ],

@@ -69,7 +69,7 @@ class _OverviewTabsState extends State<OverviewTabs>
               title: "Sale",
               iconSrc: "assets/icons/activity_light.svg",
               iconBgColor: AppColors.secondaryLavender,
-              amount:reportController. totalSalesAmount.value.toStringAsFixed(2),
+              amount:"${reportController. totalAmount.value.toStringAsFixed(2)} BDT",
               growthPercentage: "2.7%",
               isPositiveGrowth: false,
             ),)

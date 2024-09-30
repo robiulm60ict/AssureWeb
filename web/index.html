@@ -10,11 +10,8 @@
 
     For more details:
     * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
   -->
-  <base href="$FLUTTER_BASE_HREF">
+  <base href="/">
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
@@ -36,23 +33,38 @@
     // The value below is injected by flutter build, do not touch.
     var serviceWorkerVersion = null;
   </script>
-  <!-- This script adds the flutter initialization JS code -->
+  <!-- This script adds the Flutter initialization JS code -->
   <script src="flutter.js" defer></script>
-</head>
-<body>
+
+  <!-- PDF.js Integration for PDF rendering support -->
   <script>
-    window.addEventListener('load', function(ev) {
-      // Download main.dart.js
-      _flutter.loader.loadEntrypoint({
-        serviceWorker: {
-          serviceWorkerVersion: serviceWorkerVersion,
-        }
-      }).then(function(engineInitializer) {
-        return engineInitializer.initializeEngine();
-      }).then(function(appRunner) {
-        return appRunner.runApp();
-      });
+    // Specify the version and base URL for PDF.js
+    var dartPdfJsVersion = "3.2.146";
+    var dartPdfJsBaseUrl = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.2.146/";
+  </script>
+  <script>
+    // Set the correct base URL for PDF.js
+    window.addEventListener('load', function() {
+      if (typeof pdfjsLib !== 'undefined') {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = dartPdfJsBaseUrl + "pdf.worker.min.js";
+      }
     });
   </script>
+</head>
+<body>
+<script>
+  window.addEventListener('load', function(ev) {
+    // Download main.dart.js
+    _flutter.loader.loadEntrypoint({
+      serviceWorker: {
+        serviceWorkerVersion: serviceWorkerVersion,
+      }
+    }).then(function(engineInitializer) {
+      return engineInitializer.initializeEngine();
+    }).then(function(appRunner) {
+      return appRunner.runApp();
+    });
+  });
+</script>
 </body>
 </html>

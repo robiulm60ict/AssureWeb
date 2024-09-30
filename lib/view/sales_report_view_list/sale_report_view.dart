@@ -31,8 +31,8 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
     super.initState();
     startDate = DateTime(now.year, now.month, 1);
     endDate = DateTime(now.year, now.month + 1, 0);
-    controller.fetchAllBuildingSalesDateRange(
-        startDate: startDate, endDate: endDate);
+    // controller.fetchAllBuildingSalesDateRange(
+    //     startDate: startDate, endDate: endDate);
   }
 
   Future<void> _selectDateRange(StateSetter setState) async {
@@ -61,7 +61,7 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
   @override
   Widget build(BuildContext context) {
     // Fetch building sales data when the screen is loaded
-    controller.fetchAllBuildingSales();
+    // controller.fetchAllBuildingSales();
 
     return Scaffold(
       appBar: AppBar(
@@ -97,6 +97,7 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
             ),
           ),
           Responsive.isMobile(context) ? gapW16 : gapW24,
+          if (!Responsive.isMobile(context)) gapW24,
           if (!Responsive.isMobile(context)) gapW24
         ],
       ),
@@ -286,8 +287,8 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
                                   gapH4,
                                   if (Responsive.isMobile(context))
                                     Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 5, horizontal: 14),
+                                      // padding: const EdgeInsets.symmetric(
+                                      //     vertical: 5, horizontal: 14),
                                       decoration: BoxDecoration(
                                           // color: Colors.red.shade100,
                                           borderRadius:

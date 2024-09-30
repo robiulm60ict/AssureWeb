@@ -47,7 +47,6 @@ class _BuildingSetupState extends State<BuildingSetup> {
                   children: [
                     IconButton(
                         onPressed: () {
-
                           AppRoutes.pop(context);
                         },
                         icon: const HugeIcon(
@@ -57,7 +56,7 @@ class _BuildingSetupState extends State<BuildingSetup> {
                         )),
                     const Padding(
                       padding:
-                          EdgeInsets.symmetric(horizontal: AppDefaults.padding),
+                      EdgeInsets.symmetric(horizontal: AppDefaults.padding),
                       child: Text(
                         "Building Create",
                         style: TextStyle(
@@ -176,7 +175,7 @@ class _BuildingSetupState extends State<BuildingSetup> {
                           hintText: "Enter Your Project Address",
                           keyboardType: TextInputType.name,
                           controller:
-                              buildingController.projectAddressController,
+                          buildingController.projectAddressController,
                           labelColor: AppColors.textColorb1,
                           isBoldLabel: true,
                           hintColor: AppColors.grey,
@@ -227,7 +226,7 @@ class _BuildingSetupState extends State<BuildingSetup> {
                           hintText: "Enter Your Appointment Size",
                           keyboardType: TextInputType.number,
                           controller:
-                              buildingController.appointmentSizeController,
+                          buildingController.appointmentSizeController,
                           labelColor: AppColors.textColorb1,
                           isBoldLabel: true,
                           hintColor: AppColors.grey,
@@ -279,7 +278,7 @@ class _BuildingSetupState extends State<BuildingSetup> {
                           keyboardType: TextInputType.number,
                           readOnly: true,
                           controller:
-                              buildingController.totalUnitPriceController,
+                          buildingController.totalUnitPriceController,
                           labelColor: AppColors.textColorb1,
                           isBoldLabel: true,
                           hintColor: AppColors.grey,
@@ -382,93 +381,146 @@ class _BuildingSetupState extends State<BuildingSetup> {
                     ],
                   ),
                   gapH24,
-                  formInfo("Upload image"),
-                  Obx(
-                    () => Align(
-                      alignment: Alignment.center,
-                      child: InkWell(
-                          onTap: () async {
-                            final res = await showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                shape: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                                actionsPadding: const EdgeInsets.all(16.0),
-                                alignment: Alignment.center,
-                                title: const Text(
-                                  "Choose Option",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                                content: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    ElevatedButton(
-                                      child: const Text("From Gallery"),
-                                      onPressed: () {
-                                        Navigator.pop(context, true);
-                                      },
-                                    ),
-                                    const SizedBox(height: 10.0),
-                                    ElevatedButton(
-                                      child: const Text("Take Photo"),
-                                      onPressed: () {
-                                        Navigator.pop(context, false);
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                            if (res != null) {
-                              await imageController.pickImage(fromGallery: res);
-                            } else {
-                              // Get.snackbar(
-                              //     '', 'Select an option to continue');
-                            }
-                          },
-                          child: Stack(
-                            alignment: Alignment.bottomRight,
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                // Adjust the radius as needed
-                                child: imageController
-                                        .resizedImagePath.value.isNotEmpty
-                                    ? Container(
-                                        width: 70.0,
-                                        height: 70.0,
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                            image: FileImage(File(
-                                                imageController
-                                                    .originalImagePath.value)),
-                                            fit: BoxFit.cover,
+                  // formInfo("Upload image"),
+                  Container(
+                    width: double.infinity,
+                    height: AppDefaults.height(context) * 0.2,
+                    decoration: BoxDecoration(
+                        color: Colors.grey.shade200,
+                        borderRadius: BorderRadius.circular(12)),
+                    child: Center(
+                      child: Obx(
+                            () =>
+                            Align(
+                              alignment: Alignment.center,
+                              child: InkWell(
+                                  onTap: () async {
+                                    final res = await showDialog(
+                                      context: context,
+                                      builder: (context) =>
+                                          AlertDialog(
+                                            shape: OutlineInputBorder(
+                                              borderRadius: BorderRadius
+                                                  .circular(8.0),
+                                            ),
+                                            actionsPadding: const EdgeInsets
+                                                .all(16.0),
+                                            alignment: Alignment.center,
+                                            title: const Text(
+                                              "Choose Option",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontSize: 16.0,
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                            ),
+                                            content: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                ElevatedButton(
+                                                  child: const Text(
+                                                      "From Gallery"),
+                                                  onPressed: () {
+                                                    Navigator.pop(
+                                                        context, true);
+                                                  },
+                                                ),
+                                                const SizedBox(height: 10.0),
+                                                ElevatedButton(
+                                                  child: const Text(
+                                                      "Take Photo"),
+                                                  onPressed: () {
+                                                    Navigator.pop(
+                                                        context, false);
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                    );
+                                    if (res != null) {
+                                      await imageController.pickImage(
+                                          fromGallery: res);
+                                    } else {
+                                      // Get.snackbar(
+                                      //     '', 'Select an option to continue');
+                                    }
+                                  },
+                                  child: Stack(
+                                    alignment: Alignment.bottomRight,
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        // Adjust the radius as needed
+                                        child: imageController
+                                            .resizedImagePath.value.isNotEmpty
+                                            ? Container(
+                                          width: 70.0,
+                                          height: 70.0,
+                                          decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              image: FileImage(File(
+                                                  imageController
+                                                      .originalImagePath
+                                                      .value)),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        )
+                                            : Container(
+                                          width: Responsive.isMobile(context)
+                                              ? AppDefaults.width(context) *
+                                              0.5:AppDefaults.width(context) *
+                                              0.2,
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 6, horizontal: 10),
+                                          decoration: const BoxDecoration(
+                                              color: Colors.white),
+                                          child: Row(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                            children: [
+                                              const HugeIcon(
+                                                icon: HugeIcons
+                                                    .strokeRoundedUpload04,
+                                                color: Colors.black,
+                                                size: 24.0,
+                                              ),
+                                              gapW8,
+                                              SizedBox(
+
+                                                // width: AppDefaults.width(
+                                                //   context) *
+                                                //   0.3,
+                                                child: Text(
+                                                  "Click or drop image",
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                      FontWeight.w500,
+                                                      color:
+                                                      Colors.grey.shade500),
+                                                ),
+                                              )
+                                            ],
                                           ),
                                         ),
-                                      )
-                                    : Image.asset(
-                                        AppImage.noBuilding,
-                                        width: 70.0,
-                                        height: 70.0,
-                                        fit: BoxFit.cover,
                                       ),
-                              ),
-                              const Positioned(
-                                right: 4,
-                                child: Icon(
-                                  Icons.camera_alt_outlined,
-                                  size: 18.0,
-                                  color: Colors.blue,
-                                ),
-                              ),
-                            ],
-                          )),
+                                      // const Positioned(
+                                      //   right: 4,
+                                      //   child: Icon(
+                                      //     Icons.camera_alt_outlined,
+                                      //     size: 18.0,
+                                      //     color: Colors.blue,
+                                      //   ),
+                                      // ),
+                                    ],
+                                  )),
+                            ),
+                      ),
                     ),
                   ),
                   gapH24,
@@ -486,11 +538,11 @@ class _BuildingSetupState extends State<BuildingSetup> {
                               prospectName: buildingController
                                   .prospectNameController.text,
                               projectName:
-                                  buildingController.projectNameController.text,
+                              buildingController.projectNameController.text,
                               projectAddress: buildingController
                                   .projectAddressController.text,
                               floorNo:
-                                  buildingController.floorNoController.text,
+                              buildingController.floorNoController.text,
                               appointmentSize: buildingController
                                   .appointmentSizeController.text,
                               perSftPrice: int.parse(buildingController
@@ -498,17 +550,17 @@ class _BuildingSetupState extends State<BuildingSetup> {
                               totalUnitPrice: double.parse(buildingController
                                   .totalUnitPriceController.text),
                               carParking: buildingController
-                                      .carParkingController.text.isNotEmpty
+                                  .carParkingController.text.isNotEmpty
                                   ? double.tryParse(buildingController
-                                          .carParkingController.text) ??
-                                      0.0
+                                  .carParkingController.text) ??
+                                  0.0
                                   : 0.0,
                               status: "available",
                               unitCost: buildingController
-                                      .unitCostController.text.isNotEmpty
+                                  .unitCostController.text.isNotEmpty
                                   ? double.tryParse(buildingController
-                                          .unitCostController.text) ??
-                                      0.0
+                                  .unitCostController.text) ??
+                                  0.0
                                   : 0.0,
                               totalCost: double.parse(
                                   buildingController.totalCostController.text),

@@ -56,6 +56,13 @@ dependencies:
   firebase_storage: ^12.3.1
   intl: ^0.19.0
   page_transition: ^2.1.0
+  cached_network_image: ^3.4.0
+  shimmer: ^3.0.0
+  pdf: ^3.1.0
+  open_file:
+  printing: ^5.10.0
+
+
 
 
 

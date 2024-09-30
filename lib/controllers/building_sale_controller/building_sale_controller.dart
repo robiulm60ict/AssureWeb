@@ -424,7 +424,7 @@ class BuildingSaleController extends GetxController {
         "dueAmount": dueAmount.text,
         "totalCost": grandTotal ?? 0.0,
         "status": "Pending",
-        "handOverDate": handoverDateController.text
+        "BookingDate": DateTime.now()
       };
 
       print(body);

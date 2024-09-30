@@ -24,15 +24,15 @@ class ProductOverviews extends StatelessWidget {
         borderRadius:
         BorderRadius.all(Radius.circular(AppDefaults.borderRadius)),
       ),
-      child: Column(
+      child: const Column(
         children: [
           Row(
             children: [
-              const SectionTitle(
+              SectionTitle(
                 title: "Building Sales views",
                 color: AppColors.secondaryLavender,
               ),
-              const Spacer(),
+              Spacer(),
               // Container(
               //   decoration: BoxDecoration(
               //     borderRadius: const BorderRadius.all(
@@ -242,7 +242,7 @@ class _BuildingSalesViewReportState extends State<BuildingSalesViewReport> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: AppColors.white,
         borderRadius: const BorderRadius.all(
@@ -325,7 +325,7 @@ class _BuildingSalesViewReportState extends State<BuildingSalesViewReport> {
         reportController.salesData.length,
             (i) => makeGroupData(i, reportController.salesData[i]), // Generate bar data for each day
       ),
-      gridData: FlGridData(
+      gridData: const FlGridData(
         show: true,
         drawVerticalLine: false, // Disable vertical grid lines
       ),

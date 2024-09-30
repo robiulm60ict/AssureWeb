@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
 class BuildingSalePaymentReportController extends GetxController {
-  var buildingSales = <Map<String, dynamic>>[].obs;
+  // var buildingSales = <Map<String, dynamic>>[].obs;
   var buildingSalesReport = <Map<String, dynamic>>[].obs;
 
   var isDateFilterLoading=false.obs;
@@ -11,75 +11,82 @@ class BuildingSalePaymentReportController extends GetxController {
   // Holds sales data for the chart
   var salesData =
       <double>[].obs; // List of sales amounts for each day or interval
-
+  DateTime? startDate;
+  DateTime? endDate;
+  DateTime now = DateTime.now();
   @override
   void onInit() {
     super.onInit();
-    fetchAllBuildingSales(); // Fetch data on initialization
+    startDate = DateTime(now.year, now.month, 1);
+    endDate = DateTime(now.year, now.month + 1, 0);
+    fetchAllBuildingSalesDateRange(
+        startDate: startDate, endDate: endDate);
+
+    // Fetch data on initialization
   }
 
-  var totalSalesAmount=0.0.obs;
-  Future<void> fetchAllBuildingSales() async {
-    try {
-      QuerySnapshot buildingSaleSnapshot =
-      await fireStore.collection('BookingSalePaymentReport').get();
-      List<Map<String, dynamic>> allBuildingSales = [];
-      Map<int, double> dailySales = {}; // To store sales amount by day (or week)
-      double totalAmount = 0.0; // Initialize total amount
-
-      for (var doc in buildingSaleSnapshot.docs) {
-        String documentId = doc.id;
-        Map<String, dynamic> buildingSaleData =
-        doc.data() as Map<String, dynamic>;
-        double amount = double.parse(
-            buildingSaleData['Amount'].toString()); // Parse the amount
-        Timestamp date = buildingSaleData['DateTime']; // Get the sale date
-
-        // Assuming you want to group sales by day:
-        int dayOfYear = date.toDate().day; // Grouping by day of year
-
-        // Add sales to the respective day
-        if (dailySales.containsKey(dayOfYear)) {
-          dailySales[dayOfYear] = dailySales[dayOfYear]! + amount;
-        } else {
-          dailySales[dayOfYear] = amount;
-        }
-
-        // Add to total amount
-        totalAmount += amount;
-
-        // You can also include customer and building data if needed
-        String? customerId = buildingSaleData["customerId"];
-        String? buildingId = buildingSaleData["buildingId"];
-        DocumentSnapshot customerDoc =
-        await fireStore.collection('customer').doc(customerId).get();
-        DocumentSnapshot buildingDoc =
-        await fireStore.collection('building').doc(buildingId).get();
-        Map<String, dynamic>? customerData = customerDoc.exists
-            ? customerDoc.data() as Map<String, dynamic>
-            : {};
-        Map<String, dynamic>? buildingData = buildingDoc.exists
-            ? buildingDoc.data() as Map<String, dynamic>
-            : {};
-
-        allBuildingSales.add({
-          "documentId": documentId,
-          "SalePaymentReport": buildingSaleData,
-          "customer": customerData,
-          "building": buildingData,
-        });
-      }
-
-      // Convert daily sales map to list for the chart
-      salesData.value = dailySales.values.toList();
-
-      // Set the fetched sales data and total amount
-      buildingSales.value = allBuildingSales;
-      totalSalesAmount.value = totalAmount; // Assuming totalSalesAmount is a variable in your state management
-    } catch (e) {
-      print("Error fetching building sales data: $e");
-    }
-  }
+  RxDouble totalAmount = 0.0.obs; // To hold the total amount
+  // Future<void> fetchAllBuildingSales() async {
+  //   try {
+  //     QuerySnapshot buildingSaleSnapshot =
+  //     await fireStore.collection('BookingSalePaymentReport').get();
+  //     List<Map<String, dynamic>> allBuildingSales = [];
+  //     Map<int, double> dailySales = {}; // To store sales amount by day (or week)
+  //     double totalAmount = 0.0; // Initialize total amount
+  //
+  //     for (var doc in buildingSaleSnapshot.docs) {
+  //       String documentId = doc.id;
+  //       Map<String, dynamic> buildingSaleData =
+  //       doc.data() as Map<String, dynamic>;
+  //       double amount = double.parse(
+  //           buildingSaleData['Amount'].toString()); // Parse the amount
+  //       Timestamp date = buildingSaleData['DateTime']; // Get the sale date
+  //
+  //       // Assuming you want to group sales by day:
+  //       int dayOfYear = date.toDate().day; // Grouping by day of year
+  //
+  //       // Add sales to the respective day
+  //       if (dailySales.containsKey(dayOfYear)) {
+  //         dailySales[dayOfYear] = dailySales[dayOfYear]! + amount;
+  //       } else {
+  //         dailySales[dayOfYear] = amount;
+  //       }
+  //
+  //       // Add to total amount
+  //       totalAmount += amount;
+  //
+  //       // You can also include customer and building data if needed
+  //       String? customerId = buildingSaleData["customerId"];
+  //       String? buildingId = buildingSaleData["buildingId"];
+  //       DocumentSnapshot customerDoc =
+  //       await fireStore.collection('customer').doc(customerId).get();
+  //       DocumentSnapshot buildingDoc =
+  //       await fireStore.collection('building').doc(buildingId).get();
+  //       Map<String, dynamic>? customerData = customerDoc.exists
+  //           ? customerDoc.data() as Map<String, dynamic>
+  //           : {};
+  //       Map<String, dynamic>? buildingData = buildingDoc.exists
+  //           ? buildingDoc.data() as Map<String, dynamic>
+  //           : {};
+  //
+  //       allBuildingSales.add({
+  //         "documentId": documentId,
+  //         "SalePaymentReport": buildingSaleData,
+  //         "customer": customerData,
+  //         "building": buildingData,
+  //       });
+  //     }
+  //
+  //     // Convert daily sales map to list for the chart
+  //     salesData.value = dailySales.values.toList();
+  //
+  //     // Set the fetched sales data and total amount
+  //     buildingSales.value = allBuildingSales;
+  //     totalSalesAmount.value = totalAmount; // Assuming totalSalesAmount is a variable in your state management
+  //   } catch (e) {
+  //     print("Error fetching building sales data: $e");
+  //   }
+  // }
 
   Future<void> fetchAllBuildingSalesDateRange({
     required DateTime? startDate,
@@ -128,6 +135,8 @@ class BuildingSalePaymentReportController extends GetxController {
 
         // Process sales data
         double amount = double.parse(buildingSaleData['Amount'].toString());
+        totalAmount.value += amount; // Accumulate total amount
+
         Timestamp date = buildingSaleData['DateTime'];
 
         String saleDateString = date.toDate().toIso8601String().split("T")[0];
@@ -176,11 +185,16 @@ class BuildingSalePaymentReportController extends GetxController {
       // Update the building sales list
       print(buildingSalesReport.value.length);
       buildingSalesReport.value = allBuildingSales;
+
+      // Print or use the total amount
+      print("Total Sales Amount: $totalAmount");
+
     } catch (e) {
       isDateFilterLoading.value = false;
       print("Error fetching building sales data: $e");
     }
   }
+
 
 // Future<void> fetchAllBuildingSalesDateRange({
   //   required DateTime? startDate,
