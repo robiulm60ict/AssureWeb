@@ -11,6 +11,7 @@ import '../../../configs/ghaps.dart';
 import '../../../configs/pdf/pdf_invoice_api.dart';
 import '../../../controllers/building_sale_controller/building_sale_controller.dart';
 import '../../../responsive.dart';
+import '../../../widgets/delete_dialog.dart';
 
 class BuildingSaleDetailScreen extends StatefulWidget {
   final String documentId;
@@ -806,26 +807,33 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                                           textAlign: TextAlign.center, // Center the text within the available space
                                         ) // Mark as "Done" if paid
                                             : IconButton(
-                                          onPressed: () {
-                                            // Update installment to "Paid"
-                                            buildingSaleController.updateInstallmentPlanStatus(
-                                              widget.buildingSales['documentId'].toString(),
-                                              buildingSale['buildingId'],
-                                              installment['id'],
-                                              "Paid",
-                                              context,
-                                              double.parse(buildingSale['dueAmount']?.toString() ?? '0') -
-                                                  double.parse(installment['amount'].toString() ?? "0"),
-                                            );
+                                          onPressed: ()async {
 
-                                            // Create sale report after payment
-                                            buildingSaleController.createSaleReport(
-                                              context,
-                                              buildingId: buildingSale['buildingId'].toString(),
-                                              customerId: buildingSale['customerId'].toString(),
-                                              amount: buildingSale['dueAmount']?.toString(),
-                                              paymentType: "Installment",
-                                            );
+                                            bool shouldDelete =
+                                                await showConfirmConfirmationDialog(
+                                                context);
+                                            if (shouldDelete) {
+                                              // Update installment to "Paid"
+                                              buildingSaleController.updateInstallmentPlanStatus(
+                                                widget.buildingSales['documentId'].toString(),
+                                                buildingSale['buildingId'],
+                                                installment['id'],
+                                                "Paid",
+                                                context,
+                                                double.parse(buildingSale['dueAmount']?.toString() ?? '0') -
+                                                    double.parse(installment['amount'].toString() ?? "0"),
+                                              );
+
+                                              // Create sale report after payment
+                                              buildingSaleController.createSaleReport(
+                                                context,
+                                                buildingId: buildingSale['buildingId'].toString(),
+                                                customerId: buildingSale['customerId'].toString(),
+                                                amount: buildingSale['dueAmount']?.toString(),
+                                                paymentType: "Installment",
+                                              );
+                                            }
+
                                           },
                                           icon: const Icon(
                                             Icons.check_circle_outline,

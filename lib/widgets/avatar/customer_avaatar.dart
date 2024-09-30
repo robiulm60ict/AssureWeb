@@ -42,11 +42,14 @@ class _CustomerAvatarState extends State<CustomerAvatar> {
               fit: BoxFit.cover,
               imageUrl: widget.imageSrc.toString(),
               placeholder: (c, s) => Image.asset(
+                width: 60,
+                height: 60,
                 "assets/icons/noimageperson.jpg",
                 fit: BoxFit.cover,
               ),
               errorWidget: (c, s, d) => Image.asset(
-                  "assets/icons/noimageperson.jpg", width: 60,
+                  "assets/icons/noimageperson.jpg",
+                  width: 60,
                   height: 60,
                   fit: BoxFit.cover),
             ),

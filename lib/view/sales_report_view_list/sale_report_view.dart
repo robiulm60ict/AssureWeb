@@ -147,7 +147,12 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
                           flex: 2,
                           child: Column(
                               mainAxisAlignment: MainAxisAlignment.end,
-                              children: [Text("Amount")])),
+                              children: [Text("Amount")])), if (!Responsive.isMobile(context))
+                      const Expanded(
+                          flex: 2,
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [Text("Payment Type")])),
                   ],
                 ),
               ),
@@ -303,6 +308,22 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
                                       ),
                                     ),
                                   if (Responsive.isMobile(context)) gapH4,
+                                  if (Responsive.isMobile(context))   Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 5, horizontal: 14),
+                                    decoration: BoxDecoration(
+                                        color: index % 2 == 0
+                                            ? Colors.orange.shade100
+                                            : Colors.yellow.shade100,
+                                        borderRadius:
+                                        BorderRadius.circular(8)),
+                                    child: Text(
+                                      buildingSale['paymentType'].toString(),
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                  ),
+                                  if (Responsive.isMobile(context)) gapH4,
                                   if (Responsive.isMobile(context))
                                     Container(
                                       padding: const EdgeInsets.symmetric(
@@ -362,6 +383,27 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
                                               BorderRadius.circular(8)),
                                       child: Text(
                                         "${double.parse(buildingSale['Amount'].toString()).toStringAsFixed(2)} BDT",
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                    )
+                                  ])),  if (!Responsive.isMobile(context))
+                          Expanded(
+                              flex: 2,
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 5, horizontal: 14),
+                                      decoration: BoxDecoration(
+                                          color: index % 2 == 0
+                                              ? Colors.orange.shade100
+                                              : Colors.yellow.shade100,
+                                          borderRadius:
+                                              BorderRadius.circular(8)),
+                                      child: Text(
+                                        buildingSale['paymentType'].toString(),
                                         style: const TextStyle(
                                             fontWeight: FontWeight.w700),
                                       ),

@@ -125,8 +125,8 @@ class AppShimmerProduct extends StatelessWidget {
               Row(
                 children: <Widget>[
                   Container(
-                    width:Responsive.isMobile(context)? AppDefaults.width(context)*0.03:AppDefaults.width(context)*0.02,
-                    height: Responsive.isMobile(context)? AppDefaults.height(context)*0.04:AppDefaults.height(context)*0.07,
+                    width:Responsive.isMobile(context)? AppDefaults.width(context)*0.1:AppDefaults.width(context)*0.02,
+                    height: Responsive.isMobile(context)? AppDefaults.height(context)*0.1:AppDefaults.height(context)*0.07,
                     decoration: BoxDecoration(
                       color: Colors.grey,
                       borderRadius: BorderRadius.circular(AppDefaults.bodyPadding),
@@ -137,7 +137,7 @@ class AppShimmerProduct extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: Responsive.isMobile(context)?AppDefaults.width(context)*0.05: AppDefaults.width(context)*0.10,
+                        width: Responsive.isMobile(context)?AppDefaults.width(context)*0.08: AppDefaults.width(context)*0.10,
                         height: 15,
                         decoration: BoxDecoration(
                           color: Colors.grey,
@@ -146,7 +146,7 @@ class AppShimmerProduct extends StatelessWidget {
                       ),
                       const SizedBox(height: 5,),
                       Container(
-                        width: Responsive.isMobile(context)? AppDefaults.width(context)*0.02:AppDefaults.width(context)*0.02,
+                        width: Responsive.isMobile(context)? AppDefaults.width(context)*0.04:AppDefaults.width(context)*0.02,
                         height: 10,
                         decoration: BoxDecoration(
                           color: Colors.grey,
@@ -159,33 +159,33 @@ class AppShimmerProduct extends StatelessWidget {
               ),
               const SizedBox(height: 10,),
 
-              // Container(
-              //   width: double.maxFinite,
-              //   height: 15,
-              //   decoration: BoxDecoration(
-              //     color: Colors.grey,
-              //     borderRadius: BorderRadius.circular(AppDefaults.bodyPadding),
-              //   ),
-              // ),
-              // const SizedBox(height: 10,),
-              // Container(
-              //   width: double.maxFinite,
-              //   height: 15,
-              //   decoration: BoxDecoration(
-              //     color: Colors.grey,
-              //     borderRadius: BorderRadius.circular(AppDefaults.bodyPadding),
-              //   ),
-              // ),
-              // const SizedBox(height: 10,),
-              // Container(
-              //   width: double.maxFinite,
-              //   height: 15,
-              //   decoration: BoxDecoration(
-              //     color: Colors.grey,
-              //     borderRadius: BorderRadius.circular(AppDefaults.bodyPadding),
-              //   ),
-              // ),
-              // const SizedBox(height: 10,),
+              Container(
+                width: double.maxFinite,
+                height: 15,
+                decoration: BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.circular(AppDefaults.bodyPadding),
+                ),
+              ),
+              const SizedBox(height: 10,),
+              Container(
+                width: double.maxFinite,
+                height: 15,
+                decoration: BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.circular(AppDefaults.bodyPadding),
+                ),
+              ),
+              const SizedBox(height: 10,),
+              Container(
+                width: double.maxFinite,
+                height: 15,
+                decoration: BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.circular(AppDefaults.bodyPadding),
+                ),
+              ),
+              const SizedBox(height: 10,),
               // Container(
               //   width: double.maxFinite,
               //   height: 15,

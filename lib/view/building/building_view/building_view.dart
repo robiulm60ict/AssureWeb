@@ -230,9 +230,7 @@ class BuildingView extends StatelessWidget {
                                               fontWeight: FontWeight.w700),
                                         ),
                                       ),
-                                    if (Responsive.isMobile(context))
-                                    gapH4,
-
+                                    if (Responsive.isMobile(context)) gapH4,
                                     if (Responsive.isMobile(context))
                                       Row(
                                           mainAxisAlignment:
@@ -350,8 +348,10 @@ class BuildingView extends StatelessWidget {
                                   children: [
                                     IconButton(
                                       onPressed: () {
-                                        AppRoutes.pushReplacement(context, page: BuildingUpdate(model: project,));
-
+                                        AppRoutes.pushReplacement(context,
+                                            page: BuildingUpdate(
+                                              model: project,
+                                            ));
                                       },
                                       icon: const HugeIcon(
                                         icon:
@@ -396,7 +396,10 @@ class BuildingView extends StatelessWidget {
                           children: [
                             IconButton(
                               onPressed: () {
-                                AppRoutes.pushReplacement(context, page: BuildingUpdate(model: project,));
+                                AppRoutes.pushReplacement(context,
+                                    page: BuildingUpdate(
+                                      model: project,
+                                    ));
 
                                 // context.go('/buildingUpdate', extra: project);
                               },
@@ -447,7 +450,6 @@ class BuildingView extends StatelessWidget {
         onPressed: () {
           buildingController.clearData();
           AppRoutes.pushReplacement(context, page: BuildingSetup());
-
 
           // context.go('/buildingSetup');
         },
