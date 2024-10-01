@@ -16,11 +16,11 @@ class Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-          horizontal: AppDefaults.padding, vertical: AppDefaults.padding),
+      // padding: const EdgeInsets.symmetric(
+      //     horizontal: AppDefaults.padding, vertical: AppDefaults.padding),
       color: AppColors.bgSecondayLight,
       child: SafeArea(
-        bottom: false,
+        // bottom: false,
         child: Row(
           children: [
             if (Responsive.isMobile(context))

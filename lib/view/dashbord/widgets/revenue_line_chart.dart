@@ -1,41 +1,100 @@
+import 'package:assure_apps/configs/app_constants.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-
+import 'package:intl/intl.dart';
 import '../../../configs/app_colors.dart';
 
+class RevenueData {
+  final double amount;
+  final DateTime date;
+
+  RevenueData(this.amount, this.date);
+}
+
+
 class RevenueLineChart extends StatelessWidget {
+  final List<RevenueData> revenueData;
+
   const RevenueLineChart({
-    super.key,
-  });
+    Key? key,
+    required this.revenueData,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return LineChart(
-      sampleData1,
+      sampleData,
       duration: const Duration(milliseconds: 250),
     );
   }
 
-  LineChartData get sampleData1 => LineChartData(
-    lineTouchData: lineTouchData1,
-    gridData: gridData,
-    titlesData: titlesData1,
-    borderData: borderData,
-    lineBarsData: lineBarsData1,
-    minX: 0,
-    maxX: 6,
-    maxY: 140000,
-    minY: 40000,
-  );
+  LineChartData get sampleData {
+    // Generate a full list of months from the first to the last entry
+    final fullRevenueData = generateFullRevenueData(revenueData);
 
-  LineTouchData get lineTouchData1 => LineTouchData(
+    final spots = fullRevenueData
+        .asMap()
+        .entries
+        .map((entry) => FlSpot(entry.key.toDouble(), entry.value.amount))
+        .toList();
+
+    // Fallback value if fullRevenueData is empty
+    final maxRevenue = fullRevenueData.isNotEmpty
+        ? fullRevenueData.map((data) => data.amount).reduce((a, b) => a > b ? a : b)
+        : 0.0;
+
+    return LineChartData(
+      lineTouchData: lineTouchData,
+      gridData: gridData,
+      titlesData: titlesData,
+      borderData: borderData,
+      lineBarsData: [lineChartBarData(spots)],
+      minX: 0,
+      maxX: fullRevenueData.length.toDouble() - 1,
+      maxY: maxRevenue * 1.1, // Only multiply when there's data
+      minY: 0, // Set minY to 0 for better display
+    );
+  }
+
+  // Function to generate full list of months
+  List<RevenueData> generateFullRevenueData(List<RevenueData> revenueData) {
+    if (revenueData.isEmpty) return [];
+
+    // Sort by date in case they are out of order
+    revenueData.sort((a, b) => a.date.compareTo(b.date));
+
+    DateTime currentDate = DateTime(revenueData.first.date.year, revenueData.first.date.month);
+    DateTime lastDate = DateTime(revenueData.last.date.year, revenueData.last.date.month);
+
+    List<RevenueData> fullRevenueData = [];
+    int currentIndex = 0;
+
+    while (currentDate.isBefore(lastDate) || currentDate.isAtSameMomentAs(lastDate)) {
+      if (currentIndex < revenueData.length &&
+          revenueData[currentIndex].date.year == currentDate.year &&
+          revenueData[currentIndex].date.month == currentDate.month) {
+        fullRevenueData.add(revenueData[currentIndex]);
+        currentIndex++;
+      } else {
+        fullRevenueData.add(RevenueData(0, currentDate)); // Add a placeholder for missing months
+      }
+
+      // Move to next month
+      currentDate = DateTime(currentDate.year, currentDate.month + 1);
+    }
+
+    return fullRevenueData;
+  }
+
+  LineTouchData get lineTouchData => LineTouchData(
     handleBuiltInTouches: true,
     touchTooltipData: LineTouchTooltipData(
       getTooltipColor: (touchedSpot) => AppColors.titleLight,
     ),
   );
 
-  FlTitlesData get titlesData1 => FlTitlesData(
+  FlTitlesData get titlesData => FlTitlesData(
     bottomTitles: AxisTitles(
       sideTitles: bottomTitles,
     ),
@@ -50,42 +109,27 @@ class RevenueLineChart extends StatelessWidget {
     ),
   );
 
-  List<LineChartBarData> get lineBarsData1 => [
-    lineChartBarData1_1,
-    // lineChartBarData1_2,
-    // lineChartBarData1_3,
-  ];
+  LineChartBarData lineChartBarData(List<FlSpot> spots) {
+    return LineChartBarData(
+      isCurved: true,
+      color: AppColors.primary,
+      barWidth: 4,
+      isStrokeCapRound: true,
+      dotData: const FlDotData(show: true),
+      belowBarData: BarAreaData(show: true),
+      spots: spots,
+    );
+  }
 
   Widget leftTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 14,
     );
-    String text;
-    switch (value.toInt()) {
-      case 40000:
-        text = '40k';
-        break;
-      case 60000:
-        text = '60k';
-        break;
-      case 80000:
-        text = '80k';
-        break;
-      case 100000:
-        text = '100k';
-        break;
-      case 120000:
-        text = '120k';
-        break;
-      case 140000:
-        text = '140k';
-        break;
-      default:
-        return Container();
-    }
 
-    return Text(text, style: style, textAlign: TextAlign.center);
+    return value % 20000 == 0
+        ? Text(value.toInt().toString(), style: style, textAlign: TextAlign.center)
+        : Container();
   }
 
   SideTitles leftTitles() => SideTitles(
@@ -95,37 +139,20 @@ class RevenueLineChart extends StatelessWidget {
     reservedSize: 40,
   );
 
+
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
-    const style = TextStyle(
-      // fontWeight: FontWeight.bold,
-      // fontSize: 16,
-    );
+    const style = TextStyle();
     Widget text;
-    switch (value.toInt()) {
-      case 0:
-        text = const Text('Jan', style: style);
-        break;
-      case 1:
-        text = const Text('Feb', style: style);
-        break;
-      case 2:
-        text = const Text('Mar', style: style);
-        break;
-      case 3:
-        text = const Text('Apr', style: style);
-        break;
-      case 4:
-        text = const Text('May', style: style);
-        break;
-      case 5:
-        text = const Text('Jun', style: style);
-        break;
-      case 6:
-        text = const Text('July', style: style);
-        break;
-      default:
-        text = const Text('');
-        break;
+
+    if (value.toInt() < revenueData.length) {
+      final date = revenueData[value.toInt()].date;
+      String monthName = DateFormat('MMM').format(date); // Get the short month name
+      text = Text(
+        monthName,
+        style: style,
+      );
+    } else {
+      text = const Text('');
     }
 
     return SideTitleWidget(
@@ -153,23 +180,42 @@ class RevenueLineChart extends StatelessWidget {
       top: BorderSide.none,
     ),
   );
+}
 
-  LineChartBarData get lineChartBarData1_1 => LineChartBarData(
-    isCurved: true,
-    color: AppColors.primary,
-    barWidth: 4,
-    isStrokeCapRound: true,
-    dotData: const FlDotData(show: false),
-    belowBarData: BarAreaData(show: false),
-    spots: const [
-      FlSpot(0, 48000),
-      FlSpot(1, 85000),
-      FlSpot(2, 78000),
-      FlSpot(3, 97000),
-      FlSpot(4, 102000),
-      FlSpot(5, 128000),
-      FlSpot(6, 60000),
-      // FlSpot(13, 1.8),
-    ],
-  );
+
+class SalesReportScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    List<RevenueData> revenueData = reportController.buildingSales
+        .map((data) {
+      // Check for null values before creating RevenueData
+      final amount = data['SalePaymentReport']['Amount'];
+      final date =  (data['SalePaymentReport']['DateTime'] as Timestamp).toDate();
+      print("object ${data['SalePaymentReport']['Amount']}");
+
+      if (amount != null && date != null) {
+        return RevenueData(double.parse(amount.toString()), date);
+      } else {
+        // Log or handle the null case as needed
+        print('Skipping entry with null values: $data');
+        return null; // or handle as necessary
+      }
+    })
+        .whereType<RevenueData>() // Filters out any null entries
+        .toList();
+
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Column(
+          children: [
+
+            Expanded(
+              child: RevenueLineChart(revenueData: revenueData), // Pass revenueData here
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

@@ -135,7 +135,8 @@ class BuildingController extends GetxController {
 
       clearData();
       Navigator.pop(context);
-      AppRoutes.push(context, page: const BuildingView());
+      dashbordScreenController.dataIndex.value=2;
+     // AppRoutes.push(context, page: const BuildingView());
       // context.go("/buildingView");
       // successSnackBar("Building created successfully!");
 
@@ -239,10 +240,13 @@ class BuildingController extends GetxController {
 
       // Update the project document in Firestore with the new data
       await fireStore.collection('building').doc(project.id).update(project.toFirestore());
-      // Navigator.pop(context);
+      Navigator.pop(context);
+      Navigator.pop(context);
       // context.go('/buildingView');
       fetchProjects(); // Refresh the project list
-      AppRoutes.pushReplacement(context, page: const BuildingView());
+      dashbordScreenController.dataIndex.value=2;
+
+      // AppRoutes.pushReplacement(context, page: const BuildingView());
 
     } catch (e) {
       Navigator.pop(context);

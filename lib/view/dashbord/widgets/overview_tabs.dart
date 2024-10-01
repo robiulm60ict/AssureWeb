@@ -69,7 +69,8 @@ class _OverviewTabsState extends State<OverviewTabs>
                   title: "Sale",
                   iconSrc: "assets/icons/activity_light.svg",
                   iconBgColor: AppColors.secondaryLavender,
-                  amount: reportController.totalAmount.value.toStringAsFixed(2),
+                  amount: reportController.totalSalesAmount.value
+                      .toStringAsFixed(2),
                   growthPercentage: "2.7%",
                   isPositiveGrowth: false,
                 ),
@@ -78,22 +79,29 @@ class _OverviewTabsState extends State<OverviewTabs>
           ),
         ),
         gapH24,
-        SizedBox(height: 200, child: CoustomersOverview()
-            // TabBarView(
-            //   controller: _tabController,
-            //   physics: const NeverScrollableScrollPhysics(),
-            //   children: const [
-            //     Center(child: CoustomersOverview()),
-            //       Padding(
-            //       padding: EdgeInsets.symmetric(
-            //         horizontal: AppDefaults.padding * 1.5,
-            //         vertical: AppDefaults.padding,
-            //       ),
-            //       child: RevenueLineChart(),
-            //     ),
-            //   ],
-            // ),
+        Obx(
+        ()=> SizedBox(
+            height: 300,
+            child: TabBarView(
+              controller: _tabController,
+              physics: const NeverScrollableScrollPhysics(),
+              children: [
+                Center(child: CoustomersOverview()),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppDefaults.padding * 1.5,
+                    vertical: AppDefaults.padding,
+                  ),
+                  child: reportController.isDateLoading.value == true
+                      ? Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : SalesReportScreen(),
+                ),
+              ],
             ),
+          ),
+        ),
         // SizedBox(
         //   height: 240,
         //   child: AnimatedCrossFade(

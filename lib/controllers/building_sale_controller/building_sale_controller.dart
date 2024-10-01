@@ -464,8 +464,10 @@ class BuildingSaleController extends GetxController {
       buildingController.fetchProjects();
       clearData();
       Navigator.pop(context);
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => BuildingSalesScreen()));
+      Navigator.pop(context);
+      dashbordScreenController.dataIndex.value=4;
+      // Navigator.push(context,
+          // MaterialPageRoute(builder: (context) => BuildingSalesScreen()));
       // context.go("/buildingView");
       successSnackBar("Building Sale created successfully!");
     } catch (e, stackTrace) {

@@ -23,22 +23,7 @@ class BuildingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.bg,
-      appBar: AppBar(
-          leading: IconButton(
-            onPressed: () {
-              AppRoutes.pop(context);
-            },
-            icon: const HugeIcon(
-              icon: HugeIcons.strokeRoundedArrowLeft02,
-              color: Colors.black,
-              size: 24.0,
-            ),
-          ),
-          backgroundColor: AppColors.bg,
-          title: const Text('Building List')),
-      body: Obx(() {
+    return  Obx(() {
         if (buildingController.isLoading.value == true) {
           return const Center(child: CircularProgressIndicator());
         } else if (buildingController.projects.isEmpty) {
@@ -47,8 +32,37 @@ class BuildingView extends StatelessWidget {
           );
 
         }
-        return ListView(
+        return Column(
           children: [
+            Container(
+              margin: EdgeInsets.symmetric(
+                vertical: AppDefaults.padding *
+                    (Responsive.isMobile(context) ? 0.5 : 0.5),
+                horizontal: AppDefaults.padding *
+                    (Responsive.isMobile(context) ? 0.5 : 0.5),
+              ),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppDefaults.padding,
+                  vertical: AppDefaults.padding),
+              decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(8)),
+              child: const Row(
+                children: [
+
+                  Padding(
+                    padding:
+                    EdgeInsets.symmetric(horizontal: AppDefaults.padding),
+                    child: Text(
+                      "Building List",
+                      style: TextStyle(
+                          fontSize: 20, color: AppColors.textColorb1),
+                    ),
+                  ),
+
+                ],
+              ),
+            ),
             if (!Responsive.isMobile(context))
               Container(
                 decoration: BoxDecoration(
@@ -56,15 +70,15 @@ class BuildingView extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8)),
                 padding: EdgeInsets.symmetric(
                   vertical: AppDefaults.padding *
-                      (Responsive.isMobile(context) ? 1 : 0.5),
+                      (Responsive.isMobile(context) ? 1 : 1.5),
                   horizontal: AppDefaults.padding *
-                      (Responsive.isMobile(context) ? 1 : 2.5),
+                      (Responsive.isMobile(context) ? 1 : 1.5),
                 ),
                 margin: EdgeInsets.symmetric(
                   vertical: AppDefaults.padding *
                       (Responsive.isMobile(context) ? 0.3 : 0.5),
                   horizontal: AppDefaults.padding *
-                      (Responsive.isMobile(context) ? 1 : 6.5),
+                      (Responsive.isMobile(context) ? 1 : 0.5),
                 ),
                 child: Row(
                   children: [
@@ -82,7 +96,7 @@ class BuildingView extends StatelessWidget {
                       ),
                     if (!Responsive.isMobile(context))
                       const Expanded(
-                        child: Row(
+                        child: Wrap(
                           children: [Text("Apartment Size")],
                         ),
                       ),
@@ -104,6 +118,7 @@ class BuildingView extends StatelessWidget {
               ),
             ListView.builder(
               shrinkWrap: true,
+              padding: EdgeInsets.zero,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: buildingController.projects.length,
               itemBuilder: (context, index) {
@@ -124,15 +139,15 @@ class BuildingView extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8)),
                     padding: EdgeInsets.symmetric(
                       vertical: AppDefaults.padding *
-                          (Responsive.isMobile(context) ? 1 : 0.5),
+                          (Responsive.isMobile(context) ? 1 : 1.5),
                       horizontal: AppDefaults.padding *
-                          (Responsive.isMobile(context) ? 1 : 2.5),
+                          (Responsive.isMobile(context) ? 1 : 1.5),
                     ),
                     margin: EdgeInsets.symmetric(
                       vertical: AppDefaults.padding *
                           (Responsive.isMobile(context) ? 0.3 : 0.5),
                       horizontal: AppDefaults.padding *
-                          (Responsive.isMobile(context) ? 1 : 6.5),
+                          (Responsive.isMobile(context) ? 1 : 0.5),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,7 +156,7 @@ class BuildingView extends StatelessWidget {
                           children: [
                             Expanded(
                               flex: 3,
-                              child: Row(
+                              child: Wrap(crossAxisAlignment: WrapCrossAlignment.center,
                                 children: [
                                   Container(
                                     height:
@@ -249,47 +264,43 @@ class BuildingView extends StatelessWidget {
                                         ),
                                       if (Responsive.isMobile(context)) gapH4,
                                       if (Responsive.isMobile(context))
-                                        Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  const HugeIcon(
-                                                    icon: HugeIcons
-                                                        .strokeRoundedBuilding03,
-                                                    color: Colors.black,
-                                                    size: 24.0,
-                                                  ),
-                                                  gapW8,
-                                                  Text(
-                                                    "${project.appointmentSize} sqft",
-                                                    style: const TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  )
-                                                ],
+                                        Wrap(
+                                          crossAxisAlignment: WrapCrossAlignment.center,
+                                          // mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+
+                                            const HugeIcon(
+                                              icon: HugeIcons
+                                                  .strokeRoundedBuilding03,
+                                              color: Colors.black,
+                                              size: 24.0,
+                                            ),
+                                            gapW8,
+                                            Text(
+                                              "${project.appointmentSize} sqft",
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+
+                                            gapW8,
+                                            Container(
+                                              padding: const EdgeInsets.symmetric(
+                                                  vertical: 5, horizontal: 14),
+                                              decoration: BoxDecoration(
+                                                color: index % 2 == 0
+                                                    ? Colors.green.shade100
+                                                    : Colors.red.shade100,
+                                                borderRadius:
+                                                BorderRadius.circular(8),
                                               ),
-                                              gapW8,
-                                              Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 5,
-                                                        horizontal: 14),
-                                                decoration: BoxDecoration(
-                                                    color: index % 2 == 0
-                                                        ? Colors.green.shade100
-                                                        : Colors.blue.shade100,
-                                                    borderRadius:
-                                                        BorderRadius.circular(8)),
-                                                child: Text(
-                                                  "${project.totalCost} BDT",
-                                                  style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w700),
-                                                ),
-                                              )
-                                            ]),
+                                              child: Text(
+                                                "${project.totalCost} BDT",
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.w700),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                     ],
                                   ),
                                 ],
@@ -297,7 +308,7 @@ class BuildingView extends StatelessWidget {
                             ),
                             if (!Responsive.isMobile(context))
                               Expanded(
-                                child: Row(
+                                child: Wrap(
                                   children: [
                                     Container(
                                       padding: const EdgeInsets.symmetric(
@@ -319,7 +330,7 @@ class BuildingView extends StatelessWidget {
                               ),
                             if (!Responsive.isMobile(context))
                               Expanded(
-                                child: Row(
+                                child: Wrap(
                                   children: [
                                     const HugeIcon(
                                       icon: HugeIcons.strokeRoundedBuilding03,
@@ -360,12 +371,11 @@ class BuildingView extends StatelessWidget {
                             if (!Responsive.isMobile(context))
                               Expanded(
                                   flex: 1,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
+                                  child: Wrap(
                                     children: [
                                       IconButton(
                                         onPressed: () {
-                                          AppRoutes.pushReplacement(context,
+                                          AppRoutes.push(context,
                                               page: BuildingUpdate(
                                                 model: project,
                                               ));
@@ -377,7 +387,6 @@ class BuildingView extends StatelessWidget {
                                           size: 24.0,
                                         ),
                                       ),
-                                      gapW16,
                                       IconButton(
                                           onPressed: () async {
                                             bool shouldDelete =
@@ -413,7 +422,7 @@ class BuildingView extends StatelessWidget {
                             children: [
                               IconButton(
                                 onPressed: () {
-                                  AppRoutes.pushReplacement(context,
+                                  AppRoutes.push(context,
                                       page: BuildingUpdate(
                                         model: project,
                                       ));
@@ -462,20 +471,7 @@ class BuildingView extends StatelessWidget {
             ),
           ],
         );
-      }),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.primary,
-        onPressed: () {
-          buildingController.clearData();
-          AppRoutes.pushReplacement(context, page: BuildingSetup());
+      });
 
-          // context.go('/buildingSetup');
-        },
-        child: const Icon(
-          Icons.add,
-          color: AppColors.white,
-        ),
-      ),
-    );
   }
 }

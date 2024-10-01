@@ -1,3 +1,4 @@
+import 'package:assure_apps/controllers/dashbord_screen_controller/dashbord_screen_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -19,6 +20,7 @@ GetImageController imageController = Get.put(GetImageController());
 BuildingSaleController buildingSaleController = Get.put(BuildingSaleController());
 CustomerController customerController = Get.put(CustomerController());
 BuildingSalePaymentReportController reportController = Get.put(BuildingSalePaymentReportController());
+DashbordScreenController dashbordScreenController = Get.put(DashbordScreenController());
 Future<void>? launched;
 Column formInfo(String title) {
   return Column(

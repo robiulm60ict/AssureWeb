@@ -14,9 +14,6 @@ import '../../configs/defaults.dart';
 import '../../configs/ghaps.dart';
 import '../../configs/routes.dart';
 import '../../responsive.dart';
-import '../../view/building_sale/sale_view/sale_view.dart';
-import '../../view/customer/customer_view.dart';
-import '../../view/sales_report_view_list/sale_report_view.dart';
 import '../app_alert_dialog.dart';
 import 'menu_tile.dart';
 
@@ -80,6 +77,7 @@ class Sidebar extends StatelessWidget {
                       activeIconSrc: "assets/icons/home_filled.svg",
                       inactiveIconSrc: "assets/icons/home_light.svg",
                       onPressed: () {
+                        dashbordScreenController.dataIndex.value = 0;
                         // AppRoutes.pushReplacement(context, page: const EntryPoint());
                       },
                     ),
@@ -101,8 +99,14 @@ class Sidebar extends StatelessWidget {
                           isSubmenu: true,
                           title: "Building Create",
                           onPressed: () {
+                            if (Responsive.isMobile(context)) {
+                              Navigator.pop(context);
+                            }
                             buildingController.clearData();
-                            AppRoutes.push(context, page: BuildingSetup());
+
+                            dashbordScreenController.dataIndex.value = 1;
+                            // AppRoutes.push(context, page: EntryPointBuildingSetup());
+                            // AppRoutes.push(context, page: BuildingSetup());
 
                             // context.go('/buildingSetup');
                           },
@@ -112,9 +116,12 @@ class Sidebar extends StatelessWidget {
                             isSubmenu: true,
                             title: "Building List",
                             count: buildingController.projects.length,
-                            onPressed: () {
-                              AppRoutes.push(context,
-                                  page: const BuildingView());
+                            onPressed: () {if (Responsive.isMobile(context)) {
+                              Navigator.pop(context);
+                            }
+                              dashbordScreenController.dataIndex.value = 2;
+                              // AppRoutes.push(context,
+                              //     page: const BuildingView());
 
                               // context.go('/buildingView');
                             },
@@ -139,9 +146,13 @@ class Sidebar extends StatelessWidget {
                         MenuTile(
                           isSubmenu: true,
                           title: "Available Building",
-                          onPressed: () {
-                            AppRoutes.push(context,
-                                page: const SaleBuildingListView());
+                          onPressed: () {if (Responsive.isMobile(context)) {
+                            Navigator.pop(context);
+                          }
+                            dashbordScreenController.dataIndex.value = 3;
+
+                            // AppRoutes.push(context,
+                            //     page: const SaleBuildingListView());
                           },
                         ),
                         Obx(
@@ -149,9 +160,12 @@ class Sidebar extends StatelessWidget {
                             isSubmenu: true,
                             title: "Sale List",
                             count: buildingSaleController.buildingSales.length,
-                            onPressed: () {
-                              AppRoutes.push(context,
-                                  page: BuildingSalesScreen());
+                            onPressed: () {if (Responsive.isMobile(context)) {
+                              Navigator.pop(context);
+                            }
+                              dashbordScreenController.dataIndex.value = 4;
+                              // AppRoutes.push(context,
+                              //     page: BuildingSalesScreen());
                             },
                           ),
                         ),
@@ -176,9 +190,13 @@ class Sidebar extends StatelessWidget {
                             isSubmenu: true,
                             title: "Customer List",
                             count: customerController.customers.length,
-                            onPressed: () {
-                              AppRoutes.push(context,
-                                  page: const CustomerListView());
+                            onPressed: () {if (Responsive.isMobile(context)) {
+                              Navigator.pop(context);
+                            }
+                              dashbordScreenController.dataIndex.value = 5;
+
+                              // AppRoutes.push(context,
+                              //     page: const CustomerListView());
                             },
                           ),
                         ),
@@ -203,9 +221,13 @@ class Sidebar extends StatelessWidget {
                             isSubmenu: true,
                             title: "Sales report List",
                             count: reportController.buildingSalesReport.length,
-                            onPressed: () {
-                              AppRoutes.push(context,
-                                  page: SalesReportScreen());
+                            onPressed: () {if (Responsive.isMobile(context)) {
+                              Navigator.pop(context);
+                            }
+                              dashbordScreenController.dataIndex.value = 6;
+
+                              // AppRoutes.push(context,
+                              //     page: SalesReportScreen());
                             },
                           ),
                         ),

@@ -56,7 +56,7 @@ class PopularProducts extends StatelessWidget {
           const Divider(),
           Obx(
             () =>buildingController.isLoading.value==true?const AppShimmerProduct(): ListView.builder(
-              itemCount: buildingController.projects.length<3?buildingController.projects.length:4,
+              itemCount: buildingController.projects.length<3?buildingController.projects.length:3,
               shrinkWrap: true,
               padding: EdgeInsets.zero,
               physics: const NeverScrollableScrollPhysics(),

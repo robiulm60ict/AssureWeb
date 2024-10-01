@@ -405,102 +405,154 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                       ),
                     ],
                   ),
+
                   gapH24,
-                  formInfo("Upload image"),
-                  Obx(
-                    () => Align(
-                      alignment: Alignment.center,
-                      child: InkWell(
-                          onTap: () async {
-                            final res = await showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                shape: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                                actionsPadding: const EdgeInsets.all(16.0),
-                                alignment: Alignment.center,
-                                title: const Text(
-                                  "Choose Option",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                                content: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    ElevatedButton(
-                                      child: const Text("From Gallery"),
-                                      onPressed: () {
-                                        Navigator.pop(context, true);
-                                      },
-                                    ),
-                                    const SizedBox(height: 10.0),
-                                    ElevatedButton(
-                                      child: const Text("Take Photo"),
-                                      onPressed: () {
-                                        Navigator.pop(context, false);
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                            if (res != null) {
-                              await imageController.pickImage(fromGallery: res);
-                            } else {
-                              // Get.snackbar(
-                              //     '', 'Select an option to continue');
-                            }
-                          },
-                          child: Stack(
-                            alignment: Alignment.bottomRight,
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                // Adjust the radius as needed
-                                child: imageController
-                                        .resizedImagePath.value.isNotEmpty
-                                    ? Container(
-                                        width: 70.0,
-                                        height: 70.0,
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                            image: FileImage(File(
-                                                imageController
-                                                    .originalImagePath.value)),
-                                            fit: BoxFit.cover,
+                  Container(
+                    width: double.infinity,
+                    height: AppDefaults.height(context) * 0.2,
+                    decoration: BoxDecoration(
+                        color: Colors.grey.shade200,
+                        borderRadius: BorderRadius.circular(12)),
+                    child: Center(
+                      child: Obx(
+                            () =>
+                            Align(
+                              alignment: Alignment.center,
+                              child: InkWell(
+                                  onTap: () async {
+                                    final res = await showDialog(
+                                      context: context,
+                                      builder: (context) =>
+                                          AlertDialog(
+                                            shape: OutlineInputBorder(
+                                              borderRadius: BorderRadius
+                                                  .circular(8.0),
+                                            ),
+                                            actionsPadding: const EdgeInsets
+                                                .all(16.0),
+                                            alignment: Alignment.center,
+                                            title: const Text(
+                                              "Choose Option",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontSize: 16.0,
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                            ),
+                                            content: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                ElevatedButton(
+                                                  child: const Text(
+                                                      "From Gallery"),
+                                                  onPressed: () {
+                                                    Navigator.pop(
+                                                        context, true);
+                                                  },
+                                                ),
+                                                const SizedBox(height: 10.0),
+                                                ElevatedButton(
+                                                  child: const Text(
+                                                      "Take Photo"),
+                                                  onPressed: () {
+                                                    Navigator.pop(
+                                                        context, false);
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                    );
+                                    if (res != null) {
+                                      await imageController.pickImage(
+                                          fromGallery: res);
+                                    } else {
+                                      // Get.snackbar(
+                                      //     '', 'Select an option to continue');
+                                    }
+                                  },
+                                  child: Stack(
+                                    alignment: Alignment.bottomRight,
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        // Adjust the radius as needed
+                                        child: imageController
+                                            .resizedImagePath.value.isNotEmpty
+                                            ? Container(
+                                          width: 70.0,
+                                          height: 70.0,
+                                          decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              image: FileImage(File(
+                                                  imageController
+                                                      .originalImagePath
+                                                      .value)),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        )
+                                            :buildingController.imageUrl.toString().split("/").last != "null"
+                                            ? Image.network(
+                                          buildingController.imageUrl
+                                              .toString(),
+                                          width: 70.0,
+                                          height: 70.0,
+                                          fit: BoxFit.cover,
+                                        ): Container(
+                                          width: Responsive.isMobile(context)
+                                              ? AppDefaults.width(context) *
+                                              0.5:AppDefaults.width(context) *
+                                              0.2,
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 6, horizontal: 10),
+                                          decoration: const BoxDecoration(
+                                              color: Colors.white),
+                                          child: Row(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                            children: [
+                                              const HugeIcon(
+                                                icon: HugeIcons
+                                                    .strokeRoundedUpload04,
+                                                color: Colors.black,
+                                                size: 24.0,
+                                              ),
+                                              gapW8,
+                                              SizedBox(
+
+                                                // width: AppDefaults.width(
+                                                //   context) *
+                                                //   0.3,
+                                                child: Text(
+                                                  "Click or drop image",
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                      FontWeight.w500,
+                                                      color:
+                                                      Colors.grey.shade500),
+                                                ),
+                                              )
+                                            ],
                                           ),
                                         ),
-                                      )
-                                    : buildingController.imageUrl.toString().split("/").last != "null"
-                                        ? Image.network(
-                                            buildingController.imageUrl
-                                                .toString(),
-                                            width: 70.0,
-                                            height: 70.0,
-                                            fit: BoxFit.cover,
-                                          )
-                                        : Image.asset(
-                                            AppImage.noBuilding,
-                                            width: 70.0,
-                                            height: 70.0,
-                                            fit: BoxFit.cover,
-                                          ),
-                              ),
-                              const Positioned(
-                                right: 4,
-                                child: Icon(
-                                  Icons.camera_alt_outlined,
-                                  size: 18.0,
-                                  color: Colors.blue,
-                                ),
-                              ),
-                            ],
-                          )),
+                                      ),
+                                      // const Positioned(
+                                      //   right: 4,
+                                      //   child: Icon(
+                                      //     Icons.camera_alt_outlined,
+                                      //     size: 18.0,
+                                      //     color: Colors.blue,
+                                      //   ),
+                                      // ),
+                                    ],
+                                  )),
+                            ),
+                      ),
                     ),
                   ),
                   gapH24,

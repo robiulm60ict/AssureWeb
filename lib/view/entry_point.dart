@@ -1,6 +1,7 @@
-
 import 'package:assure_apps/configs/app_constants.dart';
+import 'package:assure_apps/view/building/building_setup/building_setup.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../configs/defaults.dart';
 import '../responsive.dart';
@@ -8,8 +9,6 @@ import '../widgets/header.dart';
 import '../widgets/sidemenu/sidebar.dart';
 import '../widgets/sidemenu/tab_sidebar.dart';
 import 'dashbord/dashbord_page.dart';
-
-
 
 final GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 
@@ -22,8 +21,9 @@ class EntryPoint extends StatelessWidget {
       key: _drawerKey,
       drawer: Responsive.isMobile(context) ? const Sidebar() : null,
       body: RefreshIndicator(
-        onRefresh: ()async{
+        onRefresh: () async {
           customerController.fetchCustomer();
+
           buildingController.fetchProjects();
           buildingSaleController.fetchAllBuildingSales();
         },
@@ -32,28 +32,29 @@ class EntryPoint extends StatelessWidget {
             if (Responsive.isDesktop(context)) const Sidebar(),
             // if (Responsive.isTablet(context)) const TabSidebar(),
             if (Responsive.isTablet(context)) const Sidebar(),
-            Expanded(
-              child: Column(
-                children: [
-                 Header(drawerKey: _drawerKey),
-                  Expanded(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 1360),
+            Obx(
+              () => Expanded(
+                child: Column(
+                  children: [
+                    Header(drawerKey: _drawerKey),
+                    Expanded(
                       child: ListView(
-                        physics: const ScrollPhysics( ),
+                        padding: EdgeInsets.zero,
+                        physics: const ScrollPhysics(),
                         children: [
                           Padding(
                             padding: EdgeInsets.symmetric(
                               horizontal: AppDefaults.padding *
                                   (Responsive.isMobile(context) ? 0.5 : 1.5),
                             ),
-                            child: SafeArea(child: DashboardPage()),
+                            child: dashbordScreenController.myScreen[
+                                dashbordScreenController.dataIndex.value],
                           ),
                         ],
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             )
           ],
