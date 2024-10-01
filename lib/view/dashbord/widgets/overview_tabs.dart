@@ -43,7 +43,7 @@ class _OverviewTabsState extends State<OverviewTabs>
           decoration: const BoxDecoration(
             color: AppColors.bgLight,
             borderRadius:
-            BorderRadius.all(Radius.circular(AppDefaults.borderRadius)),
+                BorderRadius.all(Radius.circular(AppDefaults.borderRadius)),
           ),
           child: TabBar(
             controller: _tabController,
@@ -56,46 +56,44 @@ class _OverviewTabsState extends State<OverviewTabs>
               ),
               color: AppColors.bgSecondayLight,
             ),
-            tabs:  [
+            tabs: [
               Obx(
-            ()=> TabWithGrowth(
+                () => TabWithGrowth(
                   title: "Customers",
-                  amount: customerController.customers.length.toString()??"",
+                  amount: customerController.customers.length.toString() ?? "",
                   growthPercentage: "20%",
-
                 ),
               ),
-            Obx(()=>   TabWithGrowth(
-              title: "Sale",
-              iconSrc: "assets/icons/activity_light.svg",
-              iconBgColor: AppColors.secondaryLavender,
-              amount:"${reportController. totalAmount.value.toStringAsFixed(2)} BDT",
-              growthPercentage: "2.7%",
-              isPositiveGrowth: false,
-            ),)
+              Obx(
+                () => TabWithGrowth(
+                  title: "Sale",
+                  iconSrc: "assets/icons/activity_light.svg",
+                  iconBgColor: AppColors.secondaryLavender,
+                  amount: reportController.totalAmount.value.toStringAsFixed(2),
+                  growthPercentage: "2.7%",
+                  isPositiveGrowth: false,
+                ),
+              )
             ],
           ),
         ),
         gapH24,
-        SizedBox(
-          height: 200,
-          child:
-          CoustomersOverview()
-          // TabBarView(
-          //   controller: _tabController,
-          //   physics: const NeverScrollableScrollPhysics(),
-          //   children: const [
-          //     Center(child: CoustomersOverview()),
-          //       Padding(
-          //       padding: EdgeInsets.symmetric(
-          //         horizontal: AppDefaults.padding * 1.5,
-          //         vertical: AppDefaults.padding,
-          //       ),
-          //       child: RevenueLineChart(),
-          //     ),
-          //   ],
-          // ),
-        ),
+        SizedBox(height: 200, child: CoustomersOverview()
+            // TabBarView(
+            //   controller: _tabController,
+            //   physics: const NeverScrollableScrollPhysics(),
+            //   children: const [
+            //     Center(child: CoustomersOverview()),
+            //       Padding(
+            //       padding: EdgeInsets.symmetric(
+            //         horizontal: AppDefaults.padding * 1.5,
+            //         vertical: AppDefaults.padding,
+            //       ),
+            //       child: RevenueLineChart(),
+            //     ),
+            //   ],
+            // ),
+            ),
         // SizedBox(
         //   height: 240,
         //   child: AnimatedCrossFade(

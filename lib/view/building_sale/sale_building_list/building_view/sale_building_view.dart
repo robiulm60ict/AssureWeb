@@ -4,8 +4,10 @@ import 'package:assure_apps/configs/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../../../configs/app_constants.dart';
+import '../../../../configs/app_image.dart';
 import '../../../../configs/defaults.dart';
 import '../../../../responsive.dart';
 import '../../building_sale_setup/building_sale_setup.dart';
@@ -36,8 +38,12 @@ class SaleBuildingListView extends StatelessWidget {
           backgroundColor: AppColors.bg,
           title: const Text('Available Building ')),
       body: Obx(() {
-        if (buildingController.projects.isEmpty) {
+        if (buildingController.isLoading.value == true) {
           return const Center(child: CircularProgressIndicator());
+        } else if (buildingController.projects.isEmpty) {
+          return Center(
+            child: Lottie.asset(AppImage.noData),
+          );
         }
         return ListView(
           children: [
@@ -81,11 +87,11 @@ class SaleBuildingListView extends StatelessWidget {
                   ],
                 ),
               ),
-
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: availableProjects.length, // Update itemCount to reflect available projects
+              itemCount: availableProjects.length,
+              // Update itemCount to reflect available projects
               itemBuilder: (context, index) {
                 // Filter available projects
                 // final availableProjects = buildingController.projects
@@ -94,29 +100,37 @@ class SaleBuildingListView extends StatelessWidget {
 
                 // If there are no available projects, show "No Data"
                 if (availableProjects.isEmpty) {
-                  return const Center(child: Text("No Data")); // Display only once when no available projects
+                  return const Center(
+                      child: Text(
+                          "No Data")); // Display only once when no available projects
                 }
 
                 // Proceed to display the available project
                 final project = availableProjects[index];
 
-                return  Container(
+                return Container(
                   decoration: BoxDecoration(
                     color: AppColors.white,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   padding: EdgeInsets.symmetric(
-                    vertical: AppDefaults.padding * (Responsive.isMobile(context) ? 1 : 0.5),
-                    horizontal: AppDefaults.padding * (Responsive.isMobile(context) ? 1 : 2.5),
+                    vertical: AppDefaults.padding *
+                        (Responsive.isMobile(context) ? 1 : 0.5),
+                    horizontal: AppDefaults.padding *
+                        (Responsive.isMobile(context) ? 1 : 2.5),
                   ),
                   margin: EdgeInsets.symmetric(
-                    vertical: AppDefaults.padding * (Responsive.isMobile(context) ? 0.3 : 0.5),
-                    horizontal: AppDefaults.padding * (Responsive.isMobile(context) ? 1 : 6.5),
+                    vertical: AppDefaults.padding *
+                        (Responsive.isMobile(context) ? 0.3 : 0.5),
+                    horizontal: AppDefaults.padding *
+                        (Responsive.isMobile(context) ? 1 : 6.5),
                   ),
                   child: InkWell(
                     onTap: () {
-                      AppRoutes.push(context, page: BuildingSaleSetup(model: project,));
-
+                      AppRoutes.push(context,
+                          page: BuildingSaleSetup(
+                            model: project,
+                          ));
                     },
                     child: Row(
                       children: [
@@ -136,21 +150,31 @@ class SaleBuildingListView extends StatelessWidget {
                                   child: Image.network(
                                     project.image.toString(),
                                     fit: BoxFit.cover,
-                                    loadingBuilder: (context, child, loadingProgress) {
+                                    loadingBuilder:
+                                        (context, child, loadingProgress) {
                                       if (loadingProgress == null) return child;
                                       return Center(
                                         child: CircularProgressIndicator(
-                                          value: loadingProgress.expectedTotalBytes != null
-                                              ? loadingProgress.cumulativeBytesLoaded /
-                                              (loadingProgress.expectedTotalBytes ?? 1)
+                                          value: loadingProgress
+                                                      .expectedTotalBytes !=
+                                                  null
+                                              ? loadingProgress
+                                                      .cumulativeBytesLoaded /
+                                                  (loadingProgress
+                                                          .expectedTotalBytes ??
+                                                      1)
                                               : null,
                                         ),
                                       );
                                     },
                                     errorBuilder: (context, error, stackTrace) {
                                       return SizedBox(
-                                        height: Responsive.isMobile(context) ? 60 : 100,
-                                        width: Responsive.isMobile(context) ? 60 : 100,
+                                        height: Responsive.isMobile(context)
+                                            ? 60
+                                            : 100,
+                                        width: Responsive.isMobile(context)
+                                            ? 60
+                                            : 100,
                                         child: Image.network(
                                           "https://img.freepik.com/free-photo/observation-urban-building-business-steel_1127-2397.jpg?t=st=1727338313~exp=1727341913~hmac=2e09cc7c51c7da785d7456f52aa5214acafe820f751d1e53d1a75e3cf4b69139&w=1380",
                                           fit: BoxFit.fill,
@@ -202,27 +226,34 @@ class SaleBuildingListView extends StatelessWidget {
                                         Row(
                                           children: [
                                             const HugeIcon(
-                                              icon: HugeIcons.strokeRoundedBuilding03,
+                                              icon: HugeIcons
+                                                  .strokeRoundedBuilding03,
                                               color: Colors.black,
                                               size: 24.0,
                                             ),
                                             gapW8,
                                             Text(
                                               "${project.appointmentSize} sqft",
-                                              style: const TextStyle(fontWeight: FontWeight.bold),
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.bold),
                                             ),
                                           ],
                                         ),
                                         gapW8,
                                         Container(
-                                          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 14),
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 5, horizontal: 14),
                                           decoration: BoxDecoration(
-                                            color: index % 2 == 0 ? Colors.green.shade100 : Colors.red.shade100,
-                                            borderRadius: BorderRadius.circular(8),
+                                            color: index % 2 == 0
+                                                ? Colors.green.shade100
+                                                : Colors.red.shade100,
+                                            borderRadius:
+                                                BorderRadius.circular(8),
                                           ),
                                           child: Text(
                                             "${project.totalCost} BDT",
-                                            style: const TextStyle(fontWeight: FontWeight.w700),
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.w700),
                                           ),
                                         ),
                                       ],
@@ -244,7 +275,8 @@ class SaleBuildingListView extends StatelessWidget {
                                 gapW8,
                                 Text(
                                   "${project.appointmentSize} sqft",
-                                  style: const TextStyle(fontWeight: FontWeight.bold),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
                                 ),
                               ],
                             ),
@@ -256,14 +288,18 @@ class SaleBuildingListView extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Container(
-                                  padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 14),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 5, horizontal: 14),
                                   decoration: BoxDecoration(
-                                    color: index % 2 == 0 ? Colors.green.shade100 : Colors.red.shade100,
+                                    color: index % 2 == 0
+                                        ? Colors.green.shade100
+                                        : Colors.red.shade100,
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Text(
                                     "${project.totalCost} BDT",
-                                    style: const TextStyle(fontWeight: FontWeight.w700),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w700),
                                   ),
                                 ),
                               ],
@@ -275,8 +311,6 @@ class SaleBuildingListView extends StatelessWidget {
                 ); // Display your project data here
               },
             )
-
-
           ],
         );
       }),

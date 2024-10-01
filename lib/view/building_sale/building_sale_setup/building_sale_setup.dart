@@ -8,7 +8,6 @@ import 'package:hugeicons/hugeicons.dart';
 
 import '../../../configs/app_colors.dart';
 import '../../../configs/app_constants.dart';
-import '../../../configs/app_image.dart';
 import '../../../configs/defaults.dart';
 import '../../../responsive.dart';
 import '../../../widgets/app_text_field.dart';
@@ -901,8 +900,8 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
     DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(3101),
     );
 
     if (pickedDate != null) {
@@ -917,8 +916,8 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
     DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(3101),
     );
 
     if (pickedDate != null) {

@@ -2,8 +2,10 @@ import 'package:assure_apps/configs/routes.dart';
 import 'package:assure_apps/view/building_sale/sale_view/sale_details_installment_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../../configs/app_colors.dart';
+import '../../../configs/app_image.dart';
 import '../../../configs/defaults.dart';
 import '../../../configs/ghaps.dart';
 import '../../../controllers/building_sale_controller/building_sale_controller.dart';
@@ -24,8 +26,12 @@ class BuildingSalesScreen extends StatelessWidget {
       ),
       body: Obx(() {
         // Use the reactive buildingSales variable
-        if (controller.buildingSales.isEmpty) {
+        if (controller.isLoadingSales.value == true) {
           return const Center(child: CircularProgressIndicator());
+        } else if (controller.buildingSales.isEmpty) {
+          return Center(
+            child: Lottie.asset(AppImage.noData),
+          );
         }
 
         return ListView(
@@ -67,7 +73,6 @@ class BuildingSalesScreen extends StatelessWidget {
                           child: Column(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [Text("Price")])),
-
                   ],
                 ),
               ),
@@ -76,7 +81,8 @@ class BuildingSalesScreen extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: controller.buildingSales.length,
               itemBuilder: (context, index) {
-                final buildingSale = controller.buildingSales[index]["buildingSale"];
+                final buildingSale =
+                    controller.buildingSales[index]["buildingSale"];
                 final building = controller.buildingSales[index]["building"];
                 final customer = controller.buildingSales[index]["customer"];
                 //
@@ -100,29 +106,31 @@ class BuildingSalesScreen extends StatelessWidget {
                 //   ),
                 // );
 
-
-              return  Container(
+                return Container(
                   decoration: BoxDecoration(
                       color: AppColors.white,
                       borderRadius: BorderRadius.circular(8)),
                   padding: EdgeInsets.symmetric(
                     vertical: AppDefaults.padding *
-                        (Responsive.isMobile(context) ? 1 : 0.5),
+                        (Responsive.isMobile(context) ? 0.5 : 0.5),
                     horizontal: AppDefaults.padding *
-                        (Responsive.isMobile(context) ? 1 : 2.5),
+                        (Responsive.isMobile(context) ? 0.5 : 2.5),
                   ),
                   margin: EdgeInsets.symmetric(
                     vertical: AppDefaults.padding *
                         (Responsive.isMobile(context) ? 0.3 : 0.5),
                     horizontal: AppDefaults.padding *
-                        (Responsive.isMobile(context) ? 1 : 6.5),
+                        (Responsive.isMobile(context) ? 0.5 : 6.5),
                   ),
                   child: InkWell(
-                    onTap: (){
-
-                      AppRoutes.pushReplacement(context, page: BuildingSaleDetailScreen(documentId: controller.buildingSales[index]['documentId'],buildingSales: controller.buildingSales[index],));
+                    onTap: () {
+                      AppRoutes.pushReplacement(context,
+                          page: BuildingSaleDetailScreen(
+                            documentId: controller.buildingSales[index]
+                                ['documentId'],
+                            buildingSales: controller.buildingSales[index],
+                          ));
                       // AppRoutes.pushReplacement(context, page: BuildingSalesInstallmentScreen(buildingSales: controller.buildingSales[index],));
-
                     },
                     child: Row(
                       children: [
@@ -131,10 +139,8 @@ class BuildingSalesScreen extends StatelessWidget {
                           child: Row(
                             children: [
                               Container(
-                                height:
-                                Responsive.isMobile(context) ? 60 : 100,
-                                width:
-                                Responsive.isMobile(context) ? 60 : 100,
+                                height: Responsive.isMobile(context) ? 60 : 100,
+                                width: Responsive.isMobile(context) ? 60 : 100,
                                 decoration: BoxDecoration(
                                   color: AppColors.bg,
                                   borderRadius: BorderRadius.circular(10),
@@ -152,19 +158,18 @@ class BuildingSalesScreen extends StatelessWidget {
                                       return Center(
                                         child: CircularProgressIndicator(
                                           value: loadingProgress
-                                              .expectedTotalBytes !=
-                                              null
+                                                      .expectedTotalBytes !=
+                                                  null
                                               ? loadingProgress
-                                              .cumulativeBytesLoaded /
-                                              (loadingProgress
-                                                  .expectedTotalBytes ??
-                                                  1)
+                                                      .cumulativeBytesLoaded /
+                                                  (loadingProgress
+                                                          .expectedTotalBytes ??
+                                                      1)
                                               : null,
                                         ),
                                       );
                                     },
-                                    errorBuilder:
-                                        (context, error, stackTrace) {
+                                    errorBuilder: (context, error, stackTrace) {
                                       return SizedBox(
                                         height: Responsive.isMobile(context)
                                             ? 60
@@ -172,8 +177,10 @@ class BuildingSalesScreen extends StatelessWidget {
                                         width: Responsive.isMobile(context)
                                             ? 60
                                             : 100,
-                                        child:   Image.network(
-                                          "https://img.freepik.com/free-photo/observation-urban-building-business-steel_1127-2397.jpg?t=st=1727338313~exp=1727341913~hmac=2e09cc7c51c7da785d7456f52aa5214acafe820f751d1e53d1a75e3cf4b69139&w=1380",fit: BoxFit.fill,),
+                                        child: Image.network(
+                                          "https://img.freepik.com/free-photo/observation-urban-building-business-steel_1127-2397.jpg?t=st=1727338313~exp=1727341913~hmac=2e09cc7c51c7da785d7456f52aa5214acafe820f751d1e53d1a75e3cf4b69139&w=1380",
+                                          fit: BoxFit.fill,
+                                        ),
                                       );
                                     },
                                   ),
@@ -183,84 +190,81 @@ class BuildingSalesScreen extends StatelessWidget {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-
                                   RichText(
                                       text: TextSpan(children: [
-                                        TextSpan(
-                                          text: building['prospectName'].toString().capitalize,
-                                          style: const TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w600,
-                                            // fontSize: 20,
-                                          ),
-                                        ),
-                                      ])),
+                                    TextSpan(
+                                      text: building['prospectName']
+                                          .toString()
+                                          .capitalize,
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w600,
+                                        // fontSize: 20,
+                                      ),
+                                    ),
+                                  ])),
                                   gapH4,
                                   RichText(
                                       text: TextSpan(children: [
-                                        const TextSpan(
-                                          text: "Customer Name : ",
-                                          style: TextStyle(
-                                            color: Colors.black45,
-                                            fontWeight: FontWeight.w400,
-                                            // fontSize: 20,
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text:customer?['name'] ?? 'Unknown'.toString().capitalize,
-                                          style: const TextStyle(
-                                            color: Colors.black45,
-                                            fontWeight: FontWeight.w400,
-                                            // fontSize: 20,
-                                          ),
-                                        ),
-                                      ])),
+                                    const TextSpan(
+                                      text: "Customer Name : ",
+                                      style: TextStyle(
+                                        color: Colors.black45,
+                                        fontWeight: FontWeight.w400,
+                                        // fontSize: 20,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: customer?['name'] ??
+                                          'Unknown'.toString().capitalize,
+                                      style: const TextStyle(
+                                        color: Colors.black45,
+                                        fontWeight: FontWeight.w400,
+                                        // fontSize: 20,
+                                      ),
+                                    ),
+                                  ])),
                                   gapH4,
                                   if (Responsive.isMobile(context))
                                     Row(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.end,
+                                            MainAxisAlignment.end,
                                         children: [
                                           Row(
                                             children: [
                                               Container(
                                                 padding:
-                                                const EdgeInsets.symmetric(
-                                                    vertical: 5,
-                                                    horizontal: 14),
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 5,
+                                                        horizontal: 14),
                                                 decoration: BoxDecoration(
-                                                    color
-                                                        : Colors.grey.shade100,
+                                                    color: Colors.grey.shade100,
                                                     borderRadius:
-                                                    BorderRadius.circular(8)),
+                                                        BorderRadius.circular(
+                                                            8)),
                                                 child: Text(
                                                   "${double.parse(buildingSale['dueAmount'].toString()).toStringAsFixed(2)} BDT",
                                                   style: const TextStyle(
                                                       fontWeight:
-                                                      FontWeight.w700),
+                                                          FontWeight.w700),
                                                 ),
                                               )
-
-
                                             ],
                                           ),
                                           gapW8,
                                           Container(
-                                            padding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 5,
-                                                horizontal: 14),
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 5, horizontal: 14),
                                             decoration: BoxDecoration(
                                                 color: index % 2 == 0
                                                     ? Colors.green.shade100
                                                     : Colors.blue.shade100,
                                                 borderRadius:
-                                                BorderRadius.circular(8)),
+                                                    BorderRadius.circular(8)),
                                             child: Text(
                                               "\$${building['totalCost']} BDT",
                                               style: const TextStyle(
-                                                  fontWeight:
-                                                  FontWeight.w700),
+                                                  fontWeight: FontWeight.w700),
                                             ),
                                           )
                                         ]),
@@ -278,15 +282,13 @@ class BuildingSalesScreen extends StatelessWidget {
                                       vertical: 5, horizontal: 14),
                                   decoration: BoxDecoration(
                                       color: Colors.grey.shade100,
-                                      borderRadius:
-                                      BorderRadius.circular(8)),
+                                      borderRadius: BorderRadius.circular(8)),
                                   child: Text(
                                     "${double.parse(buildingSale['dueAmount'].toString()).toStringAsFixed(2)} BDT",
                                     style: const TextStyle(
                                         fontWeight: FontWeight.w700),
                                   ),
                                 )
-
                               ],
                             ),
                           ),
@@ -304,7 +306,7 @@ class BuildingSalesScreen extends StatelessWidget {
                                               ? Colors.green.shade100
                                               : Colors.blue.shade100,
                                           borderRadius:
-                                          BorderRadius.circular(8)),
+                                              BorderRadius.circular(8)),
                                       child: Text(
                                         "${building['totalCost']} BDT",
                                         style: const TextStyle(
@@ -312,7 +314,6 @@ class BuildingSalesScreen extends StatelessWidget {
                                       ),
                                     )
                                   ])),
-
                       ],
                     ),
                   ),

@@ -25,9 +25,9 @@ class TabWithGrowth extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(
+      padding:  EdgeInsets.symmetric(
           horizontal: AppDefaults.padding,
-          vertical: AppDefaults.padding * 0.75),
+          vertical:Responsive.isMobile(context)? AppDefaults.padding * 0.20:AppDefaults.padding * 0.75),
       width: double.infinity,
       // height: 100,
       child: Row(
@@ -68,52 +68,14 @@ class TabWithGrowth extends StatelessWidget {
                       .copyWith(fontWeight: FontWeight.bold)
                       : Theme.of(context)
                       .textTheme
-                      .headlineMedium!
-                      .copyWith(fontWeight: FontWeight.bold),
+                      .bodyLarge!
+                      .copyWith(fontWeight: FontWeight.w600),
                 ),
-                // if (Responsive.isMobile(context))
-                //   Column(
-                //     children: [
-                //       gapH4,
-                //       Chip(
-                //         backgroundColor: isPositiveGrowth
-                //             ? AppColors.success.withOpacity(0.1)
-                //             : AppColors.error.withOpacity(0.1),
-                //         side: BorderSide.none,
-                //         padding: const EdgeInsets.symmetric(
-                //             horizontal: AppDefaults.padding * 0.25,
-                //             vertical: AppDefaults.padding * 0.25),
-                //         label: Text(
-                //           isPositiveGrowth
-                //               ? "+$growthPercentage"
-                //               : "-$growthPercentage",
-                //           style: TextStyle(
-                //               color: isPositiveGrowth
-                //                   ? AppColors.success
-                //                   : AppColors.error),
-                //         ),
-                //       ),
-                //     ],
-                //   ),
+
               ],
             ),
           ),
-          // if (!Responsive.isMobile(context))
-          //   Chip(
-          //     backgroundColor: isPositiveGrowth
-          //         ? AppColors.success.withOpacity(0.1)
-          //         : AppColors.error.withOpacity(0.1),
-          //     side: BorderSide.none,
-          //     padding: const EdgeInsets.symmetric(
-          //         horizontal: AppDefaults.padding * 0.25,
-          //         vertical: AppDefaults.padding * 0.25),
-          //     label: Text(
-          //       isPositiveGrowth ? "+$growthPercentage" : "-$growthPercentage",
-          //       style: TextStyle(
-          //           color:
-          //           isPositiveGrowth ? AppColors.success : AppColors.error),
-          //     ),
-          //   ),
+
         ],
       ),
     );

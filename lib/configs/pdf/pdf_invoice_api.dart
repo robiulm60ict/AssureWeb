@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:http/http.dart' as http;
@@ -5,10 +7,9 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:printing/printing.dart';
 
-
 class PdfInvoice {
   static Future<void> saleReportInvoice(
-  Map<String, dynamic> buildingSaleData, BuildContext context) async {
+      Map<String, dynamic> buildingSaleData, BuildContext context) async {
     final pdf = pw.Document();
     final buildingSale = buildingSaleData["buildingSale"];
     final building = buildingSaleData["building"];
@@ -65,7 +66,7 @@ class PdfInvoice {
                 ),
                 pw.SizedBox(width: 4),
                 pw.Text(
-                  "${buildingSale['BookingDate']??""}",
+                  DateFormat('dd-MM-yyyy').format((buildingSale['BookingDate'] as Timestamp).toDate()),
                   style: const pw.TextStyle(
                     fontSize: 14,
                   ),
@@ -259,7 +260,6 @@ class PdfInvoice {
               pw.SizedBox(width: 4),
               pw.Text(
                 ": ${building['appointmentSize']} ",
-
                 style: const pw.TextStyle(
                   fontSize: 14,
                 ),
@@ -294,7 +294,6 @@ class PdfInvoice {
               pw.SizedBox(width: 4),
               pw.Text(
                 ": ${buildingSale['handoverDate']} ",
-
                 style: const pw.TextStyle(
                   fontSize: 14,
                 ),
@@ -329,7 +328,6 @@ class PdfInvoice {
               pw.SizedBox(width: 4),
               pw.Text(
                 ": ${building['totalCost']} ",
-
                 style: const pw.TextStyle(
                   fontSize: 14,
                 ),
@@ -374,7 +372,8 @@ class PdfInvoice {
                   pw.Container(
                     width: 50,
                     padding: const pw.EdgeInsets.all(4.0),
-                    child: pw.Center(child: pw.Text('${building['perSftPrice']}')),
+                    child:
+                        pw.Center(child: pw.Text('${building['perSftPrice']}')),
                   ),
                 ],
               ),
@@ -394,7 +393,8 @@ class PdfInvoice {
                   pw.Container(
                     width: 50,
                     padding: const pw.EdgeInsets.all(4.0),
-                    child: pw.Center(child: pw.Text('${building['totalUnitPrice']}')),
+                    child: pw.Center(
+                        child: pw.Text('${building['totalUnitPrice']}')),
                   ),
                 ],
               ),
@@ -413,7 +413,8 @@ class PdfInvoice {
                   pw.Container(
                     width: 50,
                     padding: const pw.EdgeInsets.all(4.0),
-                    child: pw.Center(child: pw.Text('${building['carParking']}')),
+                    child:
+                        pw.Center(child: pw.Text('${building['carParking']}')),
                   ),
                 ],
               ),
@@ -451,7 +452,8 @@ class PdfInvoice {
                   pw.Container(
                     width: 50,
                     padding: const pw.EdgeInsets.all(4.0),
-                    child: pw.Center(child: pw.Text('${building['totalCost']}')),
+                    child:
+                        pw.Center(child: pw.Text('${building['totalCost']}')),
                   ),
                 ],
               ),
@@ -510,13 +512,19 @@ class PdfInvoice {
                     width: 100, // Adjust width as needed
                     padding: const pw.EdgeInsets.all(4.0),
                     child: pw.Center(
-                        child: pw.Text('Booking + Down Payment ${buildingSale['bookingPaymentPercent']} % ${buildingSale['bookDownPayment']??""}')),
+                        child: pw.Text(
+                            'Booking + Down Payment ${buildingSale['bookingPaymentPercent']} % ${buildingSale['bookDownPayment'] ?? ""}')),
                   ),
                   pw.Container(
                     width: 50,
                     padding: const pw.EdgeInsets.all(4.0),
-                    child: pw.Center(child: pw.Text('${buildingSale['BookingDate']??""}')),
+                    child: pw.Center(
+                      child: pw.Text(
+                        DateFormat('dd-MM-yyyy').format((buildingSale['BookingDate'] as Timestamp).toDate()),
+                      ),
+                    ),
                   ),
+
                 ],
               ),
 
@@ -551,27 +559,35 @@ class PdfInvoice {
             ],
           ),
           pw.SizedBox(height: 8),
-
           pw.Table(
             border: pw.TableBorder.all(),
             children: [
               // Header row
               pw.TableRow(
                 children: [
-                  pw.Padding(padding: const pw.EdgeInsets.all(8), child: pw.Text('Installment')),
-                  pw.Padding(padding: const pw.EdgeInsets.all(8), child: pw.Text('Amount(Schedule)')),
-                  pw.Padding(padding: const pw.EdgeInsets.all(8), child: pw.Text('Date')),
-                  pw.Padding(padding: const pw.EdgeInsets.all(8), child: pw.Text('Status')),
-                  pw.Padding(padding: const pw.EdgeInsets.all(8), child: pw.Text('Remarks')),
+                  pw.Padding(
+                      padding: const pw.EdgeInsets.all(8),
+                      child: pw.Text('Installment')),
+                  pw.Padding(
+                      padding: const pw.EdgeInsets.all(8),
+                      child: pw.Text('Amount(Schedule)')),
+                  pw.Padding(
+                      padding: const pw.EdgeInsets.all(8),
+                      child: pw.Text('Date')),
+                  pw.Padding(
+                      padding: const pw.EdgeInsets.all(8),
+                      child: pw.Text('Status')),
+                  pw.Padding(
+                      padding: const pw.EdgeInsets.all(8),
+                      child: pw.Text('Remarks')),
                 ],
               ),
               // Data rows
               ...List<pw.TableRow>.generate(
                 buildingSale['installmentPlan'].length,
-                    (index) {
+                (index) {
                   var installment = buildingSale['installmentPlan'][index];
                   return pw.TableRow(
-
                     children: [
                       pw.Padding(
                         padding: const pw.EdgeInsets.all(8),
@@ -590,10 +606,8 @@ class PdfInvoice {
                         child: pw.Text('${installment['status']}'),
                       ),
                       pw.Padding(
-                        padding: const pw.EdgeInsets.all(8),
-                        child:  pw.Text('', textAlign: pw.TextAlign.center)
-
-                      ),
+                          padding: const pw.EdgeInsets.all(8),
+                          child: pw.Text('', textAlign: pw.TextAlign.center)),
                     ],
                   );
                 },
@@ -609,4 +623,3 @@ class PdfInvoice {
     );
   }
 }
-

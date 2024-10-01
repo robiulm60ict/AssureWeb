@@ -17,6 +17,7 @@ class BuildingController extends GetxController {
 
   final FirebaseFirestore fireStore = FirebaseFirestore.instance;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> formKeyUpdate = GlobalKey<FormState>();
 
   final TextEditingController prospectNameController = TextEditingController();
   final TextEditingController projectNameController = TextEditingController();

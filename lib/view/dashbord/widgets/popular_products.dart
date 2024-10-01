@@ -9,6 +9,7 @@ import '../../../configs/app_constants.dart';
 import '../../../configs/defaults.dart';
 import '../../../configs/ghaps.dart';
 import '../../../widgets/section_title.dart';
+import '../../../widgets/snackbar.dart';
 import '../../building_sale/building_sale_setup/building_sale_setup.dart';
 import '../../building_sale/sale_building_list/building_view/sale_building_view.dart';
 import 'popular_product_item.dart';
@@ -54,7 +55,7 @@ class PopularProducts extends StatelessWidget {
           gapH8,
           const Divider(),
           Obx(
-            () =>buildingController.isLoading.value==true?AppShimmerProduct(): ListView.builder(
+            () =>buildingController.isLoading.value==true?const AppShimmerProduct(): ListView.builder(
               itemCount: buildingController.projects.length<3?buildingController.projects.length:4,
               shrinkWrap: true,
               padding: EdgeInsets.zero,
@@ -67,7 +68,12 @@ class PopularProducts extends StatelessWidget {
                         imageSrc: project.image.toString(),
                         isActive: project.status.toString(),
                         onPressed: () {
-                          AppRoutes.push(context, page: BuildingSaleSetup(model: project,));
+                          if(project.status.toString() == "available"){
+                            AppRoutes.push(context, page: BuildingSaleSetup(model: project,));
+
+                          }else{
+                            wrongSnackBar(title: "Building","This building not available");
+                          }
 
                         },
                       )

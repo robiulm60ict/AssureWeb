@@ -30,7 +30,8 @@ class EntryPoint extends StatelessWidget {
         child: Row(
           children: [
             if (Responsive.isDesktop(context)) const Sidebar(),
-            if (Responsive.isTablet(context)) const TabSidebar(),
+            // if (Responsive.isTablet(context)) const TabSidebar(),
+            if (Responsive.isTablet(context)) const Sidebar(),
             Expanded(
               child: Column(
                 children: [
@@ -44,7 +45,7 @@ class EntryPoint extends StatelessWidget {
                           Padding(
                             padding: EdgeInsets.symmetric(
                               horizontal: AppDefaults.padding *
-                                  (Responsive.isMobile(context) ? 1 : 1.5),
+                                  (Responsive.isMobile(context) ? 0.5 : 1.5),
                             ),
                             child: SafeArea(child: DashboardPage()),
                           ),

@@ -5,7 +5,7 @@ import 'app_colors.dart';
 class AppDefaults {
   static double bodyPadding     = 5;
 
-  static const double padding = 16.0;
+  static const double padding = 14.0;
   static const double borderRadius = 8.0;
   static const double inputFieldRadius = 12.0;
   static double height(context) => MediaQuery.sizeOf(context).height;

@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../../configs/app_colors.dart';
 import '../../../configs/defaults.dart';
 import '../../../configs/ghaps.dart';
 import '../../../controllers/building_sale_controller/building_sale_controller.dart';
 import '../../../responsive.dart';
+import '../../configs/app_image.dart';
 import '../../controllers/building_sale_payment_report_controller/building_sale_payment_report_controller.dart';
 import '../../widgets/custom_date_range.dart';
 
@@ -106,7 +108,9 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
         if (controller.isDateFilterLoading.value == true) {
           return const Center(child: CircularProgressIndicator());
         } else if (controller.buildingSalesReport.isEmpty) {
-          return const Center(child: Text("No Date"));
+          return Center(
+            child: Lottie.asset(AppImage.noData),
+          );
         }
 
         return ListView(

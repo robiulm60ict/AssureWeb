@@ -58,7 +58,7 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
     return Scaffold(
       backgroundColor: AppColors.bg,
       body: Form(
-        key: buildingController.formKey,
+        key: buildingController.formKeyUpdate,
         child: ListView(
           children: [
             Container(
@@ -509,7 +509,7 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                         side: const BorderSide(width: 1.0, color: Colors.blue),
                       ),
                       onPressed: () {
-                        if (buildingController.formKey.currentState!
+                        if (buildingController.formKeyUpdate.currentState!
                             .validate()) {
                           buildingController.updateProject(
                               BuildingModel(

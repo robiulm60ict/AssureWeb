@@ -101,6 +101,7 @@ class Sidebar extends StatelessWidget {
                           isSubmenu: true,
                           title: "Building Create",
                           onPressed: () {
+                            buildingController.clearData();
                             AppRoutes.push(context, page: BuildingSetup());
 
                             // context.go('/buildingSetup');

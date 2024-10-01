@@ -3,17 +3,158 @@ import 'dart:math';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 import '../../../configs/app_colors.dart';
 import '../../../configs/app_constants.dart';
 import '../../../configs/defaults.dart';
 import '../../../configs/ghaps.dart';
+import '../../../configs/routes.dart';
 import '../../../responsive.dart';
+import '../../../widgets/custom_date_range.dart';
 import '../../../widgets/section_title.dart';
 
 
-class ProductOverviews extends StatelessWidget {
+class ProductOverviews extends StatefulWidget {
   const ProductOverviews({super.key});
+
+  @override
+  State<ProductOverviews> createState() => _ProductOverviewsState();
+}
+
+class _ProductOverviewsState extends State<ProductOverviews> {
+  DateTime? startDate;
+  DateTime? endDate;
+  DateTime now = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+    startDate = DateTime(now.year, now.month, 1);
+    endDate = DateTime(now.year, now.month + 1, 0);
+    // controller.fetchAllBuildingSalesDateRange(
+    //     startDate: startDate, endDate: endDate);
+  }
+
+  Future<void> _selectDateRange(StateSetter setState) async {
+    DateTimeRange? picked = await showDateRangePicker(
+      context: context,
+      initialDateRange: DateTimeRange(
+        start: startDate ?? DateTime.now().subtract(const Duration(days: 7)),
+        end: endDate ?? DateTime.now(),
+      ),
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null) {
+      setState(() {
+        startDate = picked.start;
+        endDate = picked.end;
+        AppRoutes.pop(context);
+      });
+      // Add your controller method here
+
+      reportController.fetchAllBuildingSalesDateRange(
+          startDate: startDate, endDate: endDate);
+    }
+  }
+
+
+  void _showFilterMenu(BuildContext context, Offset offset) async {
+    final screenSize = MediaQuery.of(context).size;
+    final left = offset.dx;
+    final top = offset.dy;
+    final right = screenSize.width - left;
+    final bottom = screenSize.height - top;
+
+    await showMenu(
+      color: const Color.fromARGB(255, 248, 248, 248),
+      context: context,
+      position: RelativeRect.fromLTRB(left, top, right, bottom),
+      items: [
+        PopupMenuItem(
+          padding: const EdgeInsets.all(0),
+          enabled: false,
+          child: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return Column(
+                children: [
+                  Container(
+                    width: double.maxFinite,
+                    padding: const EdgeInsets.only(
+                        top: 5, bottom: 10, left: 20, right: 10),
+                    decoration: const BoxDecoration(
+                      // borderRadius: BorderRadius.all(Radius.circular(10)),
+                      color: Color.fromARGB(255, 248, 248, 248),
+                    ),
+                    child: const Text('Filter'),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(4),
+                    color: Colors.white,
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              CustomDateRange(
+                                label: "Start Date",
+                                date: startDate,
+                                onTap: () => _selectDateRange(setState),
+                              ),
+                              const SizedBox(height: 10),
+                              CustomDateRange(
+                                label: "End Date",
+                                date: endDate,
+                                onTap: () => _selectDateRange(setState),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              startDate = DateTime(now.year, now.month, 1);
+                              endDate = DateTime(now.year, now.month + 1, 0);
+                              reportController.fetchAllBuildingSalesDateRange(
+                                  startDate: startDate, endDate: endDate);
+                            });
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text(
+                            'Clear',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('Close'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,15 +165,44 @@ class ProductOverviews extends StatelessWidget {
         borderRadius:
         BorderRadius.all(Radius.circular(AppDefaults.borderRadius)),
       ),
-      child: const Column(
+      child:  Column(
         children: [
           Row(
             children: [
-              SectionTitle(
+              const SectionTitle(
                 title: "Building Sales views",
                 color: AppColors.secondaryLavender,
+              ),   const Spacer(),
+              InkWell(
+                onTapDown: (TapDownDetails details) {
+                  _showFilterMenu(context, details.globalPosition);
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(left: 5),
+                  padding: const EdgeInsets.all(13),
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 248, 248, 248),
+                    borderRadius: BorderRadius.circular(5),
+                    border: Border.all(
+                        color: const Color.fromARGB(38, 0, 0, 0), width: 0.3),
+                  ),
+                  child:  const Row(
+                    children: [
+                      Icon(Iconsax.setting_3, size: 20, color: AppColors.primary),
+                      SizedBox(
+                        width: 6,
+                      ),
+                      Text(
+                        "Filter",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w300, color: AppColors.grey),
+                      )
+                    ],
+                  ),
+                ),
               ),
-              Spacer(),
+
+
               // Container(
               //   decoration: BoxDecoration(
               //     borderRadius: const BorderRadius.all(
@@ -63,7 +233,7 @@ class ProductOverviews extends StatelessWidget {
             ],
           ),
           gapH24,
-          BuildingSalesViewReport(),
+          const BuildingSalesViewReport(),
         ],
       ),
     );
@@ -331,5 +501,6 @@ class _BuildingSalesViewReportState extends State<BuildingSalesViewReport> {
       ),
     );
   }
+
 }
 

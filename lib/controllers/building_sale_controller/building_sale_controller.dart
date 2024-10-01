@@ -155,10 +155,12 @@ class BuildingSaleController extends GetxController {
   }
 
   var buildingSales = <Map<String, dynamic>>[].obs;
+  var isLoadingSales=false.obs;
 
 // Fetch all building sales data
   Future<void> fetchAllBuildingSales() async {
     try {
+      isLoadingSales.value=true;
       // Fetch all building sale documents
       QuerySnapshot buildingSaleSnapshot =
           await fireStore.collection('buildingSale').get();
@@ -181,6 +183,8 @@ class BuildingSaleController extends GetxController {
         if (customerDoc.exists) {
           customerData = customerDoc.data() as Map<String, dynamic>;
         } else {
+          isLoadingSales.value=false;
+
           print("Customer not found for ID: $customerId");
           customerData = {}; // Initialize as empty map if not found
         }
@@ -205,16 +209,19 @@ class BuildingSaleController extends GetxController {
           "building": buildingData, // Add building data to the map
         });
       }
+      isLoadingSales.value=false;
 
       // Update the reactive variable
       buildingSales.value = allBuildingSales;
     } catch (e) {
+      isLoadingSales.value=false;
       print("Error fetching building sales data: $e");
     }
   }
 
-  var buildingSaleData = <String, dynamic>{}.obs; // Observable map for building sale data
-  var isLoading = true.obs; // Observable loading state
+  var buildingSaleData =
+      <String, dynamic>{}.obs; // Observable map for building sale data
+  var isLoading = false.obs; // Observable loading state
 
   // Method to fetch building sale details using documentId
   Future<void> fetchSingleBuildingSale(String documentId) async {
@@ -222,11 +229,17 @@ class BuildingSaleController extends GetxController {
     try {
       final data = await _fetchSingleBuildingSaleFromFirestore(documentId);
       if (data != null) {
-        buildingSaleData.value = data; // Set fetched data to observable
+        buildingSaleData.value = data;
+        isLoading.value = false; // Set loading to false after fetching
+// Set fetched data to observable
       } else {
+        isLoading.value = false; // Set loading to false after fetching
+
         print("No data found for document ID: $documentId");
       }
     } catch (error) {
+      isLoading.value = false; // Set loading to false after fetching
+
       // Handle error if needed
       print("Error fetching building sale: $error");
     } finally {
@@ -235,23 +248,28 @@ class BuildingSaleController extends GetxController {
   }
 
   // Private method to handle fetching from Firestore
-  Future<Map<String, dynamic>?> _fetchSingleBuildingSaleFromFirestore(String documentId) async {
+  Future<Map<String, dynamic>?> _fetchSingleBuildingSaleFromFirestore(
+      String documentId) async {
     try {
-      DocumentSnapshot doc = await fireStore.collection('buildingSale').doc(documentId).get();
+      DocumentSnapshot doc =
+          await fireStore.collection('buildingSale').doc(documentId).get();
 
       if (doc.exists) {
-        Map<String, dynamic> buildingSaleData = doc.data() as Map<String, dynamic>;
+        Map<String, dynamic> buildingSaleData =
+            doc.data() as Map<String, dynamic>;
         String? customerId = buildingSaleData["customerId"];
         String? buildingId = buildingSaleData["buildingId"];
 
         // Fetch customer data
-        DocumentSnapshot customerDoc = await fireStore.collection('customer').doc(customerId).get();
+        DocumentSnapshot customerDoc =
+            await fireStore.collection('customer').doc(customerId).get();
         Map<String, dynamic>? customerData = customerDoc.exists
             ? customerDoc.data() as Map<String, dynamic>
             : null;
 
         // Fetch building data
-        DocumentSnapshot buildingDoc = await fireStore.collection('building').doc(buildingId).get();
+        DocumentSnapshot buildingDoc =
+            await fireStore.collection('building').doc(buildingId).get();
         Map<String, dynamic>? buildingData = buildingDoc.exists
             ? buildingDoc.data() as Map<String, dynamic>
             : null;
@@ -333,8 +351,13 @@ class BuildingSaleController extends GetxController {
 
   // await updateInstallmentPlanStatus('YOUR_DOCUMENT_ID', 2, 'completed');
 
-  Future<void> updateInstallmentPlanStatus(String documentId,singleDocumentId, int installmentId,
-      String newStatus, BuildContext context, dueAmount) async {
+  Future<void> updateInstallmentPlanStatus(
+      String documentId,
+      singleDocumentId,
+      int installmentId,
+      String newStatus,
+      BuildContext context,
+      dueAmount) async {
     try {
       // Reference to the document in Firestore
       DocumentReference docRef =
@@ -432,7 +455,11 @@ class BuildingSaleController extends GetxController {
       DocumentReference docRef =
           await fireStore.collection('buildingSale').add(body);
       uploadBuildingStates(buildingId, "Book");
-      createSaleReport(context,buildingId: buildingId,customerId: customerId,amount:percentageAmount.value,paymentType: "Booking" );
+      createSaleReport(context,
+          buildingId: buildingId,
+          customerId: customerId,
+          amount: percentageAmount.value,
+          paymentType: "Booking");
 
       buildingController.fetchProjects();
       clearData();
@@ -449,28 +476,24 @@ class BuildingSaleController extends GetxController {
     }
   }
 
-  Future createSaleReport(
-       BuildContext context, {buildingId, customerId,amount,paymentType}) async {
+  Future createSaleReport(BuildContext context,
+      {buildingId, customerId, amount, paymentType}) async {
     // appLoader(context, "Creating Sale Report, please wait...");
 
     try {
-
-
       // Prepare customer data to be saved
       Map<String, dynamic> customerBody = {
         "buildingId": buildingId,
         "customerId": customerId,
         "DateTime": DateTime.now(),
         "Amount": amount,
-        "paymentType":paymentType,
-
-
-
+        "paymentType": paymentType,
       };
 
       // Save the customer to Firestore
-      DocumentReference docRef =
-      await fireStore.collection('BookingSalePaymentReport').add(customerBody);
+      DocumentReference docRef = await fireStore
+          .collection('BookingSalePaymentReport')
+          .add(customerBody);
 
       // Navigator.pop(context);
       // successSnackBar("Customer created successfully!");

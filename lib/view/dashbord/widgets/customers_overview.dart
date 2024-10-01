@@ -2,7 +2,9 @@ import 'package:assure_apps/configs/app_constants.dart';
 import 'package:assure_apps/view/customer/customer_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 
+import '../../../configs/app_image.dart';
 import '../../../configs/ghaps.dart';
 import '../../../responsive.dart';
 import '../../../widgets/avatar/customer_avaatar.dart';
@@ -40,7 +42,7 @@ class CoustomersOverview extends StatelessWidget {
           ],
         ),
         gapH8,
-        Row(
+        customerController.customers.isNotEmpty?   Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -93,7 +95,10 @@ class CoustomersOverview extends StatelessWidget {
               ],
             )
           ],
-        ),
+        ):  SizedBox(
+          height: 100,
+            child: Lottie.asset(AppImage.noData)),
+
         gapH24,
       ],
     );

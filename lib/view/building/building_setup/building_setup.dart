@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:assure_apps/configs/app_image.dart';
 import 'package:assure_apps/configs/ghaps.dart';
 import 'package:assure_apps/configs/routes.dart';
 import 'package:flutter/material.dart';
@@ -63,37 +62,37 @@ class _BuildingSetupState extends State<BuildingSetup> {
                             fontSize: 20, color: AppColors.textColorb1),
                       ),
                     ),
-                    Expanded(
-                      flex: 2,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          if (!Responsive.isMobile(context)) gapW16,
-                          if (!Responsive.isMobile(context))
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Badge(
-                                  isLabelVisible: true,
-                                  child: HugeIcon(
-                                    icon: HugeIcons
-                                        .strokeRoundedNotificationBlock02,
-                                    color: Colors.black,
-                                    size: 24.0,
-                                  )),
-                            ),
-                          if (!Responsive.isMobile(context)) gapW16,
-                          if (!Responsive.isMobile(context))
-                            IconButton(
-                              onPressed: () {},
-                              icon: const CircleAvatar(
-                                backgroundImage: NetworkImage(
-                                    "https://cdn.create.vista.com/api/media/small/339818716/stock-photo-doubtful-hispanic-man-looking-with-disbelief-expression"),
-                              ),
-                            ),
-                          gapW16,
-                        ],
-                      ),
-                    ),
+                    // Expanded(
+                    //   flex: 2,
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.end,
+                    //     children: [
+                    //       if (!Responsive.isMobile(context)) gapW16,
+                    //       if (!Responsive.isMobile(context))
+                    //         IconButton(
+                    //           onPressed: () {},
+                    //           icon: const Badge(
+                    //               isLabelVisible: true,
+                    //               child: HugeIcon(
+                    //                 icon: HugeIcons
+                    //                     .strokeRoundedNotificationBlock02,
+                    //                 color: Colors.black,
+                    //                 size: 24.0,
+                    //               )),
+                    //         ),
+                    //       if (!Responsive.isMobile(context)) gapW16,
+                    //       if (!Responsive.isMobile(context))
+                    //         IconButton(
+                    //           onPressed: () {},
+                    //           icon: const CircleAvatar(
+                    //             backgroundImage: NetworkImage(
+                    //                 "https://cdn.create.vista.com/api/media/small/339818716/stock-photo-doubtful-hispanic-man-looking-with-disbelief-expression"),
+                    //           ),
+                    //         ),
+                    //       gapW16,
+                    //     ],
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

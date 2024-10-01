@@ -39,26 +39,33 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.bg,
         title: const Text("Building Sale Details"),
-        
         actions: [
-          
-          IconButton(onPressed: ()async{
-            if (kIsWeb) {
-              // savePdfWeb();
-              // Web-specific logic
-            } else if (io.Platform.isAndroid || io.Platform.isIOS) {
-              await PdfInvoice.saleReportInvoice( buildingSaleController.buildingSaleData, context);
+          IconButton(
+              onPressed: () async {
+                if (kIsWeb) {
+                  // savePdfWeb();
+                  // Web-specific logic
+                } else if (io.Platform.isAndroid || io.Platform.isIOS) {
+                  await PdfInvoice.saleReportInvoice(
+                      buildingSaleController.buildingSaleData, context);
 
-              // Mobile-specific logic
-            } else {
-              await PdfInvoice.saleReportInvoice( buildingSaleController.buildingSaleData, context);
-              // Desktop logic
-            }
-          }, icon: const HugeIcon(
-            icon: HugeIcons.strokeRoundedPrinter,
-            color: Colors.black,
-            size: 24.0,
-          ))
+                  // Mobile-specific logic
+                } else {
+                  await PdfInvoice.saleReportInvoice(
+                      buildingSaleController.buildingSaleData, context);
+                  // Desktop logic
+                }
+              },
+              icon: const HugeIcon(
+                icon: HugeIcons.strokeRoundedPrinter,
+                color: Colors.black,
+                size: 24.0,
+              )),
+          (!Responsive.isMobile(context) || !Responsive.isTablet(context))
+              ? const SizedBox(
+                  width: 100,
+                )
+              : gapW4
         ],
       ),
       body: Obx(() {
@@ -76,7 +83,7 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
         final customer = data["customer"];
         final building = data["building"];
 
-        return Container(
+        return SizedBox(
           width: double.infinity,
           height: double.infinity,
           child: ListView(
@@ -87,15 +94,15 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                     borderRadius: BorderRadius.circular(8)),
                 padding: EdgeInsets.symmetric(
                   vertical: AppDefaults.padding *
-                      (Responsive.isMobile(context) ? 1 : 0.5),
+                      (Responsive.isMobile(context) ? 0.5 : 0.5),
                   horizontal: AppDefaults.padding *
-                      (Responsive.isMobile(context) ? 1 : 2.5),
+                      (Responsive.isMobile(context) ? 0.5 : 2.5),
                 ),
                 margin: EdgeInsets.symmetric(
                   vertical: AppDefaults.padding *
                       (Responsive.isMobile(context) ? 0.3 : 0.5),
                   horizontal: AppDefaults.padding *
-                      (Responsive.isMobile(context) ? 1 : 6.5),
+                      (Responsive.isMobile(context) ? 0.5 : 6.5),
                 ),
                 child: InkWell(
                   onTap: () {
@@ -115,9 +122,9 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                               children: [
                                 Container(
                                   height:
-                                      Responsive.isMobile(context) ? 60 : 100,
+                                      Responsive.isMobile(context) ? 55 : 100,
                                   width:
-                                      Responsive.isMobile(context) ? 60 : 100,
+                                      Responsive.isMobile(context) ? 55 : 100,
                                   decoration: BoxDecoration(
                                     color: AppColors.bg,
                                     borderRadius: BorderRadius.circular(10),
@@ -150,10 +157,10 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                                           (context, error, stackTrace) {
                                         return SizedBox(
                                           height: Responsive.isMobile(context)
-                                              ? 60
+                                              ? 55
                                               : 100,
                                           width: Responsive.isMobile(context)
-                                              ? 60
+                                              ? 55
                                               : 100,
                                           child: Image.network(
                                             "https://img.freepik.com/free-photo/observation-urban-building-business-steel_1127-2397.jpg?t=st=1727338313~exp=1727341913~hmac=2e09cc7c51c7da785d7456f52aa5214acafe820f751d1e53d1a75e3cf4b69139&w=1380",
@@ -217,7 +224,7 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                                                   color: Colors.black,
                                                   size: 24.0,
                                                 ),
-                                                gapW8,
+                                                gapW4,
                                                 Text(
                                                   "${building["appointmentSize"]} sqft",
                                                   style: const TextStyle(
@@ -226,7 +233,7 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                                                 )
                                               ],
                                             ),
-                                            gapW8,
+                                            gapW4,
                                             Row(
                                               children: [
                                                 const HugeIcon(
@@ -235,7 +242,7 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                                                   color: Colors.black,
                                                   size: 24.0,
                                                 ),
-                                                gapW8,
+                                                gapW4,
                                                 Text(
                                                   "${building['perSftPrice']} BDT",
                                                   style: const TextStyle(
@@ -244,7 +251,7 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                                                 )
                                               ],
                                             ),
-                                            gapW8,
+                                            gapW4,
                                             Container(
                                               padding:
                                                   const EdgeInsets.symmetric(
@@ -369,15 +376,15 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                     borderRadius: BorderRadius.circular(8)),
                 padding: EdgeInsets.symmetric(
                   vertical: AppDefaults.padding *
-                      (Responsive.isMobile(context) ? 1 : 0.5),
+                      (Responsive.isMobile(context) ? 0.5 : 0.5),
                   horizontal: AppDefaults.padding *
-                      (Responsive.isMobile(context) ? 1 : 2.5),
+                      (Responsive.isMobile(context) ? 0.5 : 2.5),
                 ),
                 margin: EdgeInsets.symmetric(
                   vertical: AppDefaults.padding *
                       (Responsive.isMobile(context) ? 0.3 : 0.5),
                   horizontal: AppDefaults.padding *
-                      (Responsive.isMobile(context) ? 1 : 6.5),
+                      (Responsive.isMobile(context) ? 0.5 : 6.5),
                 ),
                 child: InkWell(
                   onTap: () {
@@ -486,7 +493,7 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                                               color: Colors.black,
                                               size: 18.0,
                                             ),
-                                            gapW8,
+                                            gapW4,
                                             Text(
                                               "${customer["phone"]}",
                                               style: const TextStyle(
@@ -494,7 +501,7 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                                             )
                                           ],
                                         ),
-                                        gapW8,
+                                        gapW4,
                                         Row(
                                           children: [
                                             const HugeIcon(
@@ -503,7 +510,7 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                                               color: Colors.black,
                                               size: 18.0,
                                             ),
-                                            gapW8,
+                                            gapW4,
                                             Text(
                                               "${customer['email'] != "" ? customer['email'] : "N/A"}",
                                               style: const TextStyle(
@@ -551,15 +558,15 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                     borderRadius: BorderRadius.circular(8)),
                 padding: EdgeInsets.symmetric(
                   vertical: AppDefaults.padding *
-                      (Responsive.isMobile(context) ? 1 : 0.5),
+                      (Responsive.isMobile(context) ? 0.5 : 0.5),
                   horizontal: AppDefaults.padding *
-                      (Responsive.isMobile(context) ? 1 : 2.5),
+                      (Responsive.isMobile(context) ? 0.5 : 2.5),
                 ),
                 margin: EdgeInsets.symmetric(
                   vertical: AppDefaults.padding *
                       (Responsive.isMobile(context) ? 0.3 : 0.5),
                   horizontal: AppDefaults.padding *
-                      (Responsive.isMobile(context) ? 1 : 6.5),
+                      (Responsive.isMobile(context) ? 0.5 : 6.5),
                 ),
                 child: InkWell(
                   onTap: () {
@@ -644,7 +651,7 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                                                 )
                                               ],
                                             ),
-                                            gapW8,
+                                            gapW4,
                                             Container(
                                               padding:
                                                   const EdgeInsets.symmetric(
@@ -742,110 +749,129 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                             ),
                         ],
                       ),
-
                       SizedBox(
                         width: double.infinity,
                         // Ensures the container takes full available width
                         child: SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
-                          // Horizontal scrolling for overflowing content
-                          physics: const BouncingScrollPhysics(),
-                          // Optional smooth scrolling
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            // Ensures the inner container also takes full width
-                            decoration: BoxDecoration(
-                              color: AppColors.white,
-                              // Background color of the table
-                              borderRadius: BorderRadius.circular(
-                                  8), // Rounded corners for styling
-                            ),
-                            child: DataTable(
-                              // columnSpacing: 20.0,
-                              // Spacing between columns, adjust as needed
-                              columns: const <DataColumn>[
-                                DataColumn(
-                                    label: Expanded(child: Text('Installment'))),
-                                // Expanded to distribute width evenly
-                                DataColumn(
-                                    label: Expanded(child: Text('Amount'))),
-                                DataColumn(label: Expanded(child: Text('Date'))),
-                                DataColumn(
-                                    label: Expanded(child: Text('Status'))),
-                                DataColumn(
-                                    label: Expanded(child: Text('Action'))),
-                              ],
-                              rows: List<DataRow>.generate(
-                                buildingSale['installmentPlan'].length,
-                                // Dynamically generate rows
-                                (index) {
-                                  var installment =
-                                      buildingSale['installmentPlan']
-                                          [index]; // Get each installment data
-                                  return DataRow(
-                                    color: MaterialStateProperty.all(
-                                      installment['status'].toString() != "Unpaid"
-                                          ? Colors.green.withOpacity(
-                                              0.05) // Paid rows in light green
-                                          : Colors.red.withOpacity(
-                                              0.05), // Unpaid rows in light red
-                                    ),
-                                    cells: <DataCell>[
-                                      DataCell(Text(
-                                          '${installment['id']} Installment')),
-                                      // Installment ID
-                                      DataCell(Text('${installment['amount']}')),
-                                      // Installment Amount
-                                      DataCell(Text('${installment['dueDate']}')),
-                                      // Due Date
-                                      DataCell(Text('${installment['status']}')),
-                                      // Payment Status
-                                      DataCell(
-                                        installment['status'].toString() != "Unpaid"
-                                            ? const Text(
-                                          'Done',
-                                          textAlign: TextAlign.center, // Center the text within the available space
-                                        ) // Mark as "Done" if paid
-                                            : IconButton(
-                                          onPressed: ()async {
 
-                                            bool shouldDelete =
-                                                await showConfirmConfirmationDialog(
-                                                context);
-                                            if (shouldDelete) {
-                                              // Update installment to "Paid"
-                                              buildingSaleController.updateInstallmentPlanStatus(
-                                                widget.buildingSales['documentId'].toString(),
-                                                buildingSale['buildingId'],
-                                                installment['id'],
-                                                "Paid",
-                                                context,
-                                                double.parse(buildingSale['dueAmount']?.toString() ?? '0') -
-                                                    double.parse(installment['amount'].toString() ?? "0"),
-                                              );
-
-                                              // Create sale report after payment
-                                              buildingSaleController.createSaleReport(
-                                                context,
-                                                buildingId: buildingSale['buildingId'].toString(),
-                                                customerId: buildingSale['customerId'].toString(),
-                                                amount: buildingSale['dueAmount']?.toString(),
-                                                paymentType: "Installment",
-                                              );
-                                            }
-
-                                          },
-                                          icon: const Icon(
-                                            Icons.check_circle_outline,
-                                            color: Colors.black,
-                                            size: 24.0,
-                                          ),
-                                        ),
+                          child: Scrollbar(
+                            thickness: 10,
+                            thumbVisibility: true,
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              // Ensures the inner container also takes full width
+                              decoration: BoxDecoration(
+                                color: AppColors.white,
+                                // Background color of the table
+                                borderRadius: BorderRadius.circular(
+                                    8), // Rounded corners for styling
+                              ),
+                              child: DataTable(
+                                columnSpacing:
+                                    Responsive.isMobile(context) ? 15.0 : null,
+                                // Spacing between columns, adjust as needed
+                                columns: const <DataColumn>[
+                                  DataColumn(label: Text('Installment')),
+                                  // Expanded to distribute width evenly
+                                  DataColumn(label: Text('Amount')),
+                                  DataColumn(label: Text('Date')),
+                                  DataColumn(label: Text('Status')),
+                                  DataColumn(label: Text('Action')),
+                                ],
+                                rows: List<DataRow>.generate(
+                                  buildingSale['installmentPlan'].length,
+                                  // Dynamically generate rows
+                                  (index) {
+                                    var installment =
+                                        buildingSale['installmentPlan']
+                                            [index]; // Get each installment data
+                                    return DataRow(
+                                      color: MaterialStateProperty.all(
+                                        installment['status'].toString() !=
+                                                "Unpaid"
+                                            ? Colors.green.withOpacity(
+                                                0.05) // Paid rows in light green
+                                            : Colors.red.withOpacity(
+                                                0.05), // Unpaid rows in light red
                                       ),
+                                      cells: <DataCell>[
+                                        DataCell(Text(
+                                            '${installment['id']} Installment')),
+                                        // Installment ID
+                                        DataCell(
+                                            Text('${installment['amount']}')),
+                                        // Installment Amount
+                                        DataCell(
+                                            Text('${installment['dueDate']}')),
+                                        // Due Date
+                                        DataCell(
+                                            Text('${installment['status']}')),
+                                        // Payment Status
+                                        DataCell(
+                                          installment['status'].toString() !=
+                                                  "Unpaid"
+                                              ? const Text(
+                                                  'Done',
+                                                  textAlign: TextAlign
+                                                      .center, // Center the text within the available space
+                                                ) // Mark as "Done" if paid
+                                              : IconButton(
+                                                  onPressed: () async {
+                                                    bool shouldDelete =
+                                                        await showConfirmConfirmationDialog(
+                                                            context);
+                                                    if (shouldDelete) {
+                                                      // Update installment to "Paid"
+                                                      buildingSaleController
+                                                          .updateInstallmentPlanStatus(
+                                                        widget.buildingSales[
+                                                                'documentId']
+                                                            .toString(),
+                                                        buildingSale[
+                                                            'buildingId'],
+                                                        installment['id'],
+                                                        "Paid",
+                                                        context,
+                                                        double.parse(buildingSale[
+                                                                        'dueAmount']
+                                                                    ?.toString() ??
+                                                                '0') -
+                                                            double.parse(installment[
+                                                                        'amount']
+                                                                    .toString() ??
+                                                                "0"),
+                                                      );
 
-                                    ],
-                                  );
-                                },
+                                                      // Create sale report after payment
+                                                      buildingSaleController
+                                                          .createSaleReport(
+                                                        context,
+                                                        buildingId: buildingSale[
+                                                                'buildingId']
+                                                            .toString(),
+                                                        customerId: buildingSale[
+                                                                'customerId']
+                                                            .toString(),
+                                                        amount: buildingSale[
+                                                                'dueAmount']
+                                                            ?.toString(),
+                                                        paymentType:
+                                                            "Installment",
+                                                      );
+                                                    }
+                                                  },
+                                                  icon: const Icon(
+                                                    Icons.check_circle_outline,
+                                                    color: Colors.black,
+                                                    size: 24.0,
+                                                  ),
+                                                ),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ),
                               ),
                             ),
                           ),
@@ -862,4 +888,3 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
     );
   }
 }
-

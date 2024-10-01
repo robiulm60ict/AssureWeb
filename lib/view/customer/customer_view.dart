@@ -3,10 +3,12 @@ import 'package:assure_apps/configs/ghaps.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../../../configs/app_constants.dart';
 import '../../../../configs/defaults.dart';
 import '../../../../responsive.dart';
+import '../../configs/app_image.dart';
 
 class CustomerListView extends StatelessWidget {
   const CustomerListView({super.key});
@@ -30,8 +32,12 @@ class CustomerListView extends StatelessWidget {
           backgroundColor: AppColors.bg,
           title: const Text('Customer ')),
       body: Obx(() {
-        if (customerController.customers.isEmpty) {
+        if (customerController.isLoading.value == true) {
           return const Center(child: CircularProgressIndicator());
+        } else if (customerController.customers.isEmpty) {
+          return Center(
+            child: Lottie.asset(AppImage.noData),
+          );
         }
         return ListView(
           children: [
