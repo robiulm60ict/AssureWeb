@@ -69,6 +69,7 @@ class PopularProducts extends StatelessWidget {
                         isActive: project.status.toString(),
                         onPressed: () {
                           if(project.status.toString() == "available"){
+
                             AppRoutes.push(context, page: BuildingSaleSetup(model: project,));
 
                           }else{
@@ -89,7 +90,8 @@ class PopularProducts extends StatelessWidget {
             width: double.infinity,
             child: OutlinedButton(
               onPressed: () {
-                AppRoutes.push(context, page: const BuildingView());
+                dashbordScreenController.dataIndex.value=2;
+                // AppRoutes.push(context, page: const BuildingView());
 
 
               },

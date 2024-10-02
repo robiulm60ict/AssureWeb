@@ -531,14 +531,16 @@ class BuildingSaleController extends GetxController {
         "phone": customerPhoneController.text,
         "email": customerEmailController.text,
         "address": customerAddressController.text,
+        "DateTime": DateTime.now(),
       };
 
       // Save the customer to Firestore
       DocumentReference docRef =
           await fireStore.collection('customer').add(customerBody);
 
+      customerController.fetchCustomer();
       // Navigator.pop(context);
-      successSnackBar("Customer created successfully!");
+      // successSnackBar("Customer created successfully!");
 
       // Return the created customer ID
       return docRef.id;

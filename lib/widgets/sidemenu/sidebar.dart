@@ -65,221 +65,283 @@ class Sidebar extends StatelessWidget {
             const Divider(),
             gapH16,
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppDefaults.padding,
-                ),
-                child: ListView(
-                  children: [
-                    MenuTile(
-                      isActive: true,
-                      title: "Home",
-                      activeIconSrc: "assets/icons/home_filled.svg",
-                      inactiveIconSrc: "assets/icons/home_light.svg",
-                      onPressed: () {
-                        dashbordScreenController.dataIndex.value = 0;
-                        // AppRoutes.pushReplacement(context, page: const EntryPoint());
-                      },
-                    ),
-                    ExpansionTile(
-                      leading: const HugeIcon(
-                        icon: HugeIcons.strokeRoundedPropertyNew,
-                        color: Colors.black,
-                        size: 24.0,
-                      ),
-                      title: Text(
-                        "Building",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: Theme.of(context).textTheme.bodyMedium!.color,
-                        ),
-                      ),
-                      children: [
-                        MenuTile(
-                          isSubmenu: true,
-                          title: "Building Create",
-                          onPressed: () {
-                            if (Responsive.isMobile(context)) {
-                              Navigator.pop(context);
-                            }
-                            buildingController.clearData();
-
-                            dashbordScreenController.dataIndex.value = 1;
-                            // AppRoutes.push(context, page: EntryPointBuildingSetup());
-                            // AppRoutes.push(context, page: BuildingSetup());
-
-                            // context.go('/buildingSetup');
-                          },
-                        ),
-                        Obx(
-                          () => MenuTile(
-                            isSubmenu: true,
-                            title: "Building List",
-                            count: buildingController.projects.length,
-                            onPressed: () {if (Responsive.isMobile(context)) {
-                              Navigator.pop(context);
-                            }
-                              dashbordScreenController.dataIndex.value = 2;
-                              // AppRoutes.push(context,
-                              //     page: const BuildingView());
-
-                              // context.go('/buildingView');
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    ExpansionTile(
-                      leading: const HugeIcon(
-                        icon: HugeIcons.strokeRoundedSaleTag02,
-                        color: Colors.black,
-                        size: 24.0,
-                      ),
-                      title: Text(
-                        "Building Sale",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: Theme.of(context).textTheme.bodyMedium!.color,
-                        ),
-                      ),
-                      children: [
-                        MenuTile(
-                          isSubmenu: true,
-                          title: "Available Building",
-                          onPressed: () {if (Responsive.isMobile(context)) {
-                            Navigator.pop(context);
-                          }
-                            dashbordScreenController.dataIndex.value = 3;
-
-                            // AppRoutes.push(context,
-                            //     page: const SaleBuildingListView());
-                          },
-                        ),
-                        Obx(
-                          () => MenuTile(
-                            isSubmenu: true,
-                            title: "Sale List",
-                            count: buildingSaleController.buildingSales.length,
-                            onPressed: () {if (Responsive.isMobile(context)) {
-                              Navigator.pop(context);
-                            }
-                              dashbordScreenController.dataIndex.value = 4;
-                              // AppRoutes.push(context,
-                              //     page: BuildingSalesScreen());
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    ExpansionTile(
-                      leading: const HugeIcon(
-                        icon: HugeIcons.strokeRoundedAccountSetting01,
-                        color: Colors.black,
-                        size: 24.0,
-                      ),
-                      title: Text(
-                        "Customer Manage",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: Theme.of(context).textTheme.bodyMedium!.color,
-                        ),
-                      ),
-                      children: [
-                        Obx(
-                          () => MenuTile(
-                            isSubmenu: true,
-                            title: "Customer List",
-                            count: customerController.customers.length,
-                            onPressed: () {if (Responsive.isMobile(context)) {
-                              Navigator.pop(context);
-                            }
-                              dashbordScreenController.dataIndex.value = 5;
-
-                              // AppRoutes.push(context,
-                              //     page: const CustomerListView());
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    ExpansionTile(
-                      leading: const HugeIcon(
-                        icon: HugeIcons.strokeRoundedSaleTag01,
-                        color: Colors.black,
-                        size: 24.0,
-                      ),
-                      title: Text(
-                        "Sales Manage",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: Theme.of(context).textTheme.bodyMedium!.color,
-                        ),
-                      ),
-                      children: [
-                        Obx(
-                          () => MenuTile(
-                            isSubmenu: true,
-                            title: "Sales report List",
-                            count: reportController.buildingSalesReport.length,
-                            onPressed: () {if (Responsive.isMobile(context)) {
-                              Navigator.pop(context);
-                            }
-                              dashbordScreenController.dataIndex.value = 6;
-
-                              // AppRoutes.push(context,
-                              //     page: SalesReportScreen());
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                          color: Colors.grey.shade300,
-                          borderRadius: BorderRadius.circular(8)),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 12, horizontal: 10),
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 4),
-                      child: InkWell(
-                        onTap: () {
-                          appAlertDialog(context, "Are you sure to logout?",
-                              title: "Logout",
-                              actions: [
-                                TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: const Text("Dismiss")),
-                                TextButton(
-                                    onPressed: () {
-                                      LocalDB.delLoginInfo();
-                                      AppRoutes.pushAndRemoveUntil(context,
-                                          page: SignInPage());
-                                    },
-                                    child: const Text(
-                                      "Logout",
-                                      style: TextStyle(color: Colors.red),
-                                    ))
-                              ]);
+              child: Obx(
+                () => Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppDefaults.padding,
+                  ),
+                  child: ListView(
+                    children: [
+                      MenuTile(
+                        isActive: dashbordScreenController.dataIndex.value == 0
+                            ? true
+                            : false,
+                        // isActive: dashbordScreenController.dataIndex.value==0? true:false,
+                        title: "Home",
+                        activeIconSrc: "assets/icons/home_filled.svg",
+                        inactiveIconSrc: "assets/icons/home_light.svg",
+                        onPressed: () {
+                          dashbordScreenController.dataIndex.value = 0;
+                          // AppRoutes.pushReplacement(context, page: const EntryPoint());
                         },
-                        child: const Row(
-                          children: [
-                            HugeIcon(
-                              icon: HugeIcons.strokeRoundedLogout01,
-                              color: Colors.black,
-                              size: 24.0,
-                            ),
-                            gapW16,
-                            Text(
-                              "LogOut",
-                              style: TextStyle(fontWeight: FontWeight.w700),
-                            )
-                          ],
-                        ),
                       ),
-                    )
-                  ],
+                      ExpansionTile(
+
+
+
+                        leading: const HugeIcon(
+                          icon: HugeIcons.strokeRoundedPropertyNew,
+                          color: Colors.black,
+                          size: 24.0,
+                        ),
+                        title: Text(
+                          "Building",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color:
+                                Theme.of(context).textTheme.bodyMedium!.color,
+                          ),
+                        ),
+                        children: [
+                          MenuTile(
+                            isActive:
+                                dashbordScreenController.dataIndex.value == 1
+                                    ? true
+                                    : false,
+                            isSubmenu:
+                                dashbordScreenController.dataIndex.value == 1
+                                    ? true
+                                    : false,
+                            title: "Building Create",
+                            onPressed: () {
+
+                              if (Responsive.isMobile(context)) {
+                                Navigator.pop(context);
+                              }
+                              buildingController.clearData();
+
+                              dashbordScreenController.dataIndex.value = 1;
+                              // AppRoutes.push(context, page: EntryPointBuildingSetup());
+                              // AppRoutes.push(context, page: BuildingSetup());
+
+                              // context.go('/buildingSetup');
+                            },
+                          ),
+                          Obx(
+                            () => MenuTile(
+                              isActive:
+                                  dashbordScreenController.dataIndex.value == 2
+                                      ? true
+                                      : false,
+                              isSubmenu:
+                                  dashbordScreenController.dataIndex.value == 2
+                                      ? true
+                                      : false,
+                              title: "Building List",
+                              count: buildingController.projects.length,
+                              onPressed: () {
+                                if (Responsive.isMobile(context)) {
+                                  Navigator.pop(context);
+                                }
+                                dashbordScreenController.dataIndex.value = 2;
+                                // AppRoutes.push(context,
+                                //     page: const BuildingView());
+
+                                // context.go('/buildingView');
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      ExpansionTile(
+                        leading: const HugeIcon(
+                          icon: HugeIcons.strokeRoundedSaleTag02,
+                          color: Colors.black,
+                          size: 24.0,
+                        ),
+                        title: Text(
+                          "Building Sale",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color:
+                                Theme.of(context).textTheme.bodyMedium!.color,
+                          ),
+                        ),
+                        children: [
+                          MenuTile(
+                            isActive:
+                                dashbordScreenController.dataIndex.value == 3
+                                    ? true
+                                    : false,
+                            isSubmenu:
+                                dashbordScreenController.dataIndex.value == 3
+                                    ? true
+                                    : false,
+                            title: "Available Building",
+                            onPressed: () {
+                              if (Responsive.isMobile(context)) {
+                                Navigator.pop(context);
+                              }
+                              dashbordScreenController.dataIndex.value = 3;
+
+                              // AppRoutes.push(context,
+                              //     page: const SaleBuildingListView());
+                            },
+                          ),
+                          Obx(
+                            () => MenuTile(
+                              isActive:
+                                  dashbordScreenController.dataIndex.value == 4
+                                      ? true
+                                      : false,
+                              isSubmenu:
+                                  dashbordScreenController.dataIndex.value == 4
+                                      ? true
+                                      : false,
+                              title: "Sale List",
+                              count:
+                                  buildingSaleController.buildingSales.length,
+                              onPressed: () {
+                                if (Responsive.isMobile(context)) {
+                                  Navigator.pop(context);
+                                }
+                                dashbordScreenController.dataIndex.value = 4;
+                                // AppRoutes.push(context,
+                                //     page: BuildingSalesScreen());
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      ExpansionTile(
+                        leading: const HugeIcon(
+                          icon: HugeIcons.strokeRoundedAccountSetting01,
+                          color: Colors.black,
+                          size: 24.0,
+                        ),
+                        title: Text(
+                          "Customer Manage",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color:
+                                Theme.of(context).textTheme.bodyMedium!.color,
+                          ),
+                        ),
+                        children: [
+                          Obx(
+                            () => MenuTile(
+                              isActive:
+                                  dashbordScreenController.dataIndex.value == 5
+                                      ? true
+                                      : false,
+                              isSubmenu:
+                                  dashbordScreenController.dataIndex.value == 5
+                                      ? true
+                                      : false,
+                              title: "Customer List",
+                              count: customerController.customers.length,
+                              onPressed: () {
+                                if (Responsive.isMobile(context)) {
+                                  Navigator.pop(context);
+                                }
+                                dashbordScreenController.dataIndex.value = 5;
+
+                                // AppRoutes.push(context,
+                                //     page: const CustomerListView());
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      ExpansionTile(
+                        leading: const HugeIcon(
+                          icon: HugeIcons.strokeRoundedSaleTag01,
+                          color: Colors.black,
+                          size: 24.0,
+                        ),
+                        title: Text(
+                          "Sales Manage",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color:
+                                Theme.of(context).textTheme.bodyMedium!.color,
+                          ),
+                        ),
+                        children: [
+                          Obx(
+                            () => MenuTile(
+                              isActive:
+                                  dashbordScreenController.dataIndex.value == 6
+                                      ? true
+                                      : false,
+                              isSubmenu:
+                                  dashbordScreenController.dataIndex.value == 6
+                                      ? true
+                                      : false,
+                              title: "Sales report List",
+                              count:
+                                  reportController.buildingSalesReport.length,
+                              onPressed: () {
+                                if (Responsive.isMobile(context)) {
+                                  Navigator.pop(context);
+                                }
+                                dashbordScreenController.dataIndex.value = 6;
+
+                                // AppRoutes.push(context,
+                                //     page: SalesReportScreen());
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                            color: Colors.grey.shade300,
+                            borderRadius: BorderRadius.circular(8)),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 12, horizontal: 10),
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 4),
+                        child: InkWell(
+                          onTap: () {
+                            appAlertDialog(context, "Are you sure to logout?",
+                                title: "Logout",
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text("Dismiss")),
+                                  TextButton(
+                                      onPressed: () {
+                                        LocalDB.delLoginInfo();
+                                        AppRoutes.pushAndRemoveUntil(context,
+                                            page: SignInPage());
+                                      },
+                                      child: const Text(
+                                        "Logout",
+                                        style: TextStyle(color: Colors.red),
+                                      ))
+                                ]);
+                          },
+                          child: const Row(
+                            children: [
+                              HugeIcon(
+                                icon: HugeIcons.strokeRoundedLogout01,
+                                color: Colors.black,
+                                size: 24.0,
+                              ),
+                              gapW16,
+                              Text(
+                                "LogOut",
+                                style: TextStyle(fontWeight: FontWeight.w700),
+                              )
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),

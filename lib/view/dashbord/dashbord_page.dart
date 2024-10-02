@@ -45,7 +45,7 @@ class _DashboardPageState extends State<DashboardPage> {
               child: Obx(
                 () => Column(
                   children: [
-                    customerController.isLoading.value == true
+                    customerController.isLoadingFilter.value == true
                         ? const AppShimmer()
                         : const Overview(),
                     if (Responsive.isMobile(context)) gapH16,
@@ -58,9 +58,9 @@ class _DashboardPageState extends State<DashboardPage> {
                 ),
               ),
             ),
-            if (!Responsive.isMobile(context)||Responsive.isTablet(context))
+            if (Responsive.isTablet(context))
               gapW16,
-            if (!Responsive.isMobile(context)||Responsive.isTablet(context))
+            if (Responsive.isDesktop(context))
               const Expanded(
                 flex: 2,
                 child: Column(

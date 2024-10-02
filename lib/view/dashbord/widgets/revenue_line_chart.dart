@@ -116,7 +116,7 @@ class RevenueLineChart extends StatelessWidget {
       barWidth: 4,
       isStrokeCapRound: true,
       dotData: const FlDotData(show: true),
-      belowBarData: BarAreaData(show: true),
+      belowBarData: BarAreaData(show: false),
       spots: spots,
     );
   }
@@ -206,7 +206,7 @@ class SalesReportScreen extends StatelessWidget {
 
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(4.0),
+        padding: const EdgeInsets.symmetric(vertical: 8),
         child: Column(
           children: [
 

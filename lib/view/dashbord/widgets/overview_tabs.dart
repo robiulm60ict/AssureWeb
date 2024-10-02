@@ -60,7 +60,9 @@ class _OverviewTabsState extends State<OverviewTabs>
               Obx(
                 () => TabWithGrowth(
                   title: "Customers",
-                  amount: customerController.customers.length.toString() ?? "",
+                  amount:
+                      customerController.customersFilter.length.toString() ??
+                          "",
                   growthPercentage: "20%",
                 ),
               ),
@@ -80,20 +82,25 @@ class _OverviewTabsState extends State<OverviewTabs>
         ),
         gapH24,
         Obx(
-        ()=> SizedBox(
+          () => SizedBox(
             height: 300,
             child: TabBarView(
               controller: _tabController,
               physics: const NeverScrollableScrollPhysics(),
               children: [
-                Center(child: CoustomersOverview()),
+                Center(
+                    child: reportController.isDateFilterLoading.value == true
+                        ? const Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : const CoustomersOverview()),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppDefaults.padding * 1.5,
                     vertical: AppDefaults.padding,
                   ),
                   child: reportController.isDateLoading.value == true
-                      ? Center(
+                      ? const Center(
                           child: CircularProgressIndicator(),
                         )
                       : SalesReportScreen(),

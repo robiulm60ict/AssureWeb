@@ -1,4 +1,5 @@
 import 'package:assure_apps/configs/app_constants.dart';
+import 'package:assure_apps/configs/routes.dart';
 import 'package:assure_apps/view/customer/customer_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -28,7 +29,7 @@ class CoustomersOverview extends StatelessWidget {
                     text: "Welcome ",
                     children: [
                       TextSpan(
-                        text: "${customerController.customers.length} customers",
+                        text: "${customerController.customersFilter.length} customers",
                         style: TextStyle(
                           color: Theme.of(context).textTheme.titleLarge!.color,
                           fontWeight: FontWeight.w600,
@@ -42,7 +43,7 @@ class CoustomersOverview extends StatelessWidget {
           ],
         ),
         gapH8,
-        customerController.customers.isNotEmpty?   Row(
+        customerController.customersFilter.isNotEmpty?   Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -51,12 +52,12 @@ class CoustomersOverview extends StatelessWidget {
                 height: 80, // Set a specific height for the ListView
                 child: ListView.separated(
                   shrinkWrap: true,
-                  itemCount: customerController.customers.length > (Responsive.isMobile(context)?2:3)
+                  itemCount: customerController.customersFilter.length > (Responsive.isMobile(context)?2:3)
                       ? Responsive.isMobile(context)?2:3
-                      : customerController.customers.length,
+                      : customerController.customersFilter.length,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) {
-                    var customer = customerController.customers[index];
+                    var customer = customerController.customersFilter[index];
                     return SizedBox(
                       // height: 100,
                       child: CustomerAvatar(
@@ -79,10 +80,9 @@ class CoustomersOverview extends StatelessWidget {
                 OutlinedButton(
 
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const CustomerListView()));
+                    dashbordScreenController.dataIndex.value=6;
+                  //  AppRoutes.push(context, page: CustomerListView());
+
                   },
                   style: OutlinedButton.styleFrom(
                     fixedSize: const Size(50, 50),

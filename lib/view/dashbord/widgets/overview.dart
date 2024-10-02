@@ -73,6 +73,10 @@ class _OverviewState extends State<Overview> {
                           reportController.fetchAllBuildingSales(
                             dateFilter: newValue, // Pass the updated value
                           );
+
+                          customerController.fetchCustomerFilter(
+                            dateFilter: newValue
+                          );
                         });
                       }
                     },
