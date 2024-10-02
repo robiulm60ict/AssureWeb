@@ -1,8 +1,3 @@
-import 'package:assure_apps/view/building/building_setup/building_setup.dart';
-import 'package:assure_apps/view/building/building_view/building_view.dart';
-import 'package:assure_apps/view/building_sale/sale_building_list/building_view/sale_building_view.dart';
-import 'package:assure_apps/view/dashbord/dashbord_page.dart';
-import 'package:assure_apps/view/entry_point.dart';
 import 'package:assure_apps/view/sign_in_page/sign_in_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -58,15 +53,15 @@ class Sidebar extends StatelessWidget {
                       color: Colors.black,
                       size: 40.0,
                     )
-                    //  child: Image.asset(AppImage.logo,height: MediaQuery.of(context).size.height*0.20,),
-                    ),
+                  //  child: Image.asset(AppImage.logo,height: MediaQuery.of(context).size.height*0.20,),
+                ),
               ],
             ),
             const Divider(),
             gapH16,
             Expanded(
               child: Obx(
-                () => Padding(
+                    () => Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppDefaults.padding,
                   ),
@@ -99,19 +94,19 @@ class Sidebar extends StatelessWidget {
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             color:
-                                Theme.of(context).textTheme.bodyMedium!.color,
+                            Theme.of(context).textTheme.bodyMedium!.color,
                           ),
                         ),
                         children: [
                           MenuTile(
                             isActive:
-                                dashbordScreenController.dataIndex.value == 1
-                                    ? true
-                                    : false,
+                            dashbordScreenController.dataIndex.value == 1
+                                ? true
+                                : false,
                             isSubmenu:
-                                dashbordScreenController.dataIndex.value == 1
-                                    ? true
-                                    : false,
+                            dashbordScreenController.dataIndex.value == 1
+                                ? true
+                                : false,
                             title: "Building Create",
                             onPressed: () {
 
@@ -128,15 +123,15 @@ class Sidebar extends StatelessWidget {
                             },
                           ),
                           Obx(
-                            () => MenuTile(
+                                () => MenuTile(
                               isActive:
-                                  dashbordScreenController.dataIndex.value == 2
-                                      ? true
-                                      : false,
+                              dashbordScreenController.dataIndex.value == 2
+                                  ? true
+                                  : false,
                               isSubmenu:
-                                  dashbordScreenController.dataIndex.value == 2
-                                      ? true
-                                      : false,
+                              dashbordScreenController.dataIndex.value == 2
+                                  ? true
+                                  : false,
                               title: "Building List",
                               count: buildingController.projects.length,
                               onPressed: () {
@@ -164,19 +159,19 @@ class Sidebar extends StatelessWidget {
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             color:
-                                Theme.of(context).textTheme.bodyMedium!.color,
+                            Theme.of(context).textTheme.bodyMedium!.color,
                           ),
                         ),
                         children: [
                           MenuTile(
                             isActive:
-                                dashbordScreenController.dataIndex.value == 3
-                                    ? true
-                                    : false,
+                            dashbordScreenController.dataIndex.value == 3
+                                ? true
+                                : false,
                             isSubmenu:
-                                dashbordScreenController.dataIndex.value == 3
-                                    ? true
-                                    : false,
+                            dashbordScreenController.dataIndex.value == 3
+                                ? true
+                                : false,
                             title: "Available Building",
                             onPressed: () {
                               if (Responsive.isMobile(context)) {
@@ -189,18 +184,18 @@ class Sidebar extends StatelessWidget {
                             },
                           ),
                           Obx(
-                            () => MenuTile(
+                                () => MenuTile(
                               isActive:
-                                  dashbordScreenController.dataIndex.value == 4
-                                      ? true
-                                      : false,
+                              dashbordScreenController.dataIndex.value == 4
+                                  ? true
+                                  : false,
                               isSubmenu:
-                                  dashbordScreenController.dataIndex.value == 4
-                                      ? true
-                                      : false,
+                              dashbordScreenController.dataIndex.value == 4
+                                  ? true
+                                  : false,
                               title: "Sale List",
                               count:
-                                  buildingSaleController.buildingSales.length,
+                              buildingSaleController.buildingSales.length,
                               onPressed: () {
                                 if (Responsive.isMobile(context)) {
                                   Navigator.pop(context);
@@ -224,20 +219,20 @@ class Sidebar extends StatelessWidget {
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             color:
-                                Theme.of(context).textTheme.bodyMedium!.color,
+                            Theme.of(context).textTheme.bodyMedium!.color,
                           ),
                         ),
                         children: [
                           Obx(
-                            () => MenuTile(
+                                () => MenuTile(
                               isActive:
-                                  dashbordScreenController.dataIndex.value == 5
-                                      ? true
-                                      : false,
+                              dashbordScreenController.dataIndex.value == 5
+                                  ? true
+                                  : false,
                               isSubmenu:
-                                  dashbordScreenController.dataIndex.value == 5
-                                      ? true
-                                      : false,
+                              dashbordScreenController.dataIndex.value == 5
+                                  ? true
+                                  : false,
                               title: "Customer List",
                               count: customerController.customers.length,
                               onPressed: () {
@@ -264,23 +259,23 @@ class Sidebar extends StatelessWidget {
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             color:
-                                Theme.of(context).textTheme.bodyMedium!.color,
+                            Theme.of(context).textTheme.bodyMedium!.color,
                           ),
                         ),
                         children: [
                           Obx(
-                            () => MenuTile(
+                                () => MenuTile(
                               isActive:
-                                  dashbordScreenController.dataIndex.value == 6
-                                      ? true
-                                      : false,
+                              dashbordScreenController.dataIndex.value == 6
+                                  ? true
+                                  : false,
                               isSubmenu:
-                                  dashbordScreenController.dataIndex.value == 6
-                                      ? true
-                                      : false,
+                              dashbordScreenController.dataIndex.value == 6
+                                  ? true
+                                  : false,
                               title: "Sales report List",
                               count:
-                                  reportController.buildingSalesReport.length,
+                              reportController.buildingSalesReport.length,
                               onPressed: () {
                                 if (Responsive.isMobile(context)) {
                                   Navigator.pop(context);

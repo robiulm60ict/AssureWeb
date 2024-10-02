@@ -43,7 +43,7 @@ class _DashboardPageState extends State<DashboardPage> {
             Expanded(
               flex: 5,
               child: Obx(
-                () => Column(
+                    () => Column(
                   children: [
                     customerController.isLoadingFilter.value == true
                         ? const AppShimmer()

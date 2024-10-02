@@ -132,7 +132,7 @@ class BuildingController extends GetxController {
       DocumentReference docRef = await fireStore.collection('building').add(project.toFirestore());
       project.id = docRef.id;
       projects.add(project);
-
+      imageController.resizedImagePath.value="";
       clearData();
       Navigator.pop(context);
       dashbordScreenController.dataIndex.value=2;
@@ -242,6 +242,8 @@ class BuildingController extends GetxController {
       await fireStore.collection('building').doc(project.id).update(project.toFirestore());
       Navigator.pop(context);
       Navigator.pop(context);
+      imageController.resizedImagePath.value="";
+
       // context.go('/buildingView');
       fetchProjects(); // Refresh the project list
       dashbordScreenController.dataIndex.value=2;
