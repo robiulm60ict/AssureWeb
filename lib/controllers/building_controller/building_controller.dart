@@ -1,10 +1,9 @@
 import 'dart:io';
 
 import 'package:assure_apps/configs/app_constants.dart';
-import 'package:assure_apps/configs/routes.dart';
-import 'package:assure_apps/view/building/building_view/building_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../model/buliding_model.dart';
@@ -98,11 +97,12 @@ class BuildingController extends GetxController {
           .toList();
 
       // Optionally, you can print the fetched projects for debugging
-      print("Fetched Projects: ${projects.value.length}");
 
     } catch (e) {
       // Handle any errors that occur during fetching
-      print("Error fetching projects: $e");
+      if (kDebugMode) {
+        print("Error fetching projects: $e");
+      }
       // Optionally, you can show an error message to the user
     } finally {
       isLoading.value = false; // Stop loading
@@ -112,7 +112,6 @@ class BuildingController extends GetxController {
 
   Future<void> uploadImageAndCreateProject(BuildingModel project, String? imagePath, BuildContext context) async {
     appLoader(context, "Building, please wait...");
-    print(project.toFirestore());
     try {
       // Add the current timestamp for createDateTime
       project.createDateTime = DateTime.now();
@@ -143,8 +142,6 @@ class BuildingController extends GetxController {
     } catch (e, stackTrace) {
       Navigator.pop(context);
       wrongSnackBar(title: "Exception", "Failed to create building: $e");
-      print("Error adding project: $e");
-      print("StackTrace: $stackTrace");
     }
   }
 
@@ -157,13 +154,11 @@ class BuildingController extends GetxController {
       String fileName = DateTime.now().millisecondsSinceEpoch.toString();
       Reference imageRef = storageRef.child('building_images/$fileName.jpg');
 
-      print("Starting image upload...");
 
       // Upload the image file to Firebase Storage
       UploadTask uploadTask = imageRef.putFile(File(imagePath));
 
       uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
-        print('Upload progress: ${(snapshot.bytesTransferred / snapshot.totalBytes) * 100}%');
       });
 
       // Wait for the upload to complete
@@ -171,10 +166,8 @@ class BuildingController extends GetxController {
 
       // Get the download URL of the uploaded image
       String imageUrl = await snapshot.ref.getDownloadURL();
-      print("Image uploaded successfully. URL: $imageUrl");
       return imageUrl;
     } catch (e) {
-      print("Error uploading image: $e");
       return null;
     }
   }
@@ -253,7 +246,6 @@ class BuildingController extends GetxController {
     } catch (e) {
       Navigator.pop(context);
       wrongSnackBar(title: "Exception", "Failed to update building: $e");
-      print("Error updating project: $e");
     }
   }
 

@@ -11,7 +11,7 @@ import '../controllers/image/image_controller.dart';
 import 'app_colors.dart';
 
 class AppConstants {
-  static const String appName = "ASSURE GROUP";
+  static const String appName = "AssureD&D";
 }
 
 AuthController authController = Get.put(AuthController());

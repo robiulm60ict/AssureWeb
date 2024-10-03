@@ -17,12 +17,8 @@ Future<void> saveAndLaunchFile(List<int> bytes, String fileName) async {
     // Open the PDF file with its associated app.
     final result = await OpenFile.open(filePath);
 
-    if (result != null) {
-      print('File open result: ${result.message}');
-    } else {
-      print('Unknown error occurred while opening the file.');
-    }
-  } catch (e) {
+    print('File open result: ${result.message}');
+    } catch (e) {
     print('Error: $e');
   }
 }

@@ -1,5 +1,4 @@
 import 'package:assure_apps/configs/routes.dart';
-import 'package:assure_apps/view/building_sale/sale_view/sale_details_installment_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,7 +9,6 @@ import 'package:lottie/lottie.dart';
 import '../../../configs/app_colors.dart';
 import '../../../configs/defaults.dart';
 import '../../../configs/ghaps.dart';
-import '../../../controllers/building_sale_controller/building_sale_controller.dart';
 import '../../../responsive.dart';
 import '../../configs/app_image.dart';
 import '../../controllers/building_sale_payment_report_controller/building_sale_payment_report_controller.dart';

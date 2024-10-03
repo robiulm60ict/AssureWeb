@@ -2,8 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../configs/app_colors.dart';
-import '../../configs/ghaps.dart';
-import '../../responsive.dart';
 
 class CustomerAvatar extends StatefulWidget {
   const CustomerAvatar({
@@ -41,12 +39,7 @@ class _CustomerAvatarState extends State<CustomerAvatar> {
               height: 60,
               fit: BoxFit.cover,
               imageUrl: widget.imageSrc.toString(),
-              placeholder: (c, s) => Image.asset(
-                width: 60,
-                height: 60,
-                "assets/icons/noimageperson.jpg",
-                fit: BoxFit.cover,
-              ),
+              placeholder: (c, s) => const CircularProgressIndicator(),
               errorWidget: (c, s, d) => Image.asset(
                   "assets/icons/noimageperson.jpg",
                   width: 60,

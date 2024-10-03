@@ -1,9 +1,7 @@
 import 'package:assure_apps/configs/app_colors.dart';
 import 'package:assure_apps/configs/ghaps.dart';
 import 'package:assure_apps/configs/routes.dart';
-import 'package:assure_apps/view/building/building_setup/building_setup.dart';
 import 'package:assure_apps/view/building/building_update/building_update.dart';
-import 'package:assure_apps/view/entry_point.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -200,8 +198,8 @@ class BuildingView extends StatelessWidget {
                                             width: Responsive.isMobile(context)
                                                 ? 60
                                                 : 100,
-                                            child: Image.network(
-                                              "https://img.freepik.com/free-photo/observation-urban-building-business-steel_1127-2397.jpg?t=st=1727338313~exp=1727341913~hmac=2e09cc7c51c7da785d7456f52aa5214acafe820f751d1e53d1a75e3cf4b69139&w=1380",
+                                            child: Image.asset(
+                                              "assets/images/building_noimage.jpg",
                                               fit: BoxFit.fill,
                                             ),
                                           );
@@ -277,7 +275,7 @@ class BuildingView extends StatelessWidget {
                                             ),
                                             gapW8,
                                             Text(
-                                              "${project.appointmentSize} sqft",
+                                              "${project.appointmentSize} sft",
                                               style: const TextStyle(
                                                   fontWeight: FontWeight.bold),
                                             ),
@@ -339,7 +337,7 @@ class BuildingView extends StatelessWidget {
                                     ),
                                     gapW8,
                                     Text(
-                                      "${project.appointmentSize} sqft",
+                                      "${project.appointmentSize} sft",
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold),
                                     )

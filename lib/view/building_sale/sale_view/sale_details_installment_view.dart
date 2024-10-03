@@ -162,8 +162,8 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                                           width: Responsive.isMobile(context)
                                               ? 55
                                               : 100,
-                                          child: Image.network(
-                                            "https://img.freepik.com/free-photo/observation-urban-building-business-steel_1127-2397.jpg?t=st=1727338313~exp=1727341913~hmac=2e09cc7c51c7da785d7456f52aa5214acafe820f751d1e53d1a75e3cf4b69139&w=1380",
+                                          child: Image.asset(
+                                            "assets/images/building_noimage.jpg",
                                             fit: BoxFit.fill,
                                           ),
                                         );
@@ -226,7 +226,7 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                                                 ),
                                                 gapW4,
                                                 Text(
-                                                  "${building["appointmentSize"]} sqft",
+                                                  "${building["appointmentSize"]} sft ,",
                                                   style: const TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold),
@@ -236,15 +236,15 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                                             gapW4,
                                             Row(
                                               children: [
-                                                const HugeIcon(
-                                                  icon: HugeIcons
-                                                      .strokeRoundedMoney01,
-                                                  color: Colors.black,
-                                                  size: 24.0,
-                                                ),
-                                                gapW4,
+                                                // const HugeIcon(
+                                                //   icon: HugeIcons
+                                                //       .strokeRoundedMoney01,
+                                                //   color: Colors.black,
+                                                //   size: 24.0,
+                                                // ),
+                                                // gapW4,
                                                 Text(
-                                                  "${building['perSftPrice']} BDT",
+                                                  "Per Sft ${building['perSftPrice']} BDT",
                                                   style: const TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold),
@@ -285,7 +285,7 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                                   ),
                                   gapW8,
                                   Text(
-                                    "${building['appointmentSize']} sqft",
+                                    "${building['appointmentSize']} sft",
                                     style: const TextStyle(
                                         fontWeight: FontWeight.bold),
                                   )
@@ -297,7 +297,7 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                               child: Row(
                                 children: [
                                   Text(
-                                    "Per sqft ${building['perSftPrice']} BDT",
+                                    "Per sft ${building['perSftPrice']} BDT",
                                     style: const TextStyle(
                                         fontWeight: FontWeight.bold),
                                   )
@@ -626,7 +626,7 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                                                 ),
                                                 gapW8,
                                                 Text(
-                                                  "${building["appointmentSize"]} sqft",
+                                                  "${building["appointmentSize"]} sft ,",
                                                   style: const TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold),
@@ -636,15 +636,15 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                                             gapW8,
                                             Row(
                                               children: [
-                                                const HugeIcon(
-                                                  icon: HugeIcons
-                                                      .strokeRoundedMoney01,
-                                                  color: Colors.black,
-                                                  size: 24.0,
-                                                ),
-                                                gapW8,
+                                                // const HugeIcon(
+                                                //   icon: HugeIcons
+                                                //       .strokeRoundedMoney01,
+                                                //   color: Colors.black,
+                                                //   size: 24.0,
+                                                // ),
+                                                // gapW8,
                                                 Text(
-                                                  "${building['perSftPrice']} BDT",
+                                                  "Per sft ${building['perSftPrice']} BDT",
                                                   style: const TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold),
@@ -757,8 +757,9 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
 
                           child: Scrollbar(
                             thickness: 10,
-                            thumbVisibility: true,
+                            // thumbVisibility: true,
                             child: Container(
+                              padding: const EdgeInsets.all(3),
                               width: MediaQuery.of(context).size.width,
                               // Ensures the inner container also takes full width
                               decoration: BoxDecoration(
@@ -769,7 +770,7 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                               ),
                               child: DataTable(
                                 columnSpacing:
-                                    Responsive.isMobile(context) ? 15.0 : null,
+                                    Responsive.isMobile(context) ? 10.0 : null,
                                 // Spacing between columns, adjust as needed
                                 columns: const <DataColumn>[
                                   DataColumn(label: Text('Installment')),

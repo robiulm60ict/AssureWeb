@@ -1,15 +1,10 @@
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hugeicons/hugeicons.dart';
 
-import '../../configs/app_constants.dart';
-import '../../configs/app_image.dart';
 import '../../configs/defaults.dart';
 import '../../configs/ghaps.dart';
 import 'icon_tile.dart';
-import 'menu_tile.dart';
 
 class TabSidebar extends StatelessWidget {
   const TabSidebar({super.key});

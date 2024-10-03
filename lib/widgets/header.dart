@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 import '../configs/app_colors.dart';
-import '../configs/defaults.dart';
 import '../configs/ghaps.dart';
 import '../responsive.dart';
 

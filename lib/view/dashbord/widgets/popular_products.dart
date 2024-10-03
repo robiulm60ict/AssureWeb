@@ -11,7 +11,6 @@ import '../../../configs/ghaps.dart';
 import '../../../widgets/section_title.dart';
 import '../../../widgets/snackbar.dart';
 import '../../building_sale/building_sale_setup/building_sale_setup.dart';
-import '../../building_sale/sale_building_list/building_view/sale_building_view.dart';
 import 'popular_product_item.dart';
 
 class PopularProducts extends StatelessWidget {
@@ -64,7 +63,7 @@ class PopularProducts extends StatelessWidget {
                 final project = buildingController.projects[index];
                 return PopularProductItem(
                         name: project.projectName,
-                        price: project.totalCost.toString() ?? "",
+                        price: project.totalCost.toString(),
                         imageSrc: project.image.toString(),
                         isActive: project.status.toString(),
                         onPressed: () {

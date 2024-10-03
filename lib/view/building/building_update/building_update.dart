@@ -361,7 +361,7 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                           //   return null; // Input is valid
                           // },
                           onChanged: (value) {
-                            if (double.tryParse(value!) == null) {
+                            if (double.tryParse(value) == null) {
                               // return "Please enter a valid number";
                             }
                             // Update total cost whenever the input changes
@@ -595,7 +595,7 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                             .validate()) {
                           buildingController.updateProject(
                               BuildingModel(
-                                id: widget.model!.id.toString(),
+                                id: widget.model.id.toString(),
                                 prospectName: buildingController
                                     .prospectNameController.text,
                                 projectName: buildingController

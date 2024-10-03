@@ -6,10 +6,16 @@ import '../../configs/app_constants.dart';
 import '../../configs/defaults.dart';
 import '../../configs/ghaps.dart';
 
-class SignInPage extends StatelessWidget {
-   SignInPage({super.key});
+class SignInPage extends StatefulWidget {
+  SignInPage({super.key});
 
+  @override
+  _SignInPageState createState() => _SignInPageState();
+}
+
+class _SignInPageState extends State<SignInPage> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  bool _isPasswordVisible = false; // Password visibility toggle
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +41,6 @@ class SignInPage extends StatelessWidget {
                         child: Image.asset(
                           AppImage.building,
                           height: MediaQuery.of(context).size.height * 0.20,
-                          // color: Colors.transparent,
                         ),
                       ),
                     ),
@@ -66,7 +71,6 @@ class SignInPage extends StatelessWidget {
                       controller: authController.emailController,
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
-
                       decoration: const InputDecoration(
                         prefixIcon: HugeIcon(
                           icon: HugeIcons.strokeRoundedMail02,
@@ -92,15 +96,26 @@ class SignInPage extends StatelessWidget {
                       controller: authController.passwordController,
                       keyboardType: TextInputType.visiblePassword,
                       textInputAction: TextInputAction.done,
-
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                        prefixIcon: HugeIcon(
+                      obscureText: !_isPasswordVisible, // Toggles visibility
+                      decoration: InputDecoration(
+                        prefixIcon: const HugeIcon(
                           icon: HugeIcons.strokeRoundedSquareLock02,
                           color: Colors.black,
                           size: 24.0,
                         ),
                         hintText: 'Password',
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _isPasswordVisible = !_isPasswordVisible;
+                            });
+                          },
+                        ),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -119,23 +134,14 @@ class SignInPage extends StatelessWidget {
                           if (formKey.currentState!.validate()) {
                             authController.login(
                                 authController.emailController.text,
-                                authController.passwordController.text,context);
+                                authController.passwordController.text,
+                                context);
                           }
-                          //
                         },
                         child: const Text('Sign in'),
                       ),
                     ),
                     gapH24,
-
-                    // /// FOOTER TEXT
-                    // Text(
-                    //   'This site is protected by reCAPTCHA and the Google Privacy Policy.',
-                    //   style: Theme.of(context).textTheme.bodySmall,
-                    // ),
-                    // gapH24,
-
-                    /// SIGNUP TEXT
                   ],
                 ),
               ),

@@ -42,7 +42,7 @@ class _PopularProductItemState extends State<PopularProductItem> {
       color: Colors.black12.withOpacity(0.1),),
 
 
-      margin: EdgeInsets.symmetric(vertical: 3),
+      margin: const EdgeInsets.symmetric(vertical: 3),
       child: InkWell(
         onTap: widget.onPressed,
         onHover: (value) {

@@ -6,7 +6,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../model/buliding_model.dart';
-import '../../view/building_sale/sale_view/sale_view.dart';
 import '../../widgets/app_loader.dart';
 import '../../widgets/snackbar.dart';
 

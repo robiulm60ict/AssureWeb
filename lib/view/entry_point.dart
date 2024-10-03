@@ -1,5 +1,4 @@
 import 'package:assure_apps/configs/app_constants.dart';
-import 'package:assure_apps/view/building/building_setup/building_setup.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -7,8 +6,6 @@ import '../configs/defaults.dart';
 import '../responsive.dart';
 import '../widgets/header.dart';
 import '../widgets/sidemenu/sidebar.dart';
-import '../widgets/sidemenu/tab_sidebar.dart';
-import 'dashbord/dashbord_page.dart';
 
 final GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 

@@ -1,6 +1,4 @@
 import 'package:assure_apps/configs/app_constants.dart';
-import 'package:assure_apps/configs/routes.dart';
-import 'package:assure_apps/view/customer/customer_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';

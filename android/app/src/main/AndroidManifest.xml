@@ -12,7 +12,7 @@
 
 
     <application
-        android:label="Assure Group"
+        android:label="AssureD&amp;D"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
