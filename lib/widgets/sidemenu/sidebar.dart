@@ -77,6 +77,9 @@ class Sidebar extends StatelessWidget {
                         inactiveIconSrc: "assets/icons/home_light.svg",
                         onPressed: () {
                           dashbordScreenController.dataIndex.value = 0;
+                          if (Responsive.isMobile(context)) {
+                            Navigator.pop(context);
+                          }
                           // AppRoutes.pushReplacement(context, page: const EntryPoint());
                         },
                       ),

@@ -78,7 +78,7 @@ class CoustomersOverview extends StatelessWidget {
                 OutlinedButton(
 
                   onPressed: () {
-                    dashbordScreenController.dataIndex.value=6;
+                    dashbordScreenController.dataIndex.value=5;
                   //  AppRoutes.push(context, page: CustomerListView());
 
                   },
