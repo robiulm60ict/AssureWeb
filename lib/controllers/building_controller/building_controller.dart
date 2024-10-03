@@ -344,6 +344,38 @@ class BuildingController extends GetxController {
     }
   }
 
+  Future<void> updateProjectForWeb(BuildingModel project, String? newImagePath, BuildContext context) async {
+    try {
+      appLoader(context, "Updating Building, please wait...");
+
+      // Set the updateDateTime to now
+      project.updateDateTime = DateTime.now();
+
+      // If a new image is provided, upload it and update the project image URL
+      if (newImagePath != null && newImagePath.isNotEmpty) {
+        String? imageUrl = await uploadImageToFirebaseForWeb(newImagePath);
+        if (imageUrl != null) {
+          project.image = imageUrl; // Update the project's image URL
+        }
+      }
+
+      // Update the project document in Firestore with the new data
+      await fireStore.collection('building').doc(project.id).update(project.toFirestore());
+      Navigator.pop(context);
+      Navigator.pop(context);
+      imageController.resizedImagePath.value="";
+
+      // context.go('/buildingView');
+      fetchProjects(); // Refresh the project list
+      dashbordScreenController.dataIndex.value=2;
+
+      // AppRoutes.pushReplacement(context, page: const BuildingView());
+
+    } catch (e) {
+      Navigator.pop(context);
+      wrongSnackBar(title: "Exception", "Failed to update building: $e");
+    }
+  }
 
 
   void deleteProject(String id, BuildContext context) async {

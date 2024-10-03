@@ -436,8 +436,9 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                     width: double.infinity,
                     height: AppDefaults.height(context) * 0.2,
                     decoration: BoxDecoration(
-                        color: Colors.grey.shade200,
-                        borderRadius: BorderRadius.circular(12)),
+                      color: Colors.grey.shade200,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     child: Center(
                       child: Obx(
                             () => Align(
@@ -467,22 +468,24 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                                       ElevatedButton(
                                         child: const Text("From Gallery"),
                                         onPressed: () {
-                                          Navigator.pop(context, true);
+                                          Navigator.pop(context, true); // returns true for gallery
                                         },
                                       ),
                                       const SizedBox(height: 10.0),
-                                      Responsive.isMobile(context)?   ElevatedButton(
+                                      Responsive.isMobile(context)
+                                          ? ElevatedButton(
                                         child: const Text("Take Photo"),
                                         onPressed: () {
-                                          Navigator.pop(context, false);
+                                          Navigator.pop(context, false); // returns false for camera
                                         },
-                                      ):Container(),
+                                      )
+                                          : Container(),
                                     ],
                                   ),
                                 ),
                               );
                               if (res != null) {
-                                await imageController.pickImage(fromGallery: res);
+                                await imageController.pickImage(fromGallery: res); // Handle image selection
                               }
                             },
                             child: Stack(
@@ -490,40 +493,44 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                               children: [
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(10),
-                                  child: imageController
-                                      .resizedImagePath.value.isNotEmpty
+                                  child: imageController.resizedImagePath.value.isNotEmpty
                                       ? (kIsWeb
                                       ? Image.network(
-                                    imageController
-                                        .resizedImagePath.value,
+                                    buildingController.imageUrl, // Show network image if on web
                                     fit: BoxFit.cover,
                                     width: 70.0,
                                     height: 70.0,
                                   )
                                       : Image.file(
-                                    File(imageController
-                                        .originalImagePath.value),
+                                    File(imageController.originalImagePath.value), // Show local file image if on mobile
                                     fit: BoxFit.cover,
                                     width: 70.0,
                                     height: 70.0,
-                                  ))
+                                  )):buildingController.imageUrl
+                                      .toString()
+                                      .split("/")
+                                      .last !=
+                                      "null"
+                                      ? Image.network(
+                                    buildingController.imageUrl
+                                        .toString(),
+                                    width: 70.0,
+                                    height: 70.0,
+                                    fit: BoxFit.cover,
+                                  )
                                       : Container(
                                     width: Responsive.isMobile(context)
                                         ? AppDefaults.width(context) * 0.5
                                         : AppDefaults.width(context) * 0.2,
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 6, horizontal: 10),
-                                    decoration: const BoxDecoration(
-                                        color: Colors.white),
+                                    decoration: const BoxDecoration(color: Colors.white),
                                     child: Row(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         const HugeIcon(
-                                          icon: HugeIcons
-                                              .strokeRoundedUpload04,
+                                          icon: HugeIcons.strokeRoundedUpload04,
                                           color: Colors.black,
                                           size: 24.0,
                                         ),
@@ -532,9 +539,9 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                                           child: Text(
                                             "Click or drop image",
                                             style: TextStyle(
-                                                fontWeight: FontWeight.w500,
-                                                color:
-                                                Colors.grey.shade500),
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.grey.shade500,
+                                            ),
                                           ),
                                         )
                                       ],
@@ -547,7 +554,8 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                         ),
                       ),
                     ),
-                  ):
+                  )
+                      :
                   Container(
                     width: double.infinity,
                     height: AppDefaults.height(context) * 0.2,
@@ -711,37 +719,73 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                       onPressed: () {
                         if (buildingController.formKeyUpdate.currentState!
                             .validate()) {
-                          buildingController.updateProject(
-                              BuildingModel(
-                                id: widget.model.id.toString(),
-                                prospectName: buildingController
-                                    .prospectNameController.text,
-                                projectName: buildingController
-                                    .projectNameController.text,
-                                projectAddress: buildingController
-                                    .projectAddressController.text,
-                                floorNo:
-                                    buildingController.floorNoController.text,
-                                appointmentSize: buildingController
-                                    .appointmentSizeController.text,
-                                perSftPrice: int.parse(buildingController
-                                    .perSftPriceController.text),
-                                totalUnitPrice: double.parse(buildingController
-                                    .totalUnitPriceController.text),
-                                carParking: double.parse(buildingController
-                                    .carParkingController.text),
-                                unitCost: buildingController
-                                        .unitCostController.text.isNotEmpty
-                                    ? double.tryParse(buildingController
-                                            .unitCostController.text) ??
-                                        0.0
-                                    : 0.0,
-                                status: widget.model.status,
-                                totalCost: double.parse(buildingController
-                                    .totalCostController.text),
-                              ),
-                              imageController.resizedImagePath.value,
-                              context);
+
+                          if(kIsWeb){
+                            buildingController.updateProjectForWeb(
+                                BuildingModel(
+                                  id: widget.model.id.toString(),
+                                  prospectName: buildingController
+                                      .prospectNameController.text,
+                                  projectName: buildingController
+                                      .projectNameController.text,
+                                  projectAddress: buildingController
+                                      .projectAddressController.text,
+                                  floorNo:
+                                  buildingController.floorNoController.text,
+                                  appointmentSize: buildingController
+                                      .appointmentSizeController.text,
+                                  perSftPrice: int.parse(buildingController
+                                      .perSftPriceController.text),
+                                  totalUnitPrice: double.parse(buildingController
+                                      .totalUnitPriceController.text),
+                                  carParking: double.parse(buildingController
+                                      .carParkingController.text),
+                                  unitCost: buildingController
+                                      .unitCostController.text.isNotEmpty
+                                      ? double.tryParse(buildingController
+                                      .unitCostController.text) ??
+                                      0.0
+                                      : 0.0,
+                                  status: widget.model.status,
+                                  totalCost: double.parse(buildingController
+                                      .totalCostController.text),
+                                ),
+                                imageController.resizedImagePath.value,
+                                context);
+                          }else{
+                            buildingController.updateProject(
+                                BuildingModel(
+                                  id: widget.model.id.toString(),
+                                  prospectName: buildingController
+                                      .prospectNameController.text,
+                                  projectName: buildingController
+                                      .projectNameController.text,
+                                  projectAddress: buildingController
+                                      .projectAddressController.text,
+                                  floorNo:
+                                  buildingController.floorNoController.text,
+                                  appointmentSize: buildingController
+                                      .appointmentSizeController.text,
+                                  perSftPrice: int.parse(buildingController
+                                      .perSftPriceController.text),
+                                  totalUnitPrice: double.parse(buildingController
+                                      .totalUnitPriceController.text),
+                                  carParking: double.parse(buildingController
+                                      .carParkingController.text),
+                                  unitCost: buildingController
+                                      .unitCostController.text.isNotEmpty
+                                      ? double.tryParse(buildingController
+                                      .unitCostController.text) ??
+                                      0.0
+                                      : 0.0,
+                                  status: widget.model.status,
+                                  totalCost: double.parse(buildingController
+                                      .totalCostController.text),
+                                ),
+                                imageController.resizedImagePath.value,
+                                context);
+                          }
+
                         }
                       },
                       child: const Text("Update Building"))
