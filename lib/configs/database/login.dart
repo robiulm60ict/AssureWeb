@@ -8,27 +8,30 @@ class LocalDB {
     required String email,
     required String password,
   }) async {
-    final box = await Hive.openBox(loginBox);
-    box.put(loginBox, [email, password]);
+    final box = await Hive.openBox(loginBox); // Opens the box for access
+    box.put(loginBox, [email, password]);     // Stores the data as a list
     print('Stored login info in $loginBox box.');
   }
 
+
   //! GET Login Information
   static Future<List<String>?> getLoginInfo() async {
-    final box = await Hive.openBox(loginBox);
-    final info = box.get(loginBox) as List<dynamic>?; // Cast to List<dynamic>
+    final box = await Hive.openBox(loginBox);  // Opens the box for access
+    final info = box.get(loginBox) as List<dynamic>?;  // Retrieves the data
 
-    // Convert List<dynamic> to List<String>
+    // Converts List<dynamic> to List<String>
     if (info != null) {
-      return info.map((e) => e.toString()).toList(); // Ensure all elements are String
+      return info.map((e) => e.toString()).toList();
     }
-    return null; // Return null if info is null
+    return null; // Return null if no data found
   }
+
 
   //! DEL Login Information
   static Future<void> delLoginInfo() async {
-    final box = await Hive.openBox(loginBox);
-    await box.clear();
+    final box = await Hive.openBox(loginBox); // Opens the box for access
+    await box.clear();                        // Clears the box
     print('Cleared login info from $loginBox box.');
   }
+
 }

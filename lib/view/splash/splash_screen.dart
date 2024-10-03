@@ -53,7 +53,7 @@ class SplashScreenState extends State<SplashScreen>
     final myData = await LocalDB.getLoginInfo();
     if (myData == null) {
       AppRoutes.push(context, page: SignInPage());
-   //   context.go('/sign-in');
+      //   context.go('/sign-in');
     } else {
       AppRoutes.push(context, page: EntryPoint());
 
@@ -117,7 +117,7 @@ class SplashScreenState extends State<SplashScreen>
                     ),
                   ),
 
-                gapH24,
+                  gapH24,
 
                   AnimatedOpacity(
                     opacity: 0.5,

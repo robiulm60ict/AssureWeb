@@ -340,6 +340,124 @@ class _BuildingSetupState extends State<BuildingSetup> {
                 ),
                 gapH24,
                 // formInfo("Upload image"),
+
+                kIsWeb?
+                Container(
+                  width: double.infinity,
+                  height: AppDefaults.height(context) * 0.2,
+                  decoration: BoxDecoration(
+                      color: Colors.grey.shade200,
+                      borderRadius: BorderRadius.circular(12)),
+                  child: Center(
+                    child: Obx(
+                          () => Align(
+                        alignment: Alignment.center,
+                        child: InkWell(
+                          onTap: () async {
+                            final res = await showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                shape: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                actionsPadding: const EdgeInsets.all(16.0),
+                                alignment: Alignment.center,
+                                title: const Text(
+                                  "Choose Option",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                content: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ElevatedButton(
+                                      child: const Text("From Gallery"),
+                                      onPressed: () {
+                                        Navigator.pop(context, true);
+                                      },
+                                    ),
+                                    const SizedBox(height: 10.0),
+                                    Responsive.isMobile(context)?   ElevatedButton(
+                                      child: const Text("Take Photo"),
+                                      onPressed: () {
+                                        Navigator.pop(context, false);
+                                      },
+                                    ):Container(),
+                                  ],
+                                ),
+                              ),
+                            );
+                            if (res != null) {
+                              await imageController.pickImage(fromGallery: res);
+                            }
+                          },
+                          child: Stack(
+                            alignment: Alignment.bottomRight,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: imageController
+                                    .resizedImagePath.value.isNotEmpty
+                                    ? (kIsWeb
+                                    ? Image.network(
+                                  imageController
+                                      .resizedImagePath.value,
+                                  fit: BoxFit.cover,
+                                  width: 70.0,
+                                  height: 70.0,
+                                )
+                                    : Image.file(
+                                  File(imageController
+                                      .originalImagePath.value),
+                                  fit: BoxFit.cover,
+                                  width: 70.0,
+                                  height: 70.0,
+                                ))
+                                    : Container(
+                                  width: Responsive.isMobile(context)
+                                      ? AppDefaults.width(context) * 0.5
+                                      : AppDefaults.width(context) * 0.2,
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 6, horizontal: 10),
+                                  decoration: const BoxDecoration(
+                                      color: Colors.white),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.center,
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.center,
+                                    children: [
+                                      const HugeIcon(
+                                        icon: HugeIcons
+                                            .strokeRoundedUpload04,
+                                        color: Colors.black,
+                                        size: 24.0,
+                                      ),
+                                      gapW8,
+                                      SizedBox(
+                                        child: Text(
+                                          "Click or drop image",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              color:
+                                              Colors.grey.shade500),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ):
                 Container(
                   width: double.infinity,
                   height: AppDefaults.height(context) * 0.2,
@@ -482,43 +600,85 @@ class _BuildingSetupState extends State<BuildingSetup> {
                     onPressed: () {
                       //  buildingController.  uploadImageToFirebase(imageController.resizedImagePath.value);
                       if (buildingController.formKey.currentState!.validate()) {
-                        buildingController.uploadImageAndCreateProject(
-                          BuildingModel(
-                            id: "",
-                            prospectName:
-                                buildingController.prospectNameController.text,
-                            projectName:
-                                buildingController.projectNameController.text,
-                            projectAddress: buildingController
-                                .projectAddressController.text,
-                            floorNo: buildingController.floorNoController.text,
-                            appointmentSize: buildingController
-                                .appointmentSizeController.text,
-                            perSftPrice: int.parse(
-                                buildingController.perSftPriceController.text),
-                            totalUnitPrice: double.parse(buildingController
-                                .totalUnitPriceController.text),
-                            carParking: buildingController
-                                    .carParkingController.text.isNotEmpty
-                                ? double.tryParse(buildingController
-                                        .carParkingController.text) ??
-                                    0.0
-                                : 0.0,
-                            status: "available",
-                            unitCost: buildingController
-                                    .unitCostController.text.isNotEmpty
-                                ? double.tryParse(buildingController
-                                        .unitCostController.text) ??
-                                    0.0
-                                : 0.0,
-                            totalCost: double.parse(
-                                buildingController.totalCostController.text),
-                            createDateTime: DateTime.now(),
-                          ),
-                          imageController.resizedImagePath.value,
-                          // Pass the resized image path
-                          context,
-                        );
+
+                        if(!kIsWeb){
+                          buildingController.uploadImageAndCreateProject(
+                            BuildingModel(
+                              id: "",
+                              prospectName:
+                              buildingController.prospectNameController.text,
+                              projectName:
+                              buildingController.projectNameController.text,
+                              projectAddress: buildingController
+                                  .projectAddressController.text,
+                              floorNo: buildingController.floorNoController.text,
+                              appointmentSize: buildingController
+                                  .appointmentSizeController.text,
+                              perSftPrice: int.parse(
+                                  buildingController.perSftPriceController.text),
+                              totalUnitPrice: double.parse(buildingController
+                                  .totalUnitPriceController.text),
+                              carParking: buildingController
+                                  .carParkingController.text.isNotEmpty
+                                  ? double.tryParse(buildingController
+                                  .carParkingController.text) ??
+                                  0.0
+                                  : 0.0,
+                              status: "available",
+                              unitCost: buildingController
+                                  .unitCostController.text.isNotEmpty
+                                  ? double.tryParse(buildingController
+                                  .unitCostController.text) ??
+                                  0.0
+                                  : 0.0,
+                              totalCost: double.parse(
+                                  buildingController.totalCostController.text),
+                              createDateTime: DateTime.now(),
+                            ),
+                            imageController.resizedImagePath.value,
+                            // Pass the resized image path
+                            context,
+                          );
+                        }else{
+                          buildingController.uploadImageAndCreateProjectForWeb(
+                            BuildingModel(
+                              id: "",
+                              prospectName:
+                              buildingController.prospectNameController.text,
+                              projectName:
+                              buildingController.projectNameController.text,
+                              projectAddress: buildingController
+                                  .projectAddressController.text,
+                              floorNo: buildingController.floorNoController.text,
+                              appointmentSize: buildingController
+                                  .appointmentSizeController.text,
+                              perSftPrice: int.parse(
+                                  buildingController.perSftPriceController.text),
+                              totalUnitPrice: double.parse(buildingController
+                                  .totalUnitPriceController.text),
+                              carParking: buildingController
+                                  .carParkingController.text.isNotEmpty
+                                  ? double.tryParse(buildingController
+                                  .carParkingController.text) ??
+                                  0.0
+                                  : 0.0,
+                              status: "available",
+                              unitCost: buildingController
+                                  .unitCostController.text.isNotEmpty
+                                  ? double.tryParse(buildingController
+                                  .unitCostController.text) ??
+                                  0.0
+                                  : 0.0,
+                              totalCost: double.parse(
+                                  buildingController.totalCostController.text),
+                              createDateTime: DateTime.now(),
+                            ),
+                            imageController.resizedImagePath.value,
+                            // Pass the resized image path
+                            context,
+                          );
+                        }
+
                       }
                     },
                     child: const Text("Create Building"))

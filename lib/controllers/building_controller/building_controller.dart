@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import '../../model/buliding_model.dart';
 import '../../widgets/app_loader.dart';
 import '../../widgets/snackbar.dart';
+import 'dart:html' as html; // Import this for web compatibility
 
 class BuildingController extends GetxController {
   var projects = <BuildingModel>[].obs;
@@ -110,6 +111,98 @@ class BuildingController extends GetxController {
   }
 
 
+  //
+  Future<void> uploadImageAndCreateProjectForWeb(BuildingModel project, String? imagePath, BuildContext context) async {
+    appLoader(context, "Building, please wait...");
+    print(project.toFirestore());
+
+    try {
+      // Add the current timestamp for createDateTime
+      project.createDateTime = DateTime.now();
+
+      // Upload image to Firebase Storage only if imagePath is provided
+      String? imageUrl;
+      if (imagePath != null && imagePath.isNotEmpty) {
+        try {
+          imageUrl = await uploadImageToFirebaseForWeb(imagePath);
+          // If the image was uploaded successfully, set the image URL in the project object
+          project.image = imageUrl;
+        } catch (uploadError) {
+          print("Error uploading image: $uploadError");
+          wrongSnackBar(title: "Upload Error", "Failed to upload image: $uploadError");
+          // Optionally, you can decide to proceed without the image
+          // project.image = null; // Uncomment if you want to set it to null
+        }
+      }
+
+      // Save the project to Firestore
+      DocumentReference docRef = await fireStore.collection('building').add(project.toFirestore());
+      project.id = docRef.id;
+      projects.add(project);
+
+      clearData();
+      Navigator.pop(context);
+      dashbordScreenController.dataIndex.value = 2;
+      successSnackBar("Building created successfully!");
+
+    } catch (e, stackTrace) {
+      Navigator.pop(context);
+      wrongSnackBar(title: "Exception", "Failed to create building: $e");
+      print("Error adding project: $e");
+      print("StackTrace: $stackTrace");
+    }
+  }
+
+
+  Future<String?> uploadImageToFirebaseForWeb(String imagePath) async {
+    try {
+      // Create a reference to Firebase Storage
+      final storageRef = FirebaseStorage.instance.ref();
+
+      // Create a unique file name for the image
+      String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+      Reference imageRef = storageRef.child('building_images/$fileName.jpg');
+
+      print("Starting image upload...");
+
+      // Check if running on the web
+      if (kIsWeb) {
+        // For web, use a FileReader to read the file
+        final reader = html.FileReader();
+        final file = html.File([await html.window.fetch(imagePath).then((response) => response.blob())], imagePath);
+
+        // Upload the file as a Blob
+        reader.readAsArrayBuffer(file);
+        reader.onLoadEnd.listen((e) async {
+          Uint8List bytes = reader.result as Uint8List;
+          await imageRef.putData(bytes);
+        });
+
+        // Wait for the upload to complete
+        // You might want to use Future.delayed or a similar method to ensure the upload is complete.
+        await Future.delayed(const Duration(seconds: 2)); // Adjust duration as needed
+
+      } else {
+        // For mobile and desktop
+        UploadTask uploadTask = imageRef.putFile(File(imagePath));
+
+        uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
+          print('Upload progress: ${(snapshot.bytesTransferred / snapshot.totalBytes) * 100}%');
+        });
+
+        // Wait for the upload to complete
+        TaskSnapshot snapshot = await uploadTask;
+      }
+
+      // Get the download URL of the uploaded image
+      String imageUrl = await imageRef.getDownloadURL();
+      print("Image uploaded successfully. URL: $imageUrl");
+      return imageUrl;
+    } catch (e) {
+      print("Error uploading image: $e");
+      return null;
+    }
+  }
   Future<void> uploadImageAndCreateProject(BuildingModel project, String? imagePath, BuildContext context) async {
     appLoader(context, "Building, please wait...");
     try {
@@ -171,6 +264,7 @@ class BuildingController extends GetxController {
       return null;
     }
   }
+
 
 
 

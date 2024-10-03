@@ -35,8 +35,8 @@ class _CustomerAvatarState extends State<CustomerAvatar> {
         children: [
           ClipOval(
             child: CachedNetworkImage(
-              width: 60,
-              height: 60,
+              width: 55,
+              height: 55,
               fit: BoxFit.cover,
               imageUrl: widget.imageSrc.toString(),
               placeholder: (c, s) => const CircularProgressIndicator(),
