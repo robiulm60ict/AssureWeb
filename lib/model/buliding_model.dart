@@ -8,10 +8,10 @@ class BuildingModel {
   String floorNo;
   String appointmentSize;
   int perSftPrice;
-  double totalUnitPrice;
-  double? carParking;
-  double? unitCost;
-  double totalCost;
+  dynamic totalUnitPrice;
+  dynamic carParking;
+  dynamic unitCost;
+  dynamic totalCost;
   String? image; // New image field
   DateTime? createDateTime; // Auto-generated create time
   DateTime? updateDateTime; // Auto-updated when modified

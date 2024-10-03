@@ -98,10 +98,11 @@ class BuildingController extends GetxController {
 
       // Optionally, you can print the fetched projects for debugging
 
-    } catch (e) {
+    } catch (e,k) {
       // Handle any errors that occur during fetching
       if (kDebugMode) {
         print("Error fetching projects: $e");
+        print("Error fetching projects: $k");
       }
       // Optionally, you can show an error message to the user
     } finally {
