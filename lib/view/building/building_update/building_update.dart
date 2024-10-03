@@ -3,12 +3,12 @@ import 'dart:io';
 import 'package:assure_apps/configs/ghaps.dart';
 import 'package:assure_apps/configs/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 import '../../../configs/app_colors.dart';
 import '../../../configs/app_constants.dart';
-import '../../../configs/app_image.dart';
 import '../../../configs/defaults.dart';
 import '../../../model/buliding_model.dart';
 import '../../../responsive.dart';
@@ -72,7 +72,7 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                   children: [
                     IconButton(
                         onPressed: () {
-                      AppRoutes.pop(context);
+                          AppRoutes.pop(context);
                         },
                         icon: const HugeIcon(
                           icon: HugeIcons.strokeRoundedArrowLeft02,
@@ -248,8 +248,17 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                         child: AppTextField(
                           textInputAction: TextInputAction.next,
                           labelText: "Appointment Size",
-                          hintText: "Enter Your Appointment Size",
+                          hintText: "Ex : 200",
+                          suffixIcon: const Text(
+                            "Sft",
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                            textAlign: TextAlign.center,
+                          ),
                           keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(RegExp(
+                                r'^\d*\.?\d*')), // Allows integers and decimals
+                          ],
                           controller:
                               buildingController.appointmentSizeController,
                           labelColor: AppColors.textColorb1,
@@ -274,9 +283,14 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                           textInputAction: TextInputAction.next,
                           labelText: "Per sft. Price",
                           hintText: "Enter Your Per sft. Price",
-                          keyboardType: TextInputType.number,
+                          keyboardType:
+                              TextInputType.numberWithOptions(decimal: true),
                           controller: buildingController.perSftPriceController,
                           labelColor: AppColors.textColorb1,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(RegExp(
+                                r'^\d*\.?\d*')), // Allows integers and decimals
+                          ],
                           isBoldLabel: true,
                           hintColor: AppColors.grey,
                           textColor: AppColors.textColorb1,
@@ -326,9 +340,14 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                       Expanded(
                         child: AppTextField(
                           textInputAction: TextInputAction.next,
-                          labelText: "Car Parking",
-                          hintText: "Enter Your Car Parking",
-                          keyboardType: TextInputType.number,
+                          labelText: "Car Parking Cost",
+                          hintText: "Ex : 500",
+                          keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(RegExp(
+                                r'^\d*\.?\d*')), // Allows integers and decimals
+                          ],
                           // Numeric keyboard
                           controller: buildingController.carParkingController,
                           labelColor: AppColors.textColorb1,
@@ -359,8 +378,13 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                         child: AppTextField(
                           textInputAction: TextInputAction.next,
                           labelText: "Unit Cost",
-                          hintText: "Enter Your Unit Cost",
-                          keyboardType: TextInputType.number,
+                          hintText: "Ex : 500",
+                          keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(RegExp(
+                                r'^\d*\.?\d*')), // Allows integers and decimals
+                          ],
                           controller: buildingController.unitCostController,
                           labelColor: AppColors.textColorb1,
                           isBoldLabel: true,
@@ -405,7 +429,6 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                       ),
                     ],
                   ),
-
                   gapH24,
                   Container(
                     width: double.infinity,
@@ -415,143 +438,150 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                         borderRadius: BorderRadius.circular(12)),
                     child: Center(
                       child: Obx(
-                            () =>
-                            Align(
-                              alignment: Alignment.center,
-                              child: InkWell(
-                                  onTap: () async {
-                                    final res = await showDialog(
-                                      context: context,
-                                      builder: (context) =>
-                                          AlertDialog(
-                                            shape: OutlineInputBorder(
-                                              borderRadius: BorderRadius
-                                                  .circular(8.0),
-                                            ),
-                                            actionsPadding: const EdgeInsets
-                                                .all(16.0),
-                                            alignment: Alignment.center,
-                                            title: const Text(
-                                              "Choose Option",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                fontSize: 16.0,
-                                                fontWeight: FontWeight.w700,
-                                              ),
-                                            ),
-                                            content: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                ElevatedButton(
-                                                  child: const Text(
-                                                      "From Gallery"),
-                                                  onPressed: () {
-                                                    Navigator.pop(
-                                                        context, true);
-                                                  },
-                                                ),
-                                                const SizedBox(height: 10.0),
-                                                ElevatedButton(
-                                                  child: const Text(
-                                                      "Take Photo"),
-                                                  onPressed: () {
-                                                    Navigator.pop(
-                                                        context, false);
-                                                  },
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                    );
-                                    if (res != null) {
-                                      await imageController.pickImage(
-                                          fromGallery: res);
-                                    } else {
-                                      // Get.snackbar(
-                                      //     '', 'Select an option to continue');
-                                    }
-                                  },
-                                  child: Stack(
-                                    alignment: Alignment.bottomRight,
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(10),
-                                        // Adjust the radius as needed
-                                        child: imageController
-                                            .resizedImagePath.value.isNotEmpty
-                                            ? Container(
-                                          width: 70.0,
-                                          height: 70.0,
-                                          decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                              image: FileImage(File(
-                                                  imageController
-                                                      .originalImagePath
-                                                      .value)),
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                        )
-                                            :buildingController.imageUrl.toString().split("/").last != "null"
-                                            ? Image.network(
-                                          buildingController.imageUrl
-                                              .toString(),
-                                          width: 70.0,
-                                          height: 70.0,
-                                          fit: BoxFit.cover,
-                                        ): Container(
-                                          width: Responsive.isMobile(context)
-                                              ? AppDefaults.width(context) *
-                                              0.5:AppDefaults.width(context) *
-                                              0.2,
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 6, horizontal: 10),
-                                          decoration: const BoxDecoration(
-                                              color: Colors.white),
-                                          child: Row(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                            children: [
-                                              const HugeIcon(
-                                                icon: HugeIcons
-                                                    .strokeRoundedUpload04,
-                                                color: Colors.black,
-                                                size: 24.0,
-                                              ),
-                                              gapW8,
-                                              SizedBox(
-
-                                                // width: AppDefaults.width(
-                                                //   context) *
-                                                //   0.3,
-                                                child: Text(
-                                                  "Click or drop image",
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                      FontWeight.w500,
-                                                      color:
-                                                      Colors.grey.shade500),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
+                        () => Align(
+                          alignment: Alignment.center,
+                          child: InkWell(
+                              onTap: () async {
+                                final res = await showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    shape: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                    ),
+                                    actionsPadding: const EdgeInsets.all(16.0),
+                                    alignment: Alignment.center,
+                                    title: const Text(
+                                      "Choose Option",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.w700,
                                       ),
-                                      // const Positioned(
-                                      //   right: 4,
-                                      //   child: Icon(
-                                      //     Icons.camera_alt_outlined,
-                                      //     size: 18.0,
-                                      //     color: Colors.blue,
-                                      //   ),
-                                      // ),
-                                    ],
-                                  )),
-                            ),
+                                    ),
+                                    content: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        ElevatedButton(
+                                          child: const Text("From Gallery"),
+                                          onPressed: () {
+                                            Navigator.pop(context, true);
+                                          },
+                                        ),
+                                        const SizedBox(height: 10.0),
+
+                                        Responsive.isMobile(context)?
+                                        ElevatedButton(
+                                          child: const Text("Take Photo"),
+                                          onPressed: () {
+                                            Navigator.pop(context, false);
+                                          },
+                                        ):Container()
+
+
+                                      ,
+                                      ],
+                                    ),
+                                  ),
+                                );
+                                if (res != null) {
+                                  await imageController.pickImage(
+                                      fromGallery: res);
+                                } else {
+                                  // Get.snackbar(
+                                  //     '', 'Select an option to continue');
+                                }
+                              },
+                              child: Stack(
+                                alignment: Alignment.bottomRight,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    // Adjust the radius as needed
+                                    child: imageController
+                                            .resizedImagePath.value.isNotEmpty
+                                        ? Container(
+                                            width: 70.0,
+                                            height: 70.0,
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                image: FileImage(File(
+                                                    imageController
+                                                        .originalImagePath
+                                                        .value)),
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          )
+                                        : buildingController.imageUrl
+                                                    .toString()
+                                                    .split("/")
+                                                    .last !=
+                                                "null"
+                                            ? Image.network(
+                                                buildingController.imageUrl
+                                                    .toString(),
+                                                width: 70.0,
+                                                height: 70.0,
+                                                fit: BoxFit.cover,
+                                              )
+                                            : Container(
+                                                width:
+                                                    Responsive.isMobile(context)
+                                                        ? AppDefaults.width(
+                                                                context) *
+                                                            0.5
+                                                        : AppDefaults.width(
+                                                                context) *
+                                                            0.2,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 6,
+                                                        horizontal: 10),
+                                                decoration: const BoxDecoration(
+                                                    color: Colors.white),
+                                                child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    const HugeIcon(
+                                                      icon: HugeIcons
+                                                          .strokeRoundedUpload04,
+                                                      color: Colors.black,
+                                                      size: 24.0,
+                                                    ),
+                                                    gapW8,
+                                                    SizedBox(
+                                                      // width: AppDefaults.width(
+                                                      //   context) *
+                                                      //   0.3,
+                                                      child: Text(
+                                                        "Click or drop image",
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color: Colors
+                                                                .grey.shade500),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                  ),
+                                  // const Positioned(
+                                  //   right: 4,
+                                  //   child: Icon(
+                                  //     Icons.camera_alt_outlined,
+                                  //     size: 18.0,
+                                  //     color: Colors.blue,
+                                  //   ),
+                                  // ),
+                                ],
+                              )),
+                        ),
                       ),
                     ),
                   ),

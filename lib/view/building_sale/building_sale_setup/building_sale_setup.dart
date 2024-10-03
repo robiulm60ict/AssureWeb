@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:assure_apps/configs/ghaps.dart';
 import 'package:assure_apps/model/buliding_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 
@@ -98,7 +99,8 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                         ),
                       ),
                       gapH8,
-                      Row(crossAxisAlignment: CrossAxisAlignment.start,
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
                             flex: 1,
@@ -126,12 +128,18 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                             child: AppTextField(
                               textInputAction: TextInputAction.done,
                               labelText: "Booking & Down Payment",
-                              hintText: "0.00 %",
-                              keyboardType: TextInputType.number,
+                              hintText: "Ex : 10 %",
+                              keyboardType: const TextInputType.numberWithOptions(
+                                  decimal: true),
                               controller: buildingSaleController
                                   .paymentBookingPercentageCountController,
                               labelColor: AppColors.textColorb1,
                               isBoldLabel: true,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d*\.?\d*')),
+                                // Allows integers and decimals
+                              ],
                               hintColor: AppColors.grey,
                               textColor: AppColors.textColorb1,
                               isRequired: true,
@@ -153,7 +161,8 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                         ],
                       ),
                       gapH8,
-                      Row(crossAxisAlignment: CrossAxisAlignment.start,
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
                               child: AppTextField(
@@ -212,7 +221,8 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                         ],
                       ),
                       gapH8,
-                      Row(crossAxisAlignment: CrossAxisAlignment.start,
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
                             child: AppTextField(
@@ -220,6 +230,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                               labelText: "Amount Off Installment",
                               hintText: "0.00",
                               readOnly: true,
+
                               keyboardType: TextInputType.number,
                               controller: buildingSaleController
                                   .amountInstallmentController,
@@ -242,7 +253,11 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                             child: AppTextField(
                               textInputAction: TextInputAction.done,
                               labelText: "Number of Installment",
-                              hintText: "Enter Installment",
+                              hintText: "Ex : 5",
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+
+                              ],
                               keyboardType: TextInputType.number,
                               controller: buildingSaleController
                                   .installmentCountController,
@@ -466,6 +481,9 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                                         controller: buildingSaleController
                                             .customerPhoneController,
                                         labelColor: AppColors.textColorb1,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(RegExp(r'[0-9-()+ ]')),
+                                        ],
                                         isBoldLabel: true,
                                         hintColor: AppColors.grey,
                                         textColor: AppColors.textColorb1,
@@ -490,6 +508,10 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                                         textInputAction: TextInputAction.done,
                                         labelText: "Customer Email",
                                         hintText: "Enter Customer Email",
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9@._-]')),  // Allows alphanumeric, '@', '.', '_', '-'
+
+                                        ],
                                         keyboardType:
                                             TextInputType.emailAddress,
                                         controller: buildingSaleController
@@ -499,12 +521,12 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                                         hintColor: AppColors.grey,
                                         textColor: AppColors.textColorb1,
                                         isRequired: false,
-                                        // validator: (value) {
-                                        //   if (value!.isEmpty) {
-                                        //     return "Please enter your customer email ";
-                                        //   }
-                                        //   return null;
-                                        // },
+                                        validator: (value) {
+                                          if (value != null && value.isNotEmpty && !RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                                            return 'Please enter a valid email';
+                                          }
+                                          return null;
+                                        },
                                         onChanged: (p0) {},
                                       ),
                                     ),
@@ -715,12 +737,14 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                                         },
                                       ),
                                       const SizedBox(height: 10.0),
+
+                                      Responsive.isMobile(context)?
                                       ElevatedButton(
                                         child: const Text("Take Photo"),
                                         onPressed: () {
                                           Navigator.pop(context, false);
                                         },
-                                      ),
+                                      ):Container(),
                                     ],
                                   ),
                                 ),

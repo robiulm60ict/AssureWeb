@@ -48,7 +48,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     customerController.isLoadingFilter.value == true
                         ? const AppShimmer()
                         : const Overview(),
-                    if (Responsive.isMobile(context)) gapH16,
+                    if (Responsive.isMobile(context)||Responsive.isTablet(context)) gapH16,
                     if (Responsive.isMobile(context)||Responsive.isTablet(context)) const PopularProducts(),
                     gapH16,
                     reportController.isDateFilterLoading.value == true
@@ -58,7 +58,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 ),
               ),
             ),
-            if (Responsive.isTablet(context))
+            if (Responsive.isDesktop(context))
               gapW16,
             if (Responsive.isDesktop(context))
               const Expanded(

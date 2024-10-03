@@ -31,10 +31,18 @@ class _PopularProductItemState extends State<PopularProductItem> {
   @override
   Widget build(BuildContext context) {
     return Container(
+
       padding: const EdgeInsets.symmetric(
         horizontal: AppDefaults.padding * 0.5,
         vertical: AppDefaults.padding * 0.75,
       ),
+    decoration: BoxDecoration( 
+      
+      borderRadius: BorderRadius.circular(8),
+      color: Colors.black12.withOpacity(0.1),),
+
+
+      margin: EdgeInsets.symmetric(vertical: 3),
       child: InkWell(
         onTap: widget.onPressed,
         onHover: (value) {

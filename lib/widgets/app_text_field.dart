@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../configs/app_colors.dart';
 import '../configs/defaults.dart';
@@ -26,6 +27,7 @@ class AppTextField extends StatelessWidget {
     this.fillColor,
     this.labelColor,
     this.hintColor,
+    this.inputFormatters,
     this.textColor,
     this.isRequired,
     this.onTap
@@ -36,6 +38,7 @@ class AppTextField extends StatelessWidget {
   final TextInputAction textInputAction;
   final TextInputType keyboardType;
   final TextEditingController controller;
+  final List<TextInputFormatter>? inputFormatters;
   final bool? obscureText;
   final Widget? suffixIcon;
   final Widget? prefixIcon;
@@ -92,6 +95,7 @@ class AppTextField extends StatelessWidget {
           onChanged: onChanged,
           autofocus: autofocus ?? false,
           validator: validator,
+          inputFormatters: inputFormatters,
           obscureText: obscureText ?? false,
           obscuringCharacter: '*',
           onEditingComplete: onEditingComplete,
