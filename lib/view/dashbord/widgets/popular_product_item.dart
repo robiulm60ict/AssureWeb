@@ -39,7 +39,8 @@ class _PopularProductItemState extends State<PopularProductItem> {
     decoration: BoxDecoration( 
       
       borderRadius: BorderRadius.circular(8),
-      color: Colors.black12.withOpacity(0.1),),
+      // color: Colors.black12.withOpacity(0.1),
+    ),
 
 
       margin: const EdgeInsets.symmetric(vertical: 3),
