@@ -29,9 +29,10 @@ class BuildingSalePaymentReportController extends GetxController {
 
   RxDouble totalAmount = 0.0.obs; // To hold the total amount
   RxDouble totalSalesAmount = 0.0.obs; // To hold the total amount
+  String valueData = "All time"; // Initialize with a default value
   Future<void> fetchAllBuildingSales({String dateFilter = "All time"}) async {
     try {
-      isDateLoading.value=true;
+      isDateLoading.value = true;
       QuerySnapshot buildingSaleSnapshot;
 
       // Get the current date to filter based on time periods
@@ -42,6 +43,7 @@ class BuildingSalePaymentReportController extends GetxController {
         DateTime startOfYear = DateTime(now.year, 1, 1);
         buildingSaleSnapshot = await fireStore
             .collection('BookingSalePaymentReport')
+            .orderBy('DateTime')
             .where('DateTime', isGreaterThanOrEqualTo: startOfYear)
             .get();
       } else if (dateFilter == "Month") {
@@ -49,6 +51,7 @@ class BuildingSalePaymentReportController extends GetxController {
         DateTime startOfMonth = DateTime(now.year, now.month, 1);
         buildingSaleSnapshot = await fireStore
             .collection('BookingSalePaymentReport')
+            .orderBy('DateTime')
             .where('DateTime', isGreaterThanOrEqualTo: startOfMonth)
             .get();
       } else if (dateFilter == "Week") {
@@ -56,11 +59,13 @@ class BuildingSalePaymentReportController extends GetxController {
         DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
         buildingSaleSnapshot = await fireStore
             .collection('BookingSalePaymentReport')
+            .orderBy('DateTime')
             .where('DateTime', isGreaterThanOrEqualTo: startOfWeek)
             .get();
       } else {
         // No filtering, get all sales
-        buildingSaleSnapshot = await fireStore.collection('BookingSalePaymentReport').get();
+        buildingSaleSnapshot =
+        await fireStore.collection('BookingSalePaymentReport').get();
       }
 
       List<Map<String, dynamic>> allBuildingSales = [];
@@ -71,50 +76,50 @@ class BuildingSalePaymentReportController extends GetxController {
         String documentId = doc.id;
         Map<String, dynamic> buildingSaleData =
         doc.data() as Map<String, dynamic>;
-        double amount = double.parse(buildingSaleData['Amount'].toString());
-        Timestamp date = buildingSaleData['DateTime'];
 
-        // Assuming you want to group sales by day:
-        int dayOfYear = date.toDate().day; // Grouping by day of year
+        // Ensure fields 'Amount' and 'DateTime' exist
+        double? amount = buildingSaleData['Amount'] != null
+            ? double.parse(buildingSaleData['Amount'].toString())
+            : null;
+        Timestamp? date = buildingSaleData['DateTime'];
 
-        // Add sales to the respective day
-        if (dailySales.containsKey(dayOfYear)) {
-          dailySales[dayOfYear] = dailySales[dayOfYear]! + amount;
+        if (amount != null && date != null) {
+          DateTime saleDate = date.toDate();
+
+          // Grouping by day of the year
+          int dayOfYear = DateTime(saleDate.year, saleDate.month, saleDate.day)
+              .difference(DateTime(saleDate.year))
+              .inDays + 1;
+
+          // Add sales to the respective day
+          if (dailySales.containsKey(dayOfYear)) {
+            dailySales[dayOfYear] = dailySales[dayOfYear]! + amount;
+          } else {
+            dailySales[dayOfYear] = amount;
+          }
+
+          totalAmount += amount;
+
+          // Add the document to the buildingSales list
+          allBuildingSales.add({
+            "SalePaymentReport": buildingSaleData,
+          });
         } else {
-          dailySales[dayOfYear] = amount;
+          print('Skipping invalid document: $buildingSaleData');
         }
-
-        totalAmount += amount;
-
-        // You can also include customer and building data if needed
-        String? customerId = buildingSaleData["customerId"];
-        String? buildingId = buildingSaleData["buildingId"];
-        DocumentSnapshot customerDoc =
-        await fireStore.collection('customer').doc(customerId).get();
-        DocumentSnapshot buildingDoc =
-        await fireStore.collection('building').doc(buildingId).get();
-        Map<String, dynamic>? customerData =
-        customerDoc.exists ? customerDoc.data() as Map<String, dynamic> : {};
-        Map<String, dynamic>? buildingData =
-        buildingDoc.exists ? buildingDoc.data() as Map<String, dynamic> : {};
-
-        allBuildingSales.add({
-          "documentId": documentId,
-          "SalePaymentReport": buildingSaleData,
-          "customer": customerData,
-          "building": buildingData,
-        });
       }
 
+      // Update state with fetched data
       salesData.value = dailySales.values.toList();
       buildingSales.value = allBuildingSales;
-      print("buildingSales${buildingSales.length}");
-      print("totalAmount${totalAmount}");
       totalSalesAmount.value = totalAmount;
-      isDateLoading.value=false;
-    } catch (e) {
-      isDateLoading.value=false;
 
+      print("buildingSales count: ${buildingSales.length}");
+      print("Total amount: $totalAmount");
+
+      isDateLoading.value = false;
+    } catch (e) {
+      isDateLoading.value = false;
       print("Error fetching building sales data: $e");
     }
   }
