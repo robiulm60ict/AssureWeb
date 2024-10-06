@@ -8,7 +8,6 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'configs/app_theme.dart';
 import 'configs/database/login.dart';
-import 'configs/routes.dart';
 import 'firebase_options.dart';
 import 'view/splash/splash_screen.dart';
 
