@@ -76,7 +76,7 @@ class _OverviewState extends State<Overview> {
                           customerController.fetchCustomerFilter(
                               dateFilter: newValue
                           );
-                        });
+                       });
                       }
                     },
                   ),

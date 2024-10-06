@@ -70,7 +70,10 @@ class CustomerController extends GetxController {
       // Query Firestore based on the date range
       final snapshot = await fireStore
           .collection('customer')
+
           .where('DateTime', isGreaterThanOrEqualTo: startDate) // Assuming `createDateTime` field in Firestore
+          .orderBy('DateTime', descending: true)  // Order by DateTime in descending order
+
           .get();
 
       // Map the documents to CustomerModel instances

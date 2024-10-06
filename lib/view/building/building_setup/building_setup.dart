@@ -291,7 +291,7 @@ class _BuildingSetupState extends State<BuildingSetup> {
                     Expanded(
                       child: AppTextField(
                         textInputAction: TextInputAction.next,
-                        labelText: "Unit Cost",
+                        labelText: "Utility Cost",
                         hintText: "Ex : 1000",
                         keyboardType: const TextInputType.numberWithOptions(decimal: true),
                         controller: buildingController.unitCostController,

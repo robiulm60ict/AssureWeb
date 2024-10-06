@@ -77,77 +77,80 @@ class _ProductOverviewsState extends State<ProductOverviews> {
           enabled: false,
           child: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-              return Column(
-                children: [
-                  Container(
-                    width: double.maxFinite,
-                    padding: const EdgeInsets.only(
-                        top: 5, bottom: 10, left: 20, right: 10),
-                    decoration: const BoxDecoration(
-                      // borderRadius: BorderRadius.all(Radius.circular(10)),
-                      color: Color.fromARGB(255, 248, 248, 248),
+              return  MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: Column(
+                  children: [
+                    Container(
+                      width: double.maxFinite,
+                      padding: const EdgeInsets.only(
+                          top: 5, bottom: 10, left: 20, right: 10),
+                      decoration: const BoxDecoration(
+                        // borderRadius: BorderRadius.all(Radius.circular(10)),
+                        color: Color.fromARGB(255, 248, 248, 248),
+                      ),
+                      child: const Text('Filter'),
                     ),
-                    child: const Text('Filter'),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(4),
-                    color: Colors.white,
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              CustomDateRange(
-                                label: "Start Date",
-                                date: startDate,
-                                onTap: () => _selectDateRange(setState),
-                              ),
-                              const SizedBox(height: 10),
-                              CustomDateRange(
-                                label: "End Date",
-                                date: endDate,
-                                onTap: () => _selectDateRange(setState),
-                              ),
-                            ],
+                    Container(
+                      padding: const EdgeInsets.all(4),
+                      color: Colors.white,
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                CustomDateRange(
+                                  label: "Start Date",
+                                  date: startDate,
+                                  onTap: () => _selectDateRange(setState),
+                                ),
+                                const SizedBox(height: 10),
+                                CustomDateRange(
+                                  label: "End Date",
+                                  date: endDate,
+                                  onTap: () => _selectDateRange(setState),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 10),
-                      ],
+                          const SizedBox(height: 10),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              startDate = DateTime(now.year, now.month, 1);
-                              endDate = DateTime(now.year, now.month + 1, 0);
-                              reportController.fetchAllBuildingSalesDateRange(
-                                  startDate: startDate, endDate: endDate);
-                            });
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text(
-                            'Clear',
-                            style: TextStyle(color: Colors.red),
+                    const SizedBox(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                startDate = DateTime(now.year, now.month, 1);
+                                endDate = DateTime(now.year, now.month + 1, 0);
+                                reportController.fetchAllBuildingSalesDateRange(
+                                    startDate: startDate, endDate: endDate);
+                              });
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text(
+                              'Clear',
+                              style: TextStyle(color: Colors.red),
+                            ),
                           ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text('Close'),
-                        ),
-                      ],
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Close'),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               );
             },
           ),
@@ -173,63 +176,39 @@ class _ProductOverviewsState extends State<ProductOverviews> {
                 title: "Building Sales views",
                 color: AppColors.secondaryLavender,
               ),   const Spacer(),
-              InkWell(
-                onTapDown: (TapDownDetails details) {
-                  _showFilterMenu(context, details.globalPosition);
-                },
-                child: Container(
-                  margin: const EdgeInsets.only(left: 5),
-                  padding: const EdgeInsets.all(13),
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 248, 248, 248),
-                    borderRadius: BorderRadius.circular(5),
-                    border: Border.all(
-                        color: const Color.fromARGB(38, 0, 0, 0), width: 0.3),
-                  ),
-                  child:  const Row(
-                    children: [
-                      Icon(Iconsax.setting_3, size: 20, color: AppColors.primary),
-                      SizedBox(
-                        width: 6,
-                      ),
-                      Text(
-                        "Filter",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w300, color: AppColors.grey),
-                      )
-                    ],
+              MouseRegion(
+                cursor: SystemMouseCursors.click, // Change this to the desired cursor type
+                child: InkWell(
+                  onTapDown: (TapDownDetails details) {
+                    _showFilterMenu(context, details.globalPosition);
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(left: 5),
+                    padding: const EdgeInsets.all(13),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 248, 248, 248),
+                      borderRadius: BorderRadius.circular(5),
+                      border: Border.all(
+                          color: const Color.fromARGB(38, 0, 0, 0), width: 0.3),
+                    ),
+                    child: const Row(
+                      children: [
+                        Icon(Iconsax.setting_3, size: 20, color: AppColors.primary),
+                        SizedBox(
+                          width: 6,
+                        ),
+                        Text(
+                          "Filter",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w300, color: AppColors.grey),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
+              )
 
 
-              // Container(
-              //   decoration: BoxDecoration(
-              //     borderRadius: const BorderRadius.all(
-              //         Radius.circular(AppDefaults.borderRadius)),
-              //     border: Border.all(width: 2, color: AppColors.highlightLight),
-              //   ),
-              //   child: DropdownButton(
-              //     padding:  EdgeInsets.symmetric(
-              //         horizontal: Responsive.isMobile(context)?4:   AppDefaults.padding, vertical: 0),
-              //     style: Theme.of(context).textTheme.labelLarge,
-              //     borderRadius: const BorderRadius.all(
-              //         Radius.circular(AppDefaults.borderRadius)),
-              //     underline: const SizedBox(),
-              //     value: "Last 7 days",
-              //     items: const [
-              //       DropdownMenuItem(
-              //         value: "Last 7 days",
-              //         child: Text("Last 7 days"),
-              //       ),
-              //       DropdownMenuItem(
-              //         value: "All time",
-              //         child: Text("All time"),
-              //       ),
-              //     ],
-              //     onChanged: (value) {},
-              //   ),
-              // ),
             ],
           ),
           gapH24,
@@ -395,7 +374,6 @@ class BarChartSample1State extends State<BarChartSample8> {
   }
 }
 
-
 class BuildingSalesViewReport extends StatefulWidget {
   const BuildingSalesViewReport({super.key});
 
@@ -413,11 +391,11 @@ class _BuildingSalesViewReportState extends State<BuildingSalesViewReport> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: AppColors.white,
-        borderRadius: const BorderRadius.all(
-        Radius.circular(AppDefaults.borderRadius)),
-    border: Border.all(width: 2, color: AppColors.highlightLight)),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: const BorderRadius.all(Radius.circular(AppDefaults.borderRadius)),
+        border: Border.all(width: 2, color: AppColors.highlightLight),
+      ),
       height: 320,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -454,8 +432,8 @@ class _BuildingSalesViewReportState extends State<BuildingSalesViewReport> {
   // Function to build the BarChart with dynamic data
   BarChartData dynamicData() {
     return BarChartData(
-      maxY: reportController.salesData.isNotEmpty
-          ? reportController.salesData.reduce((a, b) => a > b ? a : b) + 10 // Dynamic max value based on sales data
+      maxY: reportController.salesDataReport.isNotEmpty
+          ? reportController.salesDataReport.reduce((a, b) => a > b ? a : b) + 10 // Dynamic max value based on sales data
           : 30, // Default max value if no sales data available
       barTouchData: BarTouchData(
         enabled: true, // Enable touch interaction on the bar chart
@@ -468,7 +446,7 @@ class _BuildingSalesViewReportState extends State<BuildingSalesViewReport> {
             getTitlesWidget: (value, meta) {
               final int index = value.toInt();
               // Ensure the index is within the bounds of the sales data list
-              if (index < reportController.salesData.length) {
+              if (index < reportController.salesDataReport.length) {
                 return SideTitleWidget(
                   axisSide: meta.axisSide,
                   child: Text('Day ${index + 1}'), // Display 'Day' followed by the correct index
@@ -492,8 +470,8 @@ class _BuildingSalesViewReportState extends State<BuildingSalesViewReport> {
       ),
       borderData: FlBorderData(show: false), // Disable the border around the chart
       barGroups: List.generate(
-        reportController.salesData.length,
-            (i) => makeGroupData(i, reportController.salesData[i]), // Generate bar data for each day
+        reportController.salesDataReport.length,
+            (i) => makeGroupData(i, reportController.salesDataReport[i]), // Generate bar data for each day
       ),
       gridData: const FlGridData(
         show: true,
@@ -501,6 +479,6 @@ class _BuildingSalesViewReportState extends State<BuildingSalesViewReport> {
       ),
     );
   }
-
 }
+
 

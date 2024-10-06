@@ -210,7 +210,7 @@ void showAlertDialog(BuildingModel project, BuildContext context) {
                           RichText(
                               text: TextSpan(children: [
                                 const TextSpan(
-                                  text: "Unit Cost : ",
+                                  text: "Utility Cost : ",
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.w400,
