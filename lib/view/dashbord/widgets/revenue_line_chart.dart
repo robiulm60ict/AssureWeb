@@ -1,36 +1,49 @@
+
 import 'package:assure_apps/configs/app_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../../configs/app_colors.dart';
+
 
 class RevenueData {
-  final double amount;
-  final DateTime date;
+  double amount;
+  DateTime date;
 
   RevenueData(this.amount, this.date);
 }
 
+extension DateTimeExtension on DateTime {
+  int get weekOfYear {
+    // Using ISO week date
+    final firstDayOfYear = DateTime(this.year, 1, 1);
+    int daysOffset = firstDayOfYear.weekday - DateTime.monday;
+    DateTime adjustedDate = this.subtract(Duration(days: daysOffset));
+    int weekNumber = adjustedDate.difference(firstDayOfYear).inDays ~/ 7 + 1;
+    return weekNumber;
+  }
+}
 
 class RevenueLineChart extends StatelessWidget {
   final List<RevenueData> revenueData;
+  final String dateFilter;
 
   const RevenueLineChart({
     Key? key,
     required this.revenueData,
+    required this.dateFilter,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return LineChart(
       sampleData,
-      duration: const Duration(milliseconds: 250),
+      // swapAnimationDuration: const Duration(milliseconds: 250),
     );
   }
 
   LineChartData get sampleData {
-    // Generate a full list of months from the first to the last entry
+    // Generate a full list of periods based on the filter
     final fullRevenueData = generateFullRevenueData(revenueData);
 
     final spots = fullRevenueData
@@ -39,7 +52,7 @@ class RevenueLineChart extends StatelessWidget {
         .map((entry) => FlSpot(entry.key.toDouble(), entry.value.amount))
         .toList();
 
-    // Fallback value if fullRevenueData is empty
+    // Determine the maximum revenue for setting the chart's Y-axis
     final maxRevenue = fullRevenueData.isNotEmpty
         ? fullRevenueData.map((data) => data.amount).reduce((a, b) => a > b ? a : b)
         : 0.0;
@@ -47,150 +60,289 @@ class RevenueLineChart extends StatelessWidget {
     return LineChartData(
       lineTouchData: lineTouchData,
       gridData: gridData,
-      titlesData: titlesData,
+      titlesData: titlesData(fullRevenueData),
       borderData: borderData,
       lineBarsData: [lineChartBarData(spots)],
       minX: 0,
-      maxX: fullRevenueData.length.toDouble() - 1,
-      maxY: maxRevenue * 1.1, // Only multiply when there's data
-      minY: 0, // Set minY to 0 for better display
+      maxX: (fullRevenueData.length - 1).toDouble(),
+      maxY: maxRevenue * 1.1, // Add some padding to the top
+      minY: 0, // Start Y-axis at 0
     );
   }
 
-  // Function to generate full list of months
+  // Function to generate full list based on filter
   List<RevenueData> generateFullRevenueData(List<RevenueData> revenueData) {
     if (revenueData.isEmpty) return [];
 
-    // Sort by date in case they are out of order
+    // Sort the data by date
     revenueData.sort((a, b) => a.date.compareTo(b.date));
 
-    DateTime currentDate = DateTime(revenueData.first.date.year, revenueData.first.date.month);
-    DateTime lastDate = DateTime(revenueData.last.date.year, revenueData.last.date.month);
-
     List<RevenueData> fullRevenueData = [];
-    int currentIndex = 0;
 
-    while (currentDate.isBefore(lastDate) || currentDate.isAtSameMomentAs(lastDate)) {
-      if (currentIndex < revenueData.length &&
-          revenueData[currentIndex].date.year == currentDate.year &&
-          revenueData[currentIndex].date.month == currentDate.month) {
-        fullRevenueData.add(revenueData[currentIndex]);
-        currentIndex++;
-      } else {
-        fullRevenueData.add(RevenueData(0, currentDate)); // Add a placeholder for missing months
-      }
+    switch (dateFilter) {
+      case "This year":
+      case "All time":
+      // Group by month
+        fullRevenueData = _groupByMonth(revenueData);
+        break;
 
-      // Move to next month
-      currentDate = DateTime(currentDate.year, currentDate.month + 1);
+      case "Month":
+      // Group by week within the month
+        fullRevenueData = _groupByWeek(revenueData);
+        break;
+
+      case "Week":
+      // Group by day within the current week
+        fullRevenueData = _groupByDay(revenueData);
+        break;
+
+      default:
+      // Default to grouping by month
+        fullRevenueData = _groupByMonth(revenueData);
     }
 
     return fullRevenueData;
   }
 
+  // Helper methods for grouping
+  List<RevenueData> _groupByMonth(List<RevenueData> revenueData) {
+    List<RevenueData> groupedData = [];
+    int currentMonth = -1;
+    double monthlyTotal = 0.0;
+    DateTime? currentDate;
+
+    for (var data in revenueData) {
+      if (data.date.month != currentMonth) {
+        if (currentMonth != -1) {
+          groupedData.add(RevenueData(monthlyTotal, currentDate!));
+        }
+        currentMonth = data.date.month;
+        monthlyTotal = data.amount;
+        currentDate = DateTime(data.date.year, data.date.month);
+      } else {
+        monthlyTotal += data.amount;
+      }
+    }
+
+    // Add the last month
+    if (currentMonth != -1) {
+      groupedData.add(RevenueData(monthlyTotal, currentDate!));
+    }
+
+    return groupedData;
+  }
+
+  List<RevenueData> _groupByWeek(List<RevenueData> revenueData) {
+    List<RevenueData> groupedData = [];
+    int currentWeek = -1;
+    double weeklyTotal = 0.0;
+    DateTime? currentDate;
+
+    for (var data in revenueData) {
+      int weekNumber = data.date.weekOfYear;
+
+      if (weekNumber != currentWeek) {
+        if (currentWeek != -1) {
+          groupedData.add(RevenueData(weeklyTotal, currentDate!));
+        }
+        currentWeek = weekNumber;
+        weeklyTotal = data.amount;
+        currentDate = _startOfWeek(data.date);
+      } else {
+        weeklyTotal += data.amount;
+      }
+    }
+
+    // Add the last week
+    if (currentWeek != -1) {
+      groupedData.add(RevenueData(weeklyTotal, currentDate!));
+    }
+
+    return groupedData;
+  }
+
+  List<RevenueData> _groupByDay(List<RevenueData> revenueData) {
+    List<RevenueData> groupedData = [];
+    DateTime startOfWeek = _startOfWeek(revenueData.first.date);
+    DateTime endOfWeek = startOfWeek.add(Duration(days: 6));
+
+    // Initialize the list with zero sales for each day
+    for (int i = 0; i < 7; i++) {
+      DateTime day = startOfWeek.add(Duration(days: i));
+      groupedData.add(RevenueData(0.0, day));
+    }
+
+    // Sum the sales for each day
+    for (var data in revenueData) {
+      DateTime saleDate = data.date;
+      if (!saleDate.isBefore(startOfWeek) && !saleDate.isAfter(endOfWeek)) {
+        int index = saleDate.weekday - 1; // Monday = 1
+        groupedData[index].amount += data.amount;
+      }
+    }
+
+    return groupedData;
+  }
+
+  DateTime _startOfWeek(DateTime date) {
+    // Assuming week starts on Monday
+    return DateTime(date.year, date.month, date.day)
+        .subtract(Duration(days: date.weekday - 1));
+  }
+
+  bool isSameWeek(DateTime date1, DateTime date2) {
+    return date1.year == date2.year &&
+        date1.weekOfYear == date2.weekOfYear;
+  }
+
   LineTouchData get lineTouchData => LineTouchData(
     handleBuiltInTouches: true,
     touchTooltipData: LineTouchTooltipData(
-      getTooltipColor: (touchedSpot) => AppColors.titleLight,
+      getTooltipItems: (touchedSpots) {
+        return touchedSpots.map((spot) {
+          String label;
+          if (dateFilter == "All time" || dateFilter == "This year") {
+            label = DateFormat('MMM yyyy').format(revenueData[spot.x.toInt()].date);
+          } else if (dateFilter == "Month") {
+            label = "Week ${spot.x.toInt() + 1}";
+          } else if (dateFilter == "Week") {
+            label = DateFormat('EEE').format(revenueData[spot.x.toInt()].date);
+          } else {
+            label = DateFormat('MMM').format(revenueData[spot.x.toInt()].date);
+          }
+
+          return LineTooltipItem(
+            '$label\n${spot.y.toStringAsFixed(2)}',
+            const TextStyle(color: Colors.white),
+          );
+        }).toList();
+      },
     ),
   );
 
-  FlTitlesData get titlesData => FlTitlesData(
+  FlTitlesData titlesData(List<RevenueData> fullRevenueData) => FlTitlesData(
     bottomTitles: AxisTitles(
-      sideTitles: bottomTitles,
-    ),
-    rightTitles: const AxisTitles(
-      sideTitles: SideTitles(showTitles: false),
-    ),
-    topTitles: const AxisTitles(
-      sideTitles: SideTitles(showTitles: false),
+      sideTitles: SideTitles(
+        showTitles: true,
+        reservedSize: 32,
+        interval: 1,
+        getTitlesWidget: (double value, TitleMeta meta) {
+          if (value.toInt() < fullRevenueData.length) {
+            final date = fullRevenueData[value.toInt()].date;
+            String label;
+
+            switch (dateFilter) {
+              case "All time":
+              case "This year":
+                label = DateFormat('MMM').format(date);
+                break;
+              case "Month":
+                label = 'W${value.toInt() + 1}';
+                break;
+              case "Week":
+                label = DateFormat('EEE').format(date);
+                break;
+              default:
+                label = DateFormat('MMM').format(date);
+            }
+
+            return SideTitleWidget(
+              axisSide: meta.axisSide,
+              space: 8,
+              child: Text(label, style: TextStyle(fontSize: 10)),
+            );
+          } else {
+            return Container();
+          }
+        },
+      ),
     ),
     leftTitles: AxisTitles(
-      sideTitles: leftTitles(),
+      sideTitles: SideTitles(
+        showTitles: true,
+        reservedSize: 40,
+        interval: calculateYInterval(fullRevenueData),
+        getTitlesWidget: (double value, TitleMeta meta) {
+          return Text(
+            '${_formatAmount(value)}',
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 10,
+            ),
+            textAlign: TextAlign.center,
+          );
+        },
+      ),
+    ),
+    topTitles: AxisTitles(
+      sideTitles: SideTitles(showTitles: false),
+    ),
+    rightTitles: AxisTitles(
+      sideTitles: SideTitles(showTitles: false),
     ),
   );
 
-  LineChartBarData lineChartBarData(List<FlSpot> spots) {
-    return LineChartBarData(
-      isCurved: true,
-      color: AppColors.primary,
-      barWidth: 4,
-      isStrokeCapRound: true,
-      dotData: const FlDotData(show: true),
-      belowBarData: BarAreaData(show: false),
-      spots: spots,
-    );
+  // Calculate Y-axis interval based on max revenue
+  double calculateYInterval(List<RevenueData> fullRevenueData) {
+    if (fullRevenueData.isEmpty) return 20000;
+    double max = fullRevenueData.map((data) => data.amount).reduce((a, b) => a > b ? a : b);
+    if (max <= 1000) return 200;
+    if (max <= 10000) return 2000;
+    return 20000;
   }
 
-  Widget leftTitleWidgets(double value, TitleMeta meta) {
-    const style = TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: 14,
+  // Format amount with commas
+  String _formatAmount(double amount) {
+    final formatter = NumberFormat.compactCurrency(
+      decimalDigits: 0,
+      symbol: '\$',
     );
-
-    return value % 20000 == 0
-        ? Text(value.toInt().toString(), style: style, textAlign: TextAlign.center)
-        : Container();
+    return formatter.format(amount);
   }
-
-  SideTitles leftTitles() => SideTitles(
-    getTitlesWidget: leftTitleWidgets,
-    showTitles: true,
-    interval: 20000,
-    reservedSize: 40,
-  );
-
-
-  Widget bottomTitleWidgets(double value, TitleMeta meta) {
-    const style = TextStyle();
-    Widget text;
-
-    if (value.toInt() < revenueData.length) {
-      final date = revenueData[value.toInt()].date;
-      String monthName = DateFormat('MMM').format(date); // Get the short month name
-      text = Text(
-        monthName,
-        style: style,
-      );
-    } else {
-      text = const Text('');
-    }
-
-    return SideTitleWidget(
-      axisSide: meta.axisSide,
-      space: 10,
-      child: text,
-    );
-  }
-
-  SideTitles get bottomTitles => SideTitles(
-    showTitles: true,
-    reservedSize: 32,
-    interval: 1,
-    getTitlesWidget: bottomTitleWidgets,
-  );
 
   FlGridData get gridData => const FlGridData(show: false);
 
   FlBorderData get borderData => FlBorderData(
     show: true,
     border: const Border(
-      bottom: BorderSide(color: AppColors.highlightLight, width: 1),
-      left: BorderSide.none,
+      bottom: BorderSide(color: Colors.grey, width: 1),
+      left: BorderSide(color: Colors.grey, width: 1),
       right: BorderSide.none,
       top: BorderSide.none,
     ),
   );
+
+  LineChartBarData lineChartBarData(List<FlSpot> spots) {
+    return LineChartBarData(
+      isCurved: true,
+      color: Colors.blue,
+      barWidth: 4,
+      isStrokeCapRound: true,
+      dotData: FlDotData(show: true),
+      belowBarData: BarAreaData(show: false),
+      spots: spots,
+    );
+  }
 }
 
 
-class SalesReportScreen extends StatelessWidget {
+class SalesReportScreen extends StatefulWidget {
+  @override
+  _SalesReportScreenState createState() => _SalesReportScreenState();
+}
+
+class _SalesReportScreenState extends State<SalesReportScreen> {
+  // String valueData = "All time"; // Initialize with default value
+
   @override
   Widget build(BuildContext context) {
     List<RevenueData> revenueData = reportController.buildingSales
         .map((data) {
+
+          print("data$data");
       // Check for null values before creating RevenueData
       final amount = data['SalePaymentReport']['Amount'];
-      final date =  (data['SalePaymentReport']['DateTime'] as Timestamp).toDate();
+      final date = (data['SalePaymentReport']['DateTime'] as Timestamp).toDate();
       print("object ${data['SalePaymentReport']['Amount']}");
 
       if (amount != null && date != null) {
@@ -209,9 +361,12 @@ class SalesReportScreen extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Column(
           children: [
-
+            // Expanded Line Chart
             Expanded(
-              child: RevenueLineChart(revenueData: revenueData), // Pass revenueData here
+              child: RevenueLineChart(
+                revenueData: revenueData, // Pass revenueData here
+                dateFilter:  reportController. valueData, // Pass the current filter
+              ),
             ),
           ],
         ),

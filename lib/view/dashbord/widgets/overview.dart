@@ -16,7 +16,6 @@ class Overview extends StatefulWidget {
 
 class _OverviewState extends State<Overview> {
   // Initialize the valueData outside the build method
-  String valueData = "All time"; // Initialize with a default value
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +46,7 @@ class _OverviewState extends State<Overview> {
                     borderRadius: const BorderRadius.all(
                         Radius.circular(AppDefaults.borderRadius)),
                     underline: const SizedBox(),
-                    value: valueData, // Default value
+                    value:  reportController. valueData, // Default value
                     items: const [
                       DropdownMenuItem(
                         value: "All time",
@@ -69,7 +68,7 @@ class _OverviewState extends State<Overview> {
                     onChanged: (String? newValue) {
                       if (newValue != null) {
                         setState(() {
-                          valueData = newValue; // Update the valueData
+                          reportController. valueData = newValue; // Update the valueData
                           reportController.fetchAllBuildingSales(
                             dateFilter: newValue, // Pass the updated value
                           );

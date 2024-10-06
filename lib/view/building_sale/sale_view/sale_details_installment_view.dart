@@ -9,6 +9,7 @@ import '../../../configs/app_colors.dart';
 import '../../../configs/defaults.dart';
 import '../../../configs/ghaps.dart';
 import '../../../configs/pdf/pdf_invoice_api.dart';
+import '../../../configs/pdf/pdf_web.dart';
 import '../../../controllers/building_sale_controller/building_sale_controller.dart';
 import '../../../responsive.dart';
 import '../../../widgets/delete_dialog.dart';
@@ -43,7 +44,7 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
           IconButton(
               onPressed: () async {
                 if (kIsWeb) {
-                  // savePdfWeb();
+                  savePdfWeb(   buildingSaleController.buildingSaleData);
                   // Web-specific logic
                 } else if (io.Platform.isAndroid || io.Platform.isIOS) {
                   await PdfInvoice.saleReportInvoice(

@@ -109,17 +109,7 @@ class _OverviewTabsState extends State<OverviewTabs>
             ),
           ),
         ),
-        // SizedBox(
-        //   height: 240,
-        //   child: AnimatedCrossFade(
-        //     duration: const Duration(seconds: 3),
-        //     firstChild: CoustomersOverview(),
-        //     secondChild: const RevenueLineChart(),
-        //     crossFadeState: _selectedIndex == 0
-        //         ? CrossFadeState.showFirst
-        //         : CrossFadeState.showSecond,
-        //   ),
-        // )
+
       ],
     );
   }

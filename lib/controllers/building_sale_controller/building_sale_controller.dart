@@ -3,11 +3,13 @@ import 'dart:io';
 import 'package:assure_apps/configs/app_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../model/buliding_model.dart';
 import '../../widgets/app_loader.dart';
 import '../../widgets/snackbar.dart';
+import 'dart:html' as html; // Import this for web compatibility
 
 class BuildingSaleController extends GetxController {
   var projects = <BuildingModel>[].obs;
@@ -518,7 +520,14 @@ class BuildingSaleController extends GetxController {
 
       // Upload image to Firebase Storage if imagePath is provided
       if (imagePath != null && imagePath.isNotEmpty) {
-        imageUrl = await uploadImageToFirebase(imagePath);
+
+        if(kIsWeb){
+          imageUrl = await uploadImageToFirebaseForWeb(imagePath);
+
+        }else{
+          imageUrl = await uploadImageToFirebase(imagePath);
+
+        }
       } else {
         print('No image path provided; skipping image upload.');
       }
@@ -583,4 +592,54 @@ class BuildingSaleController extends GetxController {
       return null;
     }
   }
+  Future<String?> uploadImageToFirebaseForWeb(String imagePath) async {
+    try {
+      // Create a reference to Firebase Storage
+      final storageRef = FirebaseStorage.instance.ref();
+
+      // Create a unique file name for the image
+      String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+      Reference imageRef = storageRef.child('customer_images/$fileName.jpg');
+
+      print("Starting image upload...");
+
+      // Check if running on the web
+      if (kIsWeb) {
+        // For web, use a FileReader to read the file
+        final reader = html.FileReader();
+        final file = html.File([await html.window.fetch(imagePath).then((response) => response.blob())], imagePath);
+
+        // Upload the file as a Blob
+        reader.readAsArrayBuffer(file);
+        reader.onLoadEnd.listen((e) async {
+          Uint8List bytes = reader.result as Uint8List;
+          await imageRef.putData(bytes);
+        });
+
+        // Wait for the upload to complete
+        // You might want to use Future.delayed or a similar method to ensure the upload is complete.
+        await Future.delayed(const Duration(seconds: 2)); // Adjust duration as needed
+
+      } else {
+        // For mobile and desktop
+        UploadTask uploadTask = imageRef.putFile(File(imagePath));
+
+        uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
+          print('Upload progress: ${(snapshot.bytesTransferred / snapshot.totalBytes) * 100}%');
+        });
+
+        // Wait for the upload to complete
+        TaskSnapshot snapshot = await uploadTask;
+      }
+
+      // Get the download URL of the uploaded image
+      String imageUrl = await imageRef.getDownloadURL();
+      print("Image uploaded successfully. URL: $imageUrl");
+      return imageUrl;
+    } catch (e) {
+      print("Error uploading image: $e");
+      return null;
+    }
+  }
+
 }
