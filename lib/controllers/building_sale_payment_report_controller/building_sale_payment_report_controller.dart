@@ -170,7 +170,22 @@ class BuildingSalePaymentReportController extends GetxController {
       Set<String> buildingIds = {};
 
       for (var doc in buildingSaleSnapshot.docs) {
-        Map<String, dynamic> buildingSaleData = doc.data() as Map<String, dynamic>;
+        // Safely retrieve data
+        var data = doc.data();
+        if (data == null) {
+          print("Warning: Document with ID ${doc.id} has no data. Skipping.");
+          continue; // Skip this document
+        }
+
+        // Attempt to cast data to Map<String, dynamic>
+        Map<String, dynamic> buildingSaleData;
+        try {
+          buildingSaleData = data as Map<String, dynamic>;
+        } catch (e) {
+          print("Error: Document with ID ${doc.id} has invalid data format. Skipping.");
+          continue; // Skip this document
+        }
+
         String? customerId = buildingSaleData["customerId"];
         String? buildingId = buildingSaleData["buildingId"];
 
@@ -181,9 +196,14 @@ class BuildingSalePaymentReportController extends GetxController {
         double amount = double.tryParse(buildingSaleData['Amount'].toString()) ?? 0;
         totalAmount.value += amount; // Accumulate total amount
 
-        Timestamp date = buildingSaleData['DateTime'];
-        String saleDateString = date.toDate().toIso8601String().split("T")[0];
-        DateTime saleDate = date.toDate();
+        Timestamp? timestamp = buildingSaleData['DateTime'];
+        if (timestamp == null) {
+          print("Warning: Document with ID ${doc.id} has no 'DateTime' field. Skipping date aggregation.");
+          continue; // Skip date aggregation for this document
+        }
+
+        DateTime saleDate = timestamp.toDate();
+        String saleDateString = saleDate.toIso8601String().split("T")[0];
 
         dailySales[saleDateString] = (dailySales[saleDateString] ?? 0) + amount;
 
@@ -207,30 +227,81 @@ class BuildingSalePaymentReportController extends GetxController {
       }
 
       // Batch fetch customer and building data
-      Future<List<DocumentSnapshot>> customerFutures = Future.wait(
-          customerIds.map((id) => fireStore.collection('customer').doc(id).get()));
-      Future<List<DocumentSnapshot>> buildingFutures = Future.wait(
-          buildingIds.map((id) => fireStore.collection('building').doc(id).get()));
+      // Check if there are customerIds and buildingIds to fetch
+      List<DocumentSnapshot> customerDocs = [];
+      List<DocumentSnapshot> buildingDocs = [];
 
-      // Wait for all batches to complete
-      List<DocumentSnapshot> customerDocs = await customerFutures;
-      List<DocumentSnapshot> buildingDocs = await buildingFutures;
+      if (customerIds.isNotEmpty) {
+        try {
+          customerDocs = await Future.wait(
+            customerIds.map((id) => fireStore.collection('customer').doc(id).get()),
+          );
+        } catch (e) {
+          print("Error fetching customer data: $e");
+        }
+      } else {
+        print("No customer IDs found to fetch.");
+      }
+
+      if (buildingIds.isNotEmpty) {
+        try {
+          buildingDocs = await Future.wait(
+            buildingIds.map((id) => fireStore.collection('building').doc(id).get()),
+          );
+        } catch (e) {
+          print("Error fetching building data: $e");
+        }
+      } else {
+        print("No building IDs found to fetch.");
+      }
 
       // Map fetched data by ID for quick lookup
-      Map<String, Map<String, dynamic>> customerDataMap = {
-        for (var doc in customerDocs) doc.id: doc.data() as Map<String, dynamic>
-      };
-      Map<String, Map<String, dynamic>> buildingDataMap = {
-        for (var doc in buildingDocs) doc.id: doc.data() as Map<String, dynamic>
-      };
+      Map<String, Map<String, dynamic>> customerDataMap = {};
+      for (var doc in customerDocs) {
+        var data = doc.data();
+        if (data != null) {
+          try {
+            customerDataMap[doc.id] = data as Map<String, dynamic>;
+          } catch (e) {
+            print("Error: Customer document with ID ${doc.id} has invalid data format.");
+          }
+        } else {
+          print("Warning: Customer document with ID ${doc.id} has no data.");
+        }
+      }
+
+      Map<String, Map<String, dynamic>> buildingDataMap = {};
+      for (var doc in buildingDocs) {
+        var data = doc.data();
+        if (data != null) {
+          try {
+            buildingDataMap[doc.id] = data as Map<String, dynamic>;
+          } catch (e) {
+            print("Error: Building document with ID ${doc.id} has invalid data format.");
+          }
+        } else {
+          print("Warning: Building document with ID ${doc.id} has no data.");
+        }
+      }
 
       // Update the sales list with fetched customer and building data
       for (var sale in allBuildingSales) {
         String? customerId = sale['SalePaymentReport']["customerId"];
         String? buildingId = sale['SalePaymentReport']["buildingId"];
 
-        sale['customer'] = customerDataMap[customerId] ?? {};
-        sale['building'] = buildingDataMap[buildingId] ?? {};
+        if (customerId != null && customerDataMap.containsKey(customerId)) {
+          sale['customer'] = customerDataMap[customerId];
+        } else {
+          sale['customer'] = {}; // Or handle as per your requirement
+          print("Warning: No customer data found for ID $customerId.");
+        }
+
+        if (buildingId != null && buildingDataMap.containsKey(buildingId)) {
+          sale['building'] = buildingDataMap[buildingId];
+        } else {
+          sale['building'] = {}; // Or handle as per your requirement
+          print("Warning: No building data found for ID $buildingId.");
+        }
       }
 
       // Update the building sales list with enriched data
@@ -241,11 +312,13 @@ class BuildingSalePaymentReportController extends GetxController {
       // Print or use the total amount
       print("Total Sales Amount: ${totalAmount.value}");
 
-    } catch (e) {
+    } catch (e, stackTrace) {
       isDateFilterLoading.value = false;
       print("Error fetching building sales: $e");
+      print("Stack Trace: $stackTrace");
     }
   }
+
 
 
 }

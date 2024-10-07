@@ -94,33 +94,36 @@ class _SalesListReportScreenState extends State<SalesListReportScreen> {
                   ),
                 ),
                 const Spacer(),
-                InkWell(
-                  onTapDown: (TapDownDetails details) {
-                    _showFilterMenu(context, details.globalPosition);
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.only(left: 5),
-                    padding: const EdgeInsets.all(13),
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 248, 248, 248),
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(
-                          color: const Color.fromARGB(38, 0, 0, 0), width: 0.3),
-                    ),
-                    child: const Row(
-                      children: [
-                        Icon(Iconsax.setting_3,
-                            size: 20, color: AppColors.primary),
-                        SizedBox(
-                          width: 6,
-                        ),
-                        Text(
-                          "Filter",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w300,
-                              color: AppColors.grey),
-                        )
-                      ],
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: InkWell(
+                    onTapDown: (TapDownDetails details) {
+                      _showFilterMenu(context, details.globalPosition);
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(left: 5),
+                      padding: const EdgeInsets.all(13),
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 248, 248, 248),
+                        borderRadius: BorderRadius.circular(5),
+                        border: Border.all(
+                            color: const Color.fromARGB(38, 0, 0, 0), width: 0.3),
+                      ),
+                      child: const Row(
+                        children: [
+                          Icon(Iconsax.setting_3,
+                              size: 20, color: AppColors.primary),
+                          SizedBox(
+                            width: 6,
+                          ),
+                          Text(
+                            "Filter",
+                            style: TextStyle(
+                                fontWeight: FontWeight.w300,
+                                color: AppColors.grey),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -259,15 +262,9 @@ class _SalesListReportScreenState extends State<SalesListReportScreen> {
                                       width: Responsive.isMobile(context)
                                           ? 60
                                           : 100,
-                                      child: Image.network(
-                                        "https://img.freepik.com/free-photo/observation-urban-building-business-steel_1127-2397.jpg?t=st=1727338313~exp=1727341913~hmac=2e09cc7c51c7da785d7456f52aa5214acafe820f751d1e53d1a75e3cf4b69139&w=1380",
+                                      child: Image.asset(
+                                        "assets/images/building_noimage.jpg",
                                         fit: BoxFit.fill,
-                                        height: Responsive.isMobile(context)
-                                            ? 60
-                                            : 100,
-                                        width: Responsive.isMobile(context)
-                                            ? 60
-                                            : 100,
                                       ),
                                     );
                                   },
@@ -303,7 +300,7 @@ class _SalesListReportScreenState extends State<SalesListReportScreen> {
                                     ),
                                   ),
                                   TextSpan(
-                                    text: customer?['name'] ??
+                                    text: customer?['name'].toString() ??
                                         'Unknown'.toString().capitalize,
                                     style: const TextStyle(
                                       color: Colors.black45,
@@ -462,77 +459,80 @@ class _SalesListReportScreenState extends State<SalesListReportScreen> {
           enabled: false,
           child: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-              return Column(
-                children: [
-                  Container(
-                    width: double.maxFinite,
-                    padding: const EdgeInsets.only(
-                        top: 5, bottom: 10, left: 20, right: 10),
-                    decoration: const BoxDecoration(
-                      // borderRadius: BorderRadius.all(Radius.circular(10)),
-                      color: Color.fromARGB(255, 248, 248, 248),
+              return  MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: Column(
+                  children: [
+                    Container(
+                      width: double.maxFinite,
+                      padding: const EdgeInsets.only(
+                          top: 5, bottom: 10, left: 20, right: 10),
+                      decoration: const BoxDecoration(
+                        // borderRadius: BorderRadius.all(Radius.circular(10)),
+                        color: Color.fromARGB(255, 248, 248, 248),
+                      ),
+                      child: const Text('Filter'),
                     ),
-                    child: const Text('Filter'),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(4),
-                    color: Colors.white,
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              CustomDateRange(
-                                label: "Start Date",
-                                date: startDate,
-                                onTap: () => _selectDateRange(setState),
-                              ),
-                              const SizedBox(height: 10),
-                              CustomDateRange(
-                                label: "End Date",
-                                date: endDate,
-                                onTap: () => _selectDateRange(setState),
-                              ),
-                            ],
+                    Container(
+                      padding: const EdgeInsets.all(4),
+                      color: Colors.white,
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                CustomDateRange(
+                                  label: "Start Date",
+                                  date: startDate,
+                                  onTap: () => _selectDateRange(setState),
+                                ),
+                                const SizedBox(height: 10),
+                                CustomDateRange(
+                                  label: "End Date",
+                                  date: endDate,
+                                  onTap: () => _selectDateRange(setState),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 10),
-                      ],
+                          const SizedBox(height: 10),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              startDate = DateTime(now.year, now.month, 1);
-                              endDate = DateTime(now.year, now.month + 1, 0);
-                              controller.fetchAllBuildingSalesDateRange(
-                                  startDate: startDate, endDate: endDate);
-                            });
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text(
-                            'Clear',
-                            style: TextStyle(color: Colors.red),
+                    const SizedBox(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                startDate = DateTime(now.year, now.month, 1);
+                                endDate = DateTime(now.year, now.month + 1, 0);
+                                controller.fetchAllBuildingSalesDateRange(
+                                    startDate: startDate, endDate: endDate);
+                              });
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text(
+                              'Clear',
+                              style: TextStyle(color: Colors.red),
+                            ),
                           ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text('Close'),
-                        ),
-                      ],
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Close'),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               );
             },
           ),
