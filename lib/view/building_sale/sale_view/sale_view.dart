@@ -251,9 +251,10 @@ class BuildingSalesScreen extends StatelessWidget {
                                                       8)),
                                               child: Text(
                                                 "${double.parse(buildingSale['dueAmount'].toString()).toStringAsFixed(2)} BDT",
-                                                style: const TextStyle(
-                                                    fontWeight:
-                                                    FontWeight.w700,color: Colors.redAccent),
+                                                style:  TextStyle(
+                                                  fontWeight: FontWeight.w700,  color: double.parse(buildingSale['dueAmount'].toString()) == 0.00
+                                                    ? Colors.green
+                                                    : Colors.redAccent,),
                                               ),
                                             )
                                           ],

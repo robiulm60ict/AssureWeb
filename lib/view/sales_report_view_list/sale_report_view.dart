@@ -67,10 +67,6 @@ class _SalesListReportScreenState extends State<SalesListReportScreen> {
       // Use the reactive buildingSales variable
       if (controller.isDateFilterLoading.value == true) {
         return const Center(child: CircularProgressIndicator());
-      } else if (controller.buildingSalesReport.isEmpty) {
-        return Center(
-          child: Lottie.asset(AppImage.noData),
-        );
       }
 
       return Column(
@@ -177,6 +173,10 @@ class _SalesListReportScreenState extends State<SalesListReportScreen> {
                 ],
               ),
             ),
+
+          controller.buildingSalesReport.isEmpty?Center(
+      child: Lottie.asset(AppImage.noData),
+      ):
           ListView.builder(
             padding: EdgeInsets.zero,
             shrinkWrap: true,
@@ -275,7 +275,6 @@ class _SalesListReportScreenState extends State<SalesListReportScreen> {
                               ),
                             ),
                             Responsive.isMobile(context) ? gapW8 : gapW16,
-
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -332,64 +331,48 @@ class _SalesListReportScreenState extends State<SalesListReportScreen> {
                                   ),
                                 if (Responsive.isMobile(context)) gapH4,
                                 if (Responsive.isMobile(context))
-                              Wrap(children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 5, horizontal: 14),
-                                  decoration: BoxDecoration(
-                                      color: index % 2 == 0
-                                          ? Colors.orange.shade100
-                                          : Colors.yellow.shade100,
-                                      borderRadius: BorderRadius.circular(8)),
-                                  child: Text(
-                                    buildingSale['paymentType'].toString(),
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w700),
+                                  Wrap(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 5, horizontal: 14),
+                                        decoration: BoxDecoration(
+                                            color: index % 2 == 0
+                                                ? Colors.orange.shade100
+                                                : Colors.yellow.shade100,
+                                            borderRadius:
+                                                BorderRadius.circular(8)),
+                                        child: Text(
+                                          buildingSale['paymentType']
+                                              .toString(),
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w700),
+                                        ),
+                                      ),
+                                      gapW4,
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 5, horizontal: 14),
+                                        decoration: BoxDecoration(
+                                            color: index % 2 == 0
+                                                ? Colors.green.shade100
+                                                : Colors.blue.shade100,
+                                            borderRadius:
+                                                BorderRadius.circular(8)),
+                                        child: Text(
+                                          "${double.parse(buildingSale['Amount'].toString()).toStringAsFixed(2)} BDT",
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w700),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),gapW4,  Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 5, horizontal: 14),
-                                  decoration: BoxDecoration(
-                                      color: index % 2 == 0
-                                          ? Colors.green.shade100
-                                          : Colors.blue.shade100,
-                                      borderRadius: BorderRadius.circular(8)),
-                                  child: Text(
-                                    "${double.parse(buildingSale['Amount'].toString()).toStringAsFixed(2)} BDT",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w700),
-                                  ),
-                                ),
-                              ],),
                                 if (Responsive.isMobile(context)) gapH4,
-
                               ],
                             ),
                           ],
                         ),
                       ),
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                       if (!Responsive.isMobile(context))
                         Expanded(
                           child: Wrap(

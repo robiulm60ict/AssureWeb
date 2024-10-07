@@ -620,6 +620,7 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                                         0.0
                                     : 0.0,
                                 status: widget.model.status,
+                                image: widget.model.image,
                                 totalCost: double.parse(buildingController
                                     .totalCostController.text),
                               ),
