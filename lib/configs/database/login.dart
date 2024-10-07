@@ -14,21 +14,27 @@ class LocalDB {
   }) async {
     await loginBox.put('email', email);
     await loginBox.put('password', password);
+    await loginBox.put('isLoggedIn', true);
+
     print('Stored login info in loginBox box.');
   }
 
   static Future<Map<String, String>?> getLoginInfo() async {
     final email = loginBox.get('email', defaultValue: '');
     final password = loginBox.get('password', defaultValue: '');
+    final isLoggedIn = loginBox.get('isLoggedIn', defaultValue: false);
+
     return {
       'email': email,
       'password': password,
+      // 'isLoggedIn': isLoggedIn,
+
     };
   }
 
   static Future<void> delLoginInfo() async {
     await loginBox.clear();
-    print('Cleared login info from loginBox box.');
+    print('Cleared login info from loginBox box.$loginBox');
   }
 }
 

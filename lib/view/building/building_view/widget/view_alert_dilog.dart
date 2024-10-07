@@ -36,7 +36,7 @@ void showAlertDialog(BuildingModel project, BuildContext context) {
                     height: Responsive.isMobile(context) ? 60 : 100,
                     width: Responsive.isMobile(context) ? 60 : 100,
                     decoration: BoxDecoration(
-                      color: Colors.lightBlueAccent,
+                      // color: Colors.lightBlueAccent,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: ClipRRect(

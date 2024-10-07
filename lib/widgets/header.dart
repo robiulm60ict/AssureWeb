@@ -87,7 +87,7 @@ class Header extends StatelessWidget {
   void showEmailLogoutDialog(BuildContext context) async {
     // Fetch login information before showing the dialog
     Map<String, String>? loginInfo = await LocalDB.getLoginInfo();
-    String? email = loginInfo != null && loginInfo.isNotEmpty ? loginInfo[0] : 'No email found';
+    String? email = loginInfo?['email'] != "" && loginInfo!.isNotEmpty ? loginInfo[0] : 'No email found';
 
     showDialog(
       context: context,
@@ -99,8 +99,8 @@ class Header extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              email==null?Container(): Text(
-                'Email: $email',
+             Text(
+                'Email: ${loginInfo?['email']??"a"}',
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),

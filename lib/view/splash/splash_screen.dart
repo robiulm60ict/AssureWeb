@@ -51,10 +51,12 @@ class SplashScreenState extends State<SplashScreen>
 
   pageRoute()async{
     final myData = await LocalDB.getLoginInfo();
-    if (myData == null) {
+    if (myData?['email'] == "") {
       AppRoutes.push(context, page: SignInPage());
       //   context.go('/sign-in');
     } else {
+      print("info.................$myData");
+      print("info.................${myData?['email']}");
       AppRoutes.push(context, page: EntryPoint());
 
       //   context.go('/entry-point');

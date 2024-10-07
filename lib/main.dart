@@ -23,7 +23,6 @@ void main() async {
     final directory = await getApplicationDocumentsDirectory();
     Hive.init(directory.path);
   } else {
-
     // For web, we can use a temporary path or skip Hive initialization if not needed
     Hive.init('web_storage'); // Provide a placeholder path for web
   }

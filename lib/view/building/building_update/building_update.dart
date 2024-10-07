@@ -472,12 +472,13 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                                         },
                                       ),
                                       const SizedBox(height: 10.0),
+                                      Responsive.isMobile(context)?
                                       ElevatedButton(
                                         child: const Text("Take Photo"),
                                         onPressed: () {
                                           Navigator.pop(context, false);
                                         },
-                                      ),
+                                      ):Container(),
                                     ],
                                   ),
                                 ),
@@ -740,9 +741,11 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                                       .unitCostController.text) ??
                                       0.0
                                       : 0.0,
+                                  createDateTime: widget.model.createDateTime,
                                   status: widget.model.status,
                                   totalCost: double.parse(buildingController
                                       .totalCostController.text),
+                                  image: widget.model.image
                                 ),
                                 imageController.resizedImagePath.value,
                                 context);
