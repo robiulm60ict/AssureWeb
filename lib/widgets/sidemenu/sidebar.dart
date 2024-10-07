@@ -198,7 +198,7 @@ class Sidebar extends StatelessWidget {
                                   : false,
                               title: "Sale List",
                               count:
-                              buildingSaleController.buildingSales.length,
+                              buildingSaleController.buildingSales.value.length,
                               onPressed: () {
                                 if (Responsive.isMobile(context)) {
                                   Navigator.pop(context);

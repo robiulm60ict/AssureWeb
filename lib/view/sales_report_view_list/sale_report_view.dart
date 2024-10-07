@@ -67,10 +67,6 @@ class _SalesListReportScreenState extends State<SalesListReportScreen> {
       // Use the reactive buildingSales variable
       if (controller.isDateFilterLoading.value == true) {
         return const Center(child: CircularProgressIndicator());
-      } else if (controller.buildingSalesReport.isEmpty) {
-        return Center(
-          child: Lottie.asset(AppImage.noData),
-        );
       }
 
       return Column(
@@ -98,33 +94,35 @@ class _SalesListReportScreenState extends State<SalesListReportScreen> {
                   ),
                 ),
                 const Spacer(),
-                InkWell(
-                  onTapDown: (TapDownDetails details) {
-                    _showFilterMenu(context, details.globalPosition);
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.only(left: 5),
-                    padding: const EdgeInsets.all(13),
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 248, 248, 248),
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(
-                          color: const Color.fromARGB(38, 0, 0, 0), width: 0.3),
-                    ),
-                    child: const Row(
-                      children: [
-                        Icon(Iconsax.setting_3,
-                            size: 20, color: AppColors.primary),
-                        SizedBox(
-                          width: 6,
-                        ),
-                        Text(
-                          "Filter",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w300,
-                              color: AppColors.grey),
-                        )
-                      ],
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,                  child: InkWell(
+                    onTapDown: (TapDownDetails details) {
+                      _showFilterMenu(context, details.globalPosition);
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(left: 5),
+                      padding: const EdgeInsets.all(13),
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 248, 248, 248),
+                        borderRadius: BorderRadius.circular(5),
+                        border: Border.all(
+                            color: const Color.fromARGB(38, 0, 0, 0), width: 0.3),
+                      ),
+                      child: const Row(
+                        children: [
+                          Icon(Iconsax.setting_3,
+                              size: 20, color: AppColors.primary),
+                          SizedBox(
+                            width: 6,
+                          ),
+                          Text(
+                            "Filter",
+                            style: TextStyle(
+                                fontWeight: FontWeight.w300,
+                                color: AppColors.grey),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -177,7 +175,9 @@ class _SalesListReportScreenState extends State<SalesListReportScreen> {
                 ],
               ),
             ),
-          ListView.builder(
+          controller.buildingSalesReport.isEmpty?Center(
+            child: Lottie.asset(AppImage.noData),
+          ): ListView.builder(
             padding: EdgeInsets.zero,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
@@ -473,77 +473,80 @@ class _SalesListReportScreenState extends State<SalesListReportScreen> {
           enabled: false,
           child: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-              return Column(
-                children: [
-                  Container(
-                    width: double.maxFinite,
-                    padding: const EdgeInsets.only(
-                        top: 5, bottom: 10, left: 20, right: 10),
-                    decoration: const BoxDecoration(
-                      // borderRadius: BorderRadius.all(Radius.circular(10)),
-                      color: Color.fromARGB(255, 248, 248, 248),
+              return  MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: Column(
+                  children: [
+                    Container(
+                      width: double.maxFinite,
+                      padding: const EdgeInsets.only(
+                          top: 5, bottom: 10, left: 20, right: 10),
+                      decoration: const BoxDecoration(
+                        // borderRadius: BorderRadius.all(Radius.circular(10)),
+                        color: Color.fromARGB(255, 248, 248, 248),
+                      ),
+                      child: const Text('Filter'),
                     ),
-                    child: const Text('Filter'),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(4),
-                    color: Colors.white,
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              CustomDateRange(
-                                label: "Start Date",
-                                date: startDate,
-                                onTap: () => _selectDateRange(setState),
-                              ),
-                              const SizedBox(height: 10),
-                              CustomDateRange(
-                                label: "End Date",
-                                date: endDate,
-                                onTap: () => _selectDateRange(setState),
-                              ),
-                            ],
+                    Container(
+                      padding: const EdgeInsets.all(4),
+                      color: Colors.white,
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                CustomDateRange(
+                                  label: "Start Date",
+                                  date: startDate,
+                                  onTap: () => _selectDateRange(setState),
+                                ),
+                                const SizedBox(height: 10),
+                                CustomDateRange(
+                                  label: "End Date",
+                                  date: endDate,
+                                  onTap: () => _selectDateRange(setState),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 10),
-                      ],
+                          const SizedBox(height: 10),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              startDate = DateTime(now.year, now.month, 1);
-                              endDate = DateTime(now.year, now.month + 1, 0);
-                              controller.fetchAllBuildingSalesDateRange(
-                                  startDate: startDate, endDate: endDate);
-                            });
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text(
-                            'Clear',
-                            style: TextStyle(color: Colors.red),
+                    const SizedBox(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                startDate = DateTime(now.year, now.month, 1);
+                                endDate = DateTime(now.year, now.month + 1, 0);
+                                controller.fetchAllBuildingSalesDateRange(
+                                    startDate: startDate, endDate: endDate);
+                              });
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text(
+                              'Clear',
+                              style: TextStyle(color: Colors.red),
+                            ),
                           ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text('Close'),
-                        ),
-                      ],
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Close'),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               );
             },
           ),

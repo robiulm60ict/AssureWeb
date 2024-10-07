@@ -17,8 +17,80 @@ class GetImageController extends GetxController {
   var imagePaths = <String>[].obs;
 
   final ImagePicker _picker = ImagePicker();
+  var imageBytes = <Uint8List>[].obs; // For storing image bytes on web
 
 
+  /// Function to pick image from gallery (web and mobile)
+  Future<void> pickImageWeb({required bool fromGallery}) async {
+    try {
+      // Reset previous image paths and bytes
+      originalImagePath.value = '';
+      resizedImagePath.value = '';
+      imageBytes.clear();
+
+      // Pick image from gallery or camera
+      final XFile? image = await _picker.pickImage(
+        source: ImageSource.gallery, // Always use gallery on web
+        // You can set maxWidth, maxHeight, and imageQuality if needed
+      );
+
+      print("Picked image path: ${image?.path}");
+      if (image != null) {
+        if (kIsWeb) {
+          // On web, read the image bytes directly
+          Uint8List bytes = await image.readAsBytes();
+          imageBytes.add(bytes);
+          print("Image bytes loaded for web.");
+        } else if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+          // On desktop platforms, skip compression
+          originalImagePath.value = image.path;
+          resizedImagePath.value = originalImagePath.value;
+          print("Image compression is not supported on this platform.");
+        } else {
+          // On mobile platforms, handle compression
+          originalImagePath.value = image.path;
+          print("Original Image Path: ${originalImagePath.value}");
+          await _compressImage();
+        }
+      } else {
+        print("No image selected.");
+      }
+    } catch (e) {
+      print("Error occurred while picking image: $e");
+    }
+  }
+
+  /// Function to compress the image on supported platforms
+  Future<void> _compressImage() async {
+    try {
+      Directory documentsDirectory = await getApplicationDocumentsDirectory();
+      String targetDirectoryPath = documentsDirectory.path;
+
+      // Compress the image with defined parameters
+      Uint8List? compressedImage = await FlutterImageCompress.compressWithFile(
+        originalImagePath.value,
+        minWidth: 800,
+        minHeight: 600,
+        quality: 85,
+      );
+
+      if (compressedImage != null) {
+        resizedImagePath.value = '$targetDirectoryPath/resized_image.jpg';
+        File resizedImageFile = File(resizedImagePath.value);
+        await resizedImageFile.writeAsBytes(compressedImage);
+
+        print("Resized Image Path: ${resizedImagePath.value}");
+      } else {
+        print("Image compression failed.");
+        // Fallback to original image if compression fails
+        resizedImagePath.value = originalImagePath.value;
+      }
+    } catch (e) {
+      print("Error occurred during image compression: $e");
+      // Fallback to original image in case of error
+      resizedImagePath.value = originalImagePath.value;
+    }
+  }
 
   Future<void> pickImage({required bool fromGallery}) async {
     try {

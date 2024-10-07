@@ -468,24 +468,23 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                                       ElevatedButton(
                                         child: const Text("From Gallery"),
                                         onPressed: () {
-                                          Navigator.pop(context, true); // returns true for gallery
+                                          Navigator.pop(context, true);
                                         },
                                       ),
                                       const SizedBox(height: 10.0),
-                                      Responsive.isMobile(context)
-                                          ? ElevatedButton(
+                                      ElevatedButton(
                                         child: const Text("Take Photo"),
                                         onPressed: () {
-                                          Navigator.pop(context, false); // returns false for camera
+                                          Navigator.pop(context, false);
                                         },
-                                      )
-                                          : Container(),
+                                      ),
                                     ],
                                   ),
                                 ),
                               );
+
                               if (res != null) {
-                                await imageController.pickImage(fromGallery: res); // Handle image selection
+                                await imageController.pickImage(fromGallery: res);
                               }
                             },
                             child: Stack(
@@ -496,24 +495,20 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                                   child: imageController.resizedImagePath.value.isNotEmpty
                                       ? (kIsWeb
                                       ? Image.network(
-                                    buildingController.imageUrl, // Show network image if on web
-                                    fit: BoxFit.cover,
+                                    imageController.resizedImagePath.value, // Use resized image path
                                     width: 70.0,
                                     height: 70.0,
+                                    fit: BoxFit.cover,
                                   )
                                       : Image.file(
-                                    File(imageController.originalImagePath.value), // Show local file image if on mobile
+                                    File(imageController.originalImagePath.value),
                                     fit: BoxFit.cover,
                                     width: 70.0,
                                     height: 70.0,
-                                  )):buildingController.imageUrl
-                                      .toString()
-                                      .split("/")
-                                      .last !=
-                                      "null"
+                                  ))
+                                      : (buildingController.imageUrl.toString() != "null"
                                       ? Image.network(
-                                    buildingController.imageUrl
-                                        .toString(),
+                                    buildingController.imageUrl.toString(),
                                     width: 70.0,
                                     height: 70.0,
                                     fit: BoxFit.cover,
@@ -522,8 +517,7 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                                     width: Responsive.isMobile(context)
                                         ? AppDefaults.width(context) * 0.5
                                         : AppDefaults.width(context) * 0.2,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 6, horizontal: 10),
+                                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
                                     decoration: const BoxDecoration(color: Colors.white),
                                     child: Row(
                                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -543,10 +537,10 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                                               color: Colors.grey.shade500,
                                             ),
                                           ),
-                                        )
+                                        ),
                                       ],
                                     ),
-                                  ),
+                                  )),
                                 ),
                               ],
                             ),

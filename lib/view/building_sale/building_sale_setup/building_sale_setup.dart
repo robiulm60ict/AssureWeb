@@ -686,6 +686,10 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                 gapH8,
                 kIsWeb?
                 Container(
+                  margin: EdgeInsets.symmetric(
+                    horizontal: AppDefaults.padding *
+                        (Responsive.isMobile(context) ? 0.5 : 6.5),
+                  ),
                   width: double.infinity,
                   height: AppDefaults.height(context) * 0.2,
                   decoration: BoxDecoration(
@@ -951,7 +955,10 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                 ),
                 gapH8,
                 if (!Responsive.isMobile(context)) gapH24,
-                Obx(() => Container(
+                Obx(() => Container( margin: EdgeInsets.symmetric(
+                  horizontal: AppDefaults.padding *
+                      (Responsive.isMobile(context) ? 0.5 : 6.5),
+                ),
                       // width: double.infinity,
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
@@ -967,10 +974,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                             horizontal: AppDefaults.padding *
                                 (Responsive.isMobile(context) ? 1 : 2.5),
                           ),
-                          margin: EdgeInsets.symmetric(
-                            horizontal: AppDefaults.padding *
-                                (Responsive.isMobile(context) ? 0.5 : 6.5),
-                          ),
+
                           child: DataTable(
                             // columnSpacing: Responsive.isMobile(context) ? 20 : null,
                             columns: const <DataColumn>[
