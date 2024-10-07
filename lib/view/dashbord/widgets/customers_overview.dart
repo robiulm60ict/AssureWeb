@@ -21,13 +21,14 @@ class CoustomersOverview extends StatelessWidget {
         Row(
           children: [
             Obx(
-        ()=> Expanded(
+              () => Expanded(
                 child: Text.rich(
                   TextSpan(
                     text: "Welcome ",
                     children: [
                       TextSpan(
-                        text: "${customerController.customersFilter.length} customers",
+                        text:
+                            "${customerController.customersFilter.length} customers",
                         style: TextStyle(
                           color: Theme.of(context).textTheme.titleLarge!.color,
                           fontWeight: FontWeight.w600,
@@ -41,62 +42,63 @@ class CoustomersOverview extends StatelessWidget {
           ],
         ),
         gapH8,
-        customerController.customersFilter.isNotEmpty?   Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Obx(
-              () => SizedBox(
-                height: 80, // Set a specific height for the ListView
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  itemCount: customerController.customersFilter.length > (Responsive.isMobile(context)?2:3)
-                      ? Responsive.isMobile(context)?2:3
-                      : customerController.customersFilter.length,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) {
-                    var customer = customerController.customersFilter[index];
-                    return SizedBox(
-                      // height: 100,
-                      child: CustomerAvatar(
-                        name: customer.name,
-                        imageSrc: customer.image,
-                        onPressed: () {},
+        customerController.customersFilter.isNotEmpty
+            ? Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Obx(
+                    () => SizedBox(
+                      height: 80, // Set a specific height for the ListView
+                      child: ListView.separated(
+                        shrinkWrap: true,
+                        itemCount: customerController.customersFilter.length >
+                                (Responsive.isMobile(context) ? 2 : 3)
+                            ? Responsive.isMobile(context)
+                                ? 2
+                                : 3
+                            : customerController.customersFilter.length,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          var customer =
+                              customerController.customersFilter[index];
+                          return SizedBox(
+                            // height: 100,
+                            child: CustomerAvatar(
+                              name: customer.name,
+                              imageSrc: customer.image,
+                              onPressed: () {},
+                            ),
+                          );
+                        },
+                        separatorBuilder: (BuildContext context, int index) {
+                          return SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.08,
+                          );
+                        },
                       ),
-                    );
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.08,
-                    );
-                  },
-                ),
-              ),
-            ),
-            Column(
-              children: [
-                OutlinedButton(
-
-                  onPressed: () {
-                    dashbordScreenController.dataIndex.value=5;
-                  //  AppRoutes.push(context, page: CustomerListView());
-
-                  },
-                  style: OutlinedButton.styleFrom(
-                    fixedSize: const Size(50, 50),
-                    shape: const CircleBorder(),
+                    ),
                   ),
-                  child: const Icon(Icons.arrow_forward_outlined),
-                ),
-                gapH4,
-                const Text("View all"),
-              ],
-            )
-          ],
-        ):  SizedBox(
-          height: 100,
-            child: Lottie.asset(AppImage.noData)),
-
+                  Column(
+                    children: [
+                      OutlinedButton(
+                        onPressed: () {
+                          dashbordScreenController.dataIndex.value = 5;
+                          //  AppRoutes.push(context, page: CustomerListView());
+                        },
+                        style: OutlinedButton.styleFrom(
+                          fixedSize: const Size(50, 50),
+                          shape: const CircleBorder(),
+                        ),
+                        child: const Icon(Icons.arrow_forward_outlined),
+                      ),
+                      gapH4,
+                      const Text("View all"),
+                    ],
+                  )
+                ],
+              )
+            : SizedBox(height: 100, child: Lottie.asset(AppImage.noData)),
         gapH24,
       ],
     );

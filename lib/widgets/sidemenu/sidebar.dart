@@ -292,7 +292,7 @@ class Sidebar extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Container(
+                    if(Responsive.isMobile(context))  Container(
                         decoration: BoxDecoration(
                             color: Colors.grey.shade300,
                             borderRadius: BorderRadius.circular(8)),

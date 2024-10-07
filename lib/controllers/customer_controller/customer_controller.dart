@@ -29,7 +29,10 @@ class CustomerController extends GetxController {
   void fetchCustomer() async {
     try {
       isLoading.value = true; // Start loading
-      final snapshot = await fireStore.collection('customer').get();
+      final snapshot = await fireStore.collection('customer')
+          
+          .orderBy("DateTime",descending: true)
+          .get();
 
       // Map the documents to BuildingModel instances
       customers.value = snapshot.docs

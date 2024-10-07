@@ -164,7 +164,9 @@ class BuildingSaleController extends GetxController {
       isLoadingSales.value=true;
       // Fetch all building sale documents
       QuerySnapshot buildingSaleSnapshot =
-          await fireStore.collection('buildingSale').get();
+          await fireStore.collection('buildingSale')
+              .orderBy('BookingDate',descending: true)
+              .get();
       List<Map<String, dynamic>> allBuildingSales = [];
 
       for (var doc in buildingSaleSnapshot.docs) {

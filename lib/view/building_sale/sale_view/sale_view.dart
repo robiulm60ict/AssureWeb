@@ -1,3 +1,4 @@
+import 'package:assure_apps/configs/app_constants.dart';
 import 'package:assure_apps/configs/routes.dart';
 import 'package:assure_apps/view/building_sale/sale_view/sale_details_installment_view.dart';
 import 'package:flutter/material.dart';
@@ -12,18 +13,26 @@ import '../../../controllers/building_sale_controller/building_sale_controller.d
 import '../../../responsive.dart';
 
 class BuildingSalesScreen extends StatelessWidget {
-  final BuildingSaleController controller = Get.put(BuildingSaleController());
 
   @override
   Widget build(BuildContext context) {
     // Fetch building sales data when the screen is loaded
-    controller.fetchAllBuildingSales();
+    buildingSaleController.fetchAllBuildingSales();
 
     return  Obx(() {
       // Use the reactive buildingSales variable
-      if (controller.isLoadingSales.value == true) {
-        return const Center(child: CircularProgressIndicator());
-      } else if (controller.buildingSales.isEmpty) {
+      if (buildingSaleController.isLoadingSales.value == true) {
+        return const SizedBox(
+          height: 500,
+          child: Center(child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(),
+            ],
+          )),
+        );
+      } else if (buildingSaleController.buildingSales.isEmpty) {
         return Center(
           child: Lottie.asset(AppImage.noData),
         );
@@ -105,12 +114,12 @@ class BuildingSalesScreen extends StatelessWidget {
             shrinkWrap: true,
             padding: EdgeInsets.zero,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: controller.buildingSales.length,
+            itemCount: buildingSaleController.buildingSales.length,
             itemBuilder: (context, index) {
               final buildingSale =
-              controller.buildingSales[index]["buildingSale"];
-              final building = controller.buildingSales[index]["building"];
-              final customer = controller.buildingSales[index]["customer"];
+              buildingSaleController.buildingSales[index]["buildingSale"];
+              final building = buildingSaleController.buildingSales[index]["building"];
+              final customer = buildingSaleController.buildingSales[index]["customer"];
 
 
               return Container(
@@ -133,9 +142,9 @@ class BuildingSalesScreen extends StatelessWidget {
                   onTap: () {
                     AppRoutes.push(context,
                         page: BuildingSaleDetailScreen(
-                          documentId: controller.buildingSales[index]
+                          documentId: buildingSaleController.buildingSales[index]
                           ['documentId'],
-                          buildingSales: controller.buildingSales[index],
+                          buildingSales: buildingSaleController.buildingSales[index],
                         ));
                     // AppRoutes.pushReplacement(context, page: BuildingSalesInstallmentScreen(buildingSales: controller.buildingSales[index],));
                   },
@@ -251,9 +260,10 @@ class BuildingSalesScreen extends StatelessWidget {
                                                       8)),
                                               child: Text(
                                                 "${double.parse(buildingSale['dueAmount'].toString()).toStringAsFixed(2)} BDT",
-                                                style: const TextStyle(
-                                                    fontWeight:
-                                                    FontWeight.w700,color: Colors.redAccent),
+                                                style:  TextStyle(
+                                                  fontWeight: FontWeight.w700,  color: double.parse(buildingSale['dueAmount'].toString()) == 0.00
+                                                    ? Colors.green
+                                                    : Colors.redAccent,),
                                               ),
                                             )
                                           ],
@@ -292,8 +302,10 @@ class BuildingSalesScreen extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(8)),
                                 child: Text(
                                   "${double.parse(buildingSale['dueAmount'].toString()).toStringAsFixed(2)} BDT",
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.w700,color: Colors.redAccent),
+                                  style:  TextStyle(
+                                    fontWeight: FontWeight.w700,  color: double.parse(buildingSale['dueAmount'].toString()) == 0.00
+                                      ? Colors.green
+                                      : Colors.redAccent,),
                                 ),
                               )
                             ],

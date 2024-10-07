@@ -40,11 +40,10 @@ class _CustomerAvatarState extends State<CustomerAvatar> {
               fit: BoxFit.cover,
               imageUrl: widget.imageSrc.toString(),
               placeholder: (c, s) => const CircularProgressIndicator(),
-              errorWidget: (c, s, d) => Image.asset(
-                  "assets/icons/noimageperson.jpg",
-                  width: 60,
-                  height: 60,
-                  fit: BoxFit.cover),
+              errorWidget: (c, s, d) => Image.network(
+                "https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/man-person-icon.png",
+                fit: BoxFit.cover,
+              )
             ),
           ),
 

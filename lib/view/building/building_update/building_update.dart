@@ -378,7 +378,7 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                       Expanded(
                         child: AppTextField(
                           textInputAction: TextInputAction.next,
-                          labelText: "Unit Cost",
+                          labelText: "Utility Cost",
                           hintText: "Ex : 500",
                           keyboardType: const TextInputType.numberWithOptions(
                               decimal: true),
