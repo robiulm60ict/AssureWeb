@@ -25,9 +25,10 @@ class BuildingSaleSetup extends StatefulWidget {
 class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
   @override
   void initState() {
-    buildingSaleController.calculateResult(widget.model.totalCost);
     buildingSaleController
-        .calculateInstalmentAmountResult(widget.model.totalCost);
+        .calculateResult(double.parse(widget.model.totalCost.toString()));
+    buildingSaleController.calculateInstalmentAmountResult(
+        double.parse(widget.model.totalCost.toString()));
 
     buildingSaleController.handoverDateController.text =
         DateTime.now().toIso8601String().split('T')[0];
@@ -129,8 +130,9 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                               textInputAction: TextInputAction.done,
                               labelText: "Booking & Down Payment",
                               hintText: "Ex : 10 %",
-                              keyboardType: const TextInputType.numberWithOptions(
-                                  decimal: true),
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                      decimal: true),
                               controller: buildingSaleController
                                   .paymentBookingPercentageCountController,
                               labelColor: AppColors.textColorb1,
@@ -230,7 +232,6 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                               labelText: "Amount Off Installment",
                               hintText: "0.00",
                               readOnly: true,
-
                               keyboardType: TextInputType.number,
                               controller: buildingSaleController
                                   .amountInstallmentController,
@@ -255,8 +256,8 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                               labelText: "Number of Installment",
                               hintText: "Ex : 5",
                               inputFormatters: [
-                                FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'[0-9]')),
                               ],
                               keyboardType: TextInputType.number,
                               controller: buildingSaleController
@@ -482,7 +483,8 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                                             .customerPhoneController,
                                         labelColor: AppColors.textColorb1,
                                         inputFormatters: [
-                                          FilteringTextInputFormatter.allow(RegExp(r'[0-9-()+ ]')),
+                                          FilteringTextInputFormatter.allow(
+                                              RegExp(r'[0-9-()+ ]')),
                                         ],
                                         isBoldLabel: true,
                                         hintColor: AppColors.grey,
@@ -509,8 +511,9 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                                         labelText: "Customer Email",
                                         hintText: "Enter Customer Email",
                                         inputFormatters: [
-                                          FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9@._-]')),  // Allows alphanumeric, '@', '.', '_', '-'
-
+                                          FilteringTextInputFormatter.allow(
+                                              RegExp(r'[a-zA-Z0-9@._-]')),
+                                          // Allows alphanumeric, '@', '.', '_', '-'
                                         ],
                                         keyboardType:
                                             TextInputType.emailAddress,
@@ -522,7 +525,10 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                                         textColor: AppColors.textColorb1,
                                         isRequired: false,
                                         validator: (value) {
-                                          if (value != null && value.isNotEmpty && !RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                                          if (value != null &&
+                                              value.isNotEmpty &&
+                                              !RegExp(r'^[^@]+@[^@]+\.[^@]+')
+                                                  .hasMatch(value)) {
                                             return 'Please enter a valid email';
                                           }
                                           return null;
@@ -737,14 +743,14 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                                         },
                                       ),
                                       const SizedBox(height: 10.0),
-
-                                      Responsive.isMobile(context)?
-                                      ElevatedButton(
-                                        child: const Text("Take Photo"),
-                                        onPressed: () {
-                                          Navigator.pop(context, false);
-                                        },
-                                      ):Container(),
+                                      Responsive.isMobile(context)
+                                          ? ElevatedButton(
+                                              child: const Text("Take Photo"),
+                                              onPressed: () {
+                                                Navigator.pop(context, false);
+                                              },
+                                            )
+                                          : Container(),
                                     ],
                                   ),
                                 ),
@@ -834,6 +840,16 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                 gapH8,
                 if (!Responsive.isMobile(context)) gapH24,
                 Obx(() => Container(
+                      // padding: EdgeInsets.symmetric(
+                      //   vertical: AppDefaults.padding *
+                      //       (Responsive.isMobile(context) ? 1 : 0.5),
+                      //   horizontal: AppDefaults.padding *
+                      //       (Responsive.isMobile(context) ? 1 : 2.5),
+                      // ),
+                      margin: EdgeInsets.symmetric(
+                        horizontal: AppDefaults.padding *
+                            (Responsive.isMobile(context) ? 1 : 6.5),
+                      ),
                       // width: double.infinity,
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
@@ -849,10 +865,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                             horizontal: AppDefaults.padding *
                                 (Responsive.isMobile(context) ? 1 : 2.5),
                           ),
-                          margin: EdgeInsets.symmetric(
-                            horizontal: AppDefaults.padding *
-                                (Responsive.isMobile(context) ? 0.5 : 6.5),
-                          ),
+
                           child: DataTable(
                             // columnSpacing: Responsive.isMobile(context) ? 20 : null,
                             columns: const <DataColumn>[

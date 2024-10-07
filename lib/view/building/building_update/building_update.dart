@@ -612,6 +612,7 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                                     .totalUnitPriceController.text),
                                 carParking: double.parse(buildingController
                                     .carParkingController.text),
+                                createDateTime:widget.model.createDateTime,
                                 unitCost: buildingController
                                         .unitCostController.text.isNotEmpty
                                     ? double.tryParse(buildingController

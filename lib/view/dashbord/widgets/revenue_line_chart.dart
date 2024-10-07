@@ -6,6 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 
+import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:intl/intl.dart';
+
 class RevenueData {
   double amount;
   DateTime date;
@@ -19,7 +23,7 @@ extension DateTimeExtension on DateTime {
     final firstDayOfYear = DateTime(this.year, 1, 1);
     int daysOffset = firstDayOfYear.weekday - DateTime.monday;
     DateTime adjustedDate = this.subtract(Duration(days: daysOffset));
-    int weekNumber = adjustedDate.difference(firstDayOfYear).inDays ~/ 7 + 1;
+    int weekNumber = ((adjustedDate.difference(firstDayOfYear).inDays) / 7).ceil();
     return weekNumber;
   }
 }
@@ -36,13 +40,6 @@ class RevenueLineChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LineChart(
-      sampleData,
-      // swapAnimationDuration: const Duration(milliseconds: 250),
-    );
-  }
-
-  LineChartData get sampleData {
     // Generate a full list of periods based on the filter
     final fullRevenueData = generateFullRevenueData(revenueData);
 
@@ -57,10 +54,19 @@ class RevenueLineChart extends StatelessWidget {
         ? fullRevenueData.map((data) => data.amount).reduce((a, b) => a > b ? a : b)
         : 0.0;
 
+    return LineChart(
+      getSampleData(fullRevenueData, spots, maxRevenue),
+      // swapAnimationDuration: const Duration(milliseconds: 250),
+    );
+  }
+
+  /// Generates LineChartData using fullRevenueData
+  LineChartData getSampleData(
+      List<RevenueData> fullRevenueData, List<FlSpot> spots, double maxRevenue) {
     return LineChartData(
-      lineTouchData: lineTouchData,
+      lineTouchData: getLineTouchData(fullRevenueData),
       gridData: gridData,
-      titlesData: titlesData(fullRevenueData),
+      titlesData: getTitlesData(fullRevenueData),
       borderData: borderData,
       lineBarsData: [lineChartBarData(spots)],
       minX: 0,
@@ -70,7 +76,7 @@ class RevenueLineChart extends StatelessWidget {
     );
   }
 
-  // Function to generate full list based on filter
+  /// Generates fullRevenueData based on the dateFilter
   List<RevenueData> generateFullRevenueData(List<RevenueData> revenueData) {
     if (revenueData.isEmpty) return [];
 
@@ -104,7 +110,7 @@ class RevenueLineChart extends StatelessWidget {
     return fullRevenueData;
   }
 
-  // Helper methods for grouping
+  /// Groups revenue data by month
   List<RevenueData> _groupByMonth(List<RevenueData> revenueData) {
     List<RevenueData> groupedData = [];
     int currentMonth = -1;
@@ -132,6 +138,7 @@ class RevenueLineChart extends StatelessWidget {
     return groupedData;
   }
 
+  /// Groups revenue data by week
   List<RevenueData> _groupByWeek(List<RevenueData> revenueData) {
     List<RevenueData> groupedData = [];
     int currentWeek = -1;
@@ -161,6 +168,7 @@ class RevenueLineChart extends StatelessWidget {
     return groupedData;
   }
 
+  /// Groups revenue data by day within the current week
   List<RevenueData> _groupByDay(List<RevenueData> revenueData) {
     List<RevenueData> groupedData = [];
     DateTime startOfWeek = _startOfWeek(revenueData.first.date);
@@ -177,58 +185,79 @@ class RevenueLineChart extends StatelessWidget {
       DateTime saleDate = data.date;
       if (!saleDate.isBefore(startOfWeek) && !saleDate.isAfter(endOfWeek)) {
         int index = saleDate.weekday - 1; // Monday = 1
-        groupedData[index].amount += data.amount;
+        if (index >= 0 && index < 7) {
+          groupedData[index].amount += data.amount;
+        }
       }
     }
 
     return groupedData;
   }
 
+  /// Calculates the start of the week (Monday)
   DateTime _startOfWeek(DateTime date) {
     // Assuming week starts on Monday
     return DateTime(date.year, date.month, date.day)
         .subtract(Duration(days: date.weekday - 1));
   }
 
+  /// Checks if two dates are in the same week
   bool isSameWeek(DateTime date1, DateTime date2) {
     return date1.year == date2.year &&
         date1.weekOfYear == date2.weekOfYear;
   }
 
-  LineTouchData get lineTouchData => LineTouchData(
+  /// Configures touch interactions and tooltips
+  LineTouchData getLineTouchData(List<RevenueData> fullRevenueData) => LineTouchData(
     handleBuiltInTouches: true,
     touchTooltipData: LineTouchTooltipData(
       getTooltipItems: (touchedSpots) {
         return touchedSpots.map((spot) {
-          String label;
-          if (dateFilter == "All time" || dateFilter == "This year") {
-            label = DateFormat('MMM yyyy').format(revenueData[spot.x.toInt()].date);
-          } else if (dateFilter == "Month") {
-            label = "Week ${spot.x.toInt() + 1}";
-          } else if (dateFilter == "Week") {
-            label = DateFormat('EEE').format(revenueData[spot.x.toInt()].date);
-          } else {
-            label = DateFormat('MMM').format(revenueData[spot.x.toInt()].date);
-          }
+          int index = spot.x.toInt();
+          // Ensure index is within bounds
+          if (index >= 0 && index < fullRevenueData.length) {
+            String label;
+            if (dateFilter == "All time" || dateFilter == "This year") {
+              label = DateFormat('MMM yyyy').format(fullRevenueData[index].date);
+            } else if (dateFilter == "Month") {
+              label = "Week ${index + 1}";
+            } else if (dateFilter == "Week") {
+              label = DateFormat('EEE').format(fullRevenueData[index].date);
+            } else {
+              label = DateFormat('MMM').format(fullRevenueData[index].date);
+            }
 
-          return LineTooltipItem(
-            '$label\n${spot.y.toStringAsFixed(2)}',
-            const TextStyle(color: Colors.white),
-          );
+            return LineTooltipItem(
+              '$label\n${_formatAmount(spot.y)}',
+              const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
+              ),
+            );
+          } else {
+            // Handle out-of-bounds index gracefully
+            return LineTooltipItem(
+              '',
+              const TextStyle(color: Colors.white),
+            );
+          }
         }).toList();
       },
     ),
   );
 
-  FlTitlesData titlesData(List<RevenueData> fullRevenueData) => FlTitlesData(
+  /// Configures chart titles
+  FlTitlesData getTitlesData(List<RevenueData> fullRevenueData) => FlTitlesData(
     bottomTitles: AxisTitles(
       sideTitles: SideTitles(
         showTitles: true,
-        reservedSize: 32,
+        reservedSize: 30,
         interval: 1,
         getTitlesWidget: (double value, TitleMeta meta) {
-          if (value.toInt() < fullRevenueData.length) {
-            final date = fullRevenueData[value.toInt()].date;
+          int index = value.toInt();
+          if (index < fullRevenueData.length) {
+            final date = fullRevenueData[index].date;
             String label;
 
             switch (dateFilter) {
@@ -237,7 +266,7 @@ class RevenueLineChart extends StatelessWidget {
                 label = DateFormat('MMM').format(date);
                 break;
               case "Month":
-                label = 'W${value.toInt() + 1}';
+                label = 'W${index + 1}';
                 break;
               case "Week":
                 label = DateFormat('EEE').format(date);
@@ -249,7 +278,7 @@ class RevenueLineChart extends StatelessWidget {
             return SideTitleWidget(
               axisSide: meta.axisSide,
               space: 8,
-              child: Text(label, style: TextStyle(fontSize: 10)),
+              child: Text(label, style: const TextStyle(fontSize: 10)),
             );
           } else {
             return Container();
@@ -260,16 +289,17 @@ class RevenueLineChart extends StatelessWidget {
     leftTitles: AxisTitles(
       sideTitles: SideTitles(
         showTitles: true,
-        reservedSize: 40,
+        reservedSize: 100,
         interval: calculateYInterval(fullRevenueData),
         getTitlesWidget: (double value, TitleMeta meta) {
           return Text(
             '${_formatAmount(value)}',
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 10,
-            ),
-            textAlign: TextAlign.center,
+            // style: const TextStyle(
+            //  // fontWeight: FontWeight.bold,
+            //   fontSize: 5,
+            //   color: Colors.black, // Changed color from black to grey in initial answer
+            // ),
+           // textAlign: TextAlign.center,
           );
         },
       ),
@@ -282,26 +312,44 @@ class RevenueLineChart extends StatelessWidget {
     ),
   );
 
-  // Calculate Y-axis interval based on max revenue
+  /// Calculates Y-axis interval based on maximum revenue
   double calculateYInterval(List<RevenueData> fullRevenueData) {
     if (fullRevenueData.isEmpty) return 20000;
     double max = fullRevenueData.map((data) => data.amount).reduce((a, b) => a > b ? a : b);
-    if (max <= 1000) return 200;
-    if (max <= 10000) return 2000;
-    return 20000;
+
+    // Define intervals based on magnitude
+    if (max <= 1000) {
+      return 200;
+    } else if (max <= 10000) {
+      return 2000;
+    } else if (max <= 50000) {
+      return 5000;
+    } else if (max <= 100000) {
+      return 10000;
+    } else if (max <= 500000) {
+      return 50000;
+    } else if (max <= 1000000) {
+      return 100000;
+    } else if (max <= 5000000) {
+      return 500000;
+    } else {
+      return 1000000; // For values above 5,000,000
+    }
   }
 
-  // Format amount with commas
+  /// Formats the amount with currency symbols and two decimal places
   String _formatAmount(double amount) {
-    final formatter = NumberFormat.compactCurrency(
-      decimalDigits: 0,
+    final formatter = NumberFormat.currency(
+      decimalDigits: 1, // Display two decimal digits
       symbol: '\$',
     );
     return formatter.format(amount);
   }
 
+  /// Configures grid lines (currently disabled)
   FlGridData get gridData => const FlGridData(show: false);
 
+  /// Configures chart borders
   FlBorderData get borderData => FlBorderData(
     show: true,
     border: const Border(
@@ -312,6 +360,7 @@ class RevenueLineChart extends StatelessWidget {
     ),
   );
 
+  /// Configures the line chart's bar data
   LineChartBarData lineChartBarData(List<FlSpot> spots) {
     return LineChartBarData(
       isCurved: true,
@@ -324,6 +373,7 @@ class RevenueLineChart extends StatelessWidget {
     );
   }
 }
+
 
 
 class SalesReportScreen extends StatefulWidget {
@@ -339,7 +389,6 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
     List<RevenueData> revenueData = reportController.buildingSales
         .map((data) {
 
-      print("data$data");
       // Check for null values before creating RevenueData
       final amount = data['SalePaymentReport']['Amount'];
       final date = (data['SalePaymentReport']['DateTime'] as Timestamp).toDate();

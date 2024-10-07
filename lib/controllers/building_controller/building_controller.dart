@@ -89,7 +89,7 @@ class BuildingController extends GetxController {
   void fetchProjects() async {
     try {
       isLoading.value = true; // Start loading
-      final snapshot = await fireStore.collection('building').get();
+      final snapshot = await fireStore.collection('building')  .orderBy('createDateTime',descending: true).get();
 
       // Map the documents to BuildingModel instances
       projects.value = snapshot.docs
@@ -129,7 +129,9 @@ class BuildingController extends GetxController {
       }
 
       // Save the project to Firestore
-      DocumentReference docRef = await fireStore.collection('building').add(project.toFirestore());
+      DocumentReference docRef = await fireStore.collection('building')
+
+          .add(project.toFirestore());
       project.id = docRef.id;
       projects.add(project);
       imageController.resizedImagePath.value="";

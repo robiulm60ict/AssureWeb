@@ -124,11 +124,18 @@ class BuildingSalePaymentReportController extends GetxController {
     }
   }
 
+  var salesDates = <DateTime>[].obs; // Add this to store corresponding dates
+
   Future<void> fetchAllBuildingSalesDateRange({
     required DateTime? startDate,
     required DateTime? endDate,
   }) async {
     isDateFilterLoading.value = true;
+    totalAmount.value = 0; // Reset total amount before fetching new data
+    salesDataReport.clear();
+    salesDates.clear();
+    buildingSalesReport.clear();
+
     print("Start Date: $startDate");
     print("End Date: $endDate");
 
@@ -150,9 +157,7 @@ class BuildingSalePaymentReportController extends GetxController {
 
       QuerySnapshot buildingSaleSnapshot = await fireStore
           .collection('BookingSalePaymentReport')
-          .orderBy('DateTime', descending: true)  // Order by DateTime in descending order
-
-
+          .orderBy('DateTime', descending: true) // Order by DateTime in descending order
           .where('DateTime', isGreaterThanOrEqualTo: Timestamp.fromDate(startDate.toUtc()))
           .where('DateTime', isLessThanOrEqualTo: Timestamp.fromDate(endOfDay.toUtc()))
           .get();
@@ -172,12 +177,14 @@ class BuildingSalePaymentReportController extends GetxController {
         if (customerId != null) customerIds.add(customerId);
         if (buildingId != null) buildingIds.add(buildingId);
 
-        // Process sales data
-        double amount = double.parse(buildingSaleData['Amount'].toString());
+        // Safely parse the amount, handle potential errors
+        double amount = double.tryParse(buildingSaleData['Amount'].toString()) ?? 0;
         totalAmount.value += amount; // Accumulate total amount
 
         Timestamp date = buildingSaleData['DateTime'];
         String saleDateString = date.toDate().toIso8601String().split("T")[0];
+        DateTime saleDate = date.toDate();
+
         dailySales[saleDateString] = (dailySales[saleDateString] ?? 0) + amount;
 
         // Add the initial data
@@ -187,6 +194,16 @@ class BuildingSalePaymentReportController extends GetxController {
           "customer": null,  // Will fill after fetching customer data
           "building": null,  // Will fill after fetching building data
         });
+      }
+
+      // Sort the dailySales by date to ensure consistency
+      var sortedEntries = dailySales.entries.toList()
+        ..sort((a, b) => a.key.compareTo(b.key));
+
+      // Populate salesDataReport and salesDates
+      for (var entry in sortedEntries) {
+        salesDataReport.add(entry.value);
+        salesDates.add(DateTime.parse(entry.key));
       }
 
       // Batch fetch customer and building data
@@ -216,22 +233,19 @@ class BuildingSalePaymentReportController extends GetxController {
         sale['building'] = buildingDataMap[buildingId] ?? {};
       }
 
-      // Convert daily sales map to a list for the chart
-      salesDataReport.value = dailySales.values.toList();
-      isDateFilterLoading.value = false;
-
-      // Update the building sales list
+      // Update the building sales list with enriched data
       buildingSalesReport.value = allBuildingSales;
 
+      isDateFilterLoading.value = false;
+
       // Print or use the total amount
-      print("Total Sales Amount: $totalAmount");
+      print("Total Sales Amount: ${totalAmount.value}");
 
     } catch (e) {
       isDateFilterLoading.value = false;
       print("Error fetching building sales: $e");
     }
   }
-
 
 
 }

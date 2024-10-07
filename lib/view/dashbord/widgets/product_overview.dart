@@ -4,6 +4,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:intl/intl.dart';
 
 import '../../../configs/app_colors.dart';
 import '../../../configs/app_constants.dart';
@@ -44,7 +45,7 @@ class _ProductOverviewsState extends State<ProductOverviews> {
         end: endDate ?? DateTime.now(),
       ),
       firstDate: DateTime(2020),
-      lastDate: DateTime(2100),
+      lastDate: DateTime(3000),
     );
     if (picked != null) {
       setState(() {
@@ -430,10 +431,11 @@ class _BuildingSalesViewReportState extends State<BuildingSalesViewReport> {
   }
 
   // Function to build the BarChart with dynamic data
+
   BarChartData dynamicData() {
     return BarChartData(
       maxY: reportController.salesDataReport.isNotEmpty
-          ? reportController.salesDataReport.reduce((a, b) => a > b ? a : b) + 10 // Dynamic max value based on sales data
+          ? reportController.salesDataReport.reduce((a, b) => a > b ? a : b) + 10
           : 30, // Default max value if no sales data available
       barTouchData: BarTouchData(
         enabled: true, // Enable touch interaction on the bar chart
@@ -445,11 +447,16 @@ class _BuildingSalesViewReportState extends State<BuildingSalesViewReport> {
             showTitles: true,
             getTitlesWidget: (value, meta) {
               final int index = value.toInt();
-              // Ensure the index is within the bounds of the sales data list
+
+              // Check if the index is within the bounds of the sales data list
               if (index < reportController.salesDataReport.length) {
+                // Format the date and month, assuming you have a date list or you can derive it
+                final DateTime date = reportController.salesDates[index]; // Example: dates corresponding to sales data
+                String formattedDate = DateFormat('MMM dd').format(date); // Format: 'Oct 07' for example
+
                 return SideTitleWidget(
                   axisSide: meta.axisSide,
-                  child: Text('Day ${index + 1}'), // Display 'Day' followed by the correct index
+                  child: Text(formattedDate), // Display formatted date
                 );
               } else {
                 return SideTitleWidget(
@@ -479,6 +486,7 @@ class _BuildingSalesViewReportState extends State<BuildingSalesViewReport> {
       ),
     );
   }
+
 }
 
 
