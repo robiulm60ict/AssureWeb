@@ -160,9 +160,9 @@ class CustomerListView extends StatelessWidget {
                                     );
                                   },
                                   errorBuilder: (context, error, stackTrace) {
-                                    return Image.asset(
-                                      "assets/icons/noimageperson.jpg",
-                                      fit: BoxFit.fill,
+                                    return Image.network(
+                                      "https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/man-person-icon.png",
+                                      fit: BoxFit.cover,
                                     );
                                   },
                                 ),

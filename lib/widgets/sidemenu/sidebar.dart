@@ -292,6 +292,8 @@ class Sidebar extends StatelessWidget {
                           ),
                         ],
                       ),
+
+                      if (Responsive.isMobile(context))
                       Container(
                         decoration: BoxDecoration(
                             color: Colors.grey.shade300,
@@ -350,59 +352,3 @@ class Sidebar extends StatelessWidget {
   }
 }
 
-class InstallmentTable extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Installment Table'),
-      ),
-      body: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        // Allows horizontal scrolling if needed
-        child: DataTable(
-          columns: const <DataColumn>[
-            DataColumn(
-              label: Text('Installment'),
-            ),
-            DataColumn(
-              label: Text('Taka (Schedule)'),
-            ),
-            DataColumn(
-              label: Text('Date'),
-            ),
-            DataColumn(
-              label: Text('Status'),
-            ),
-          ],
-          rows: const <DataRow>[
-            DataRow(
-              cells: <DataCell>[
-                DataCell(Text('1st Installment')),
-                DataCell(Text('5000')),
-                DataCell(Text('2024-09-01')),
-                DataCell(Text('Paid')),
-              ],
-            ),
-            DataRow(
-              cells: <DataCell>[
-                DataCell(Text('2nd Installment')),
-                DataCell(Text('6000')),
-                DataCell(Text('2024-10-01')),
-                DataCell(Text('Unpaid')),
-              ],
-            ),
-            DataRow(
-              cells: <DataCell>[
-                DataCell(Text('3rd Installment')),
-                DataCell(Text('7000')),
-                DataCell(Text('2024-11-01')),
-                DataCell(Text('Unpaid')),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

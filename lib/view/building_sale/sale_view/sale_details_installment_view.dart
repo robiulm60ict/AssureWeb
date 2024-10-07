@@ -438,7 +438,9 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                                         child: Image.network(
                                           "https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/man-person-icon.png",
                                           fit: BoxFit.cover,
-                                        ));
+                                        )
+
+                                    );
                                   },
                                 ),
                               ),

@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 import '../configs/app_colors.dart';
+import '../configs/database/login.dart';
 import '../configs/ghaps.dart';
+import '../configs/routes.dart';
 import '../responsive.dart';
+import '../view/sign_in_page/sign_in_page.dart';
+import 'app_alert_dialog.dart';
 
 
 
@@ -36,60 +41,13 @@ class Header extends StatelessWidget {
                   )
                 ),
               ),
-            // if (Responsive.isMobile(context))
-            //   IconButton(
-            //     onPressed: () {},
-            //     icon: const Badge(
-            //       isLabelVisible: false,
-            //       child: HugeIcon(
-            //         icon: HugeIcons.strokeRoundedSearch01,
-            //         color: Colors.black,
-            //         size: 24.0,
-            //       )
-            //     ),
-            //   ),
-            // if (!Responsive.isMobile(context))
-            //   Expanded(
-            //     flex: 1,
-            //     child: TextFormField(
-            //       // style: Theme.of(context).textTheme.labelLarge,
-            //       decoration: InputDecoration(
-            //         hintText: "Search...",
-            //         prefixIcon: const Padding(
-            //           padding: EdgeInsets.only(
-            //               left: AppDefaults.padding,
-            //               right: AppDefaults.padding / 2),
-            //           child:HugeIcon(
-            //             icon: HugeIcons.strokeRoundedSearch01,
-            //             color: Colors.black,
-            //             size: 24.0,
-            //           )
-            //         ),
-            //         filled: true,
-            //         fillColor: Theme.of(context).scaffoldBackgroundColor,
-            //         border: AppDefaults.outlineInputBorder,
-            //         focusedBorder: AppDefaults.focusedOutlineInputBorder,
-            //       ),
-            //     ),
-            //   ),
+
             Expanded(
               flex: 2,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  // if (!Responsive.isMobile(context))
-                  //   IconButton(
-                  //     onPressed: () {},
-                  //     icon: const Badge(
-                  //       isLabelVisible: true,
-                  //       child:
-                  //       HugeIcon(
-                  //         icon: HugeIcons.strokeRoundedMessageNotification02,
-                  //         color: Colors.black,
-                  //         size: 24.0,
-                  //       )
-                  //     ),
-                  //   ),
+
                   if (!Responsive.isMobile(context)) gapW16,
                   if (!Responsive.isMobile(context))
                     IconButton(
@@ -106,7 +64,9 @@ class Header extends StatelessWidget {
                   if (!Responsive.isMobile(context)) gapW16,
                   if (!Responsive.isMobile(context))
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        showEmailLogoutDialog(context);
+                      },
                       icon: const CircleAvatar(
                         backgroundImage: NetworkImage(
                             "https://cdn.create.vista.com/api/media/small/339818716/stock-photo-doubtful-hispanic-man-looking-with-disbelief-expression"),
@@ -123,4 +83,85 @@ class Header extends StatelessWidget {
       ),
     );
   }
+
+  void showEmailLogoutDialog(BuildContext context) async {
+    // Fetch login information before showing the dialog
+    List<String>? loginInfo = await LocalDB.getLoginInfo();
+    String email = loginInfo != null && loginInfo.isNotEmpty ? loginInfo[0] : 'No email found';
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          title: const Text('Account'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Email: $email',
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(8)),
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+                margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+                child: InkWell(
+                  onTap: () {
+                    appAlertDialog(context, "Are you sure you want to logout?",
+                        title: "Logout",
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context); // Close the confirmation dialog
+                            },
+                            child: const Text("Dismiss"),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              LocalDB.delLoginInfo();
+                              AppRoutes.pushAndRemoveUntil(context, page: SignInPage());
+                            },
+                            child: const Text(
+                              "Logout",
+                              style: TextStyle(color: Colors.red),
+                            ),
+                          ),
+                        ]);
+                  },
+                  child: const Row(
+                    children: [
+                      HugeIcon(
+                        icon: HugeIcons.strokeRoundedLogout01,
+                        color: Colors.black,
+                        size: 24.0,
+                      ),
+                      SizedBox(width: 16), // Using SizedBox for gap instead of gapW16
+                      Text(
+                        "LogOut",
+                        style: TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('Ok'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }
