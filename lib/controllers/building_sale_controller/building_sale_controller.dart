@@ -158,91 +158,160 @@ class BuildingSaleController extends GetxController {
   var buildingSales = <Map<String, dynamic>>[].obs;
   var isLoadingSales=false.obs;
 
-// Fetch all building sales data
   Future<void> fetchAllBuildingSales() async {
     try {
-      isLoadingSales.value=true;
+      isLoadingSales.value = true;
+
       // Fetch all building sale documents
-      QuerySnapshot buildingSaleSnapshot =
-          await fireStore.collection('buildingSale')
-              .orderBy('BookingDate',descending: true)
-              .get();
+      QuerySnapshot buildingSaleSnapshot = await fireStore
+          .collection('buildingSale')
+          .orderBy('BookingDate')
+          .get();
+
       List<Map<String, dynamic>> allBuildingSales = [];
+      List<String> customerIds = [];
+      List<String> buildingIds = [];
 
       for (var doc in buildingSaleSnapshot.docs) {
-        // Get document ID
         String documentId = doc.id;
-        Map<String, dynamic> buildingSaleData =
-            doc.data() as Map<String, dynamic>;
+        Map<String, dynamic> buildingSaleData = doc.data() as Map<String, dynamic>;
         String? customerId = buildingSaleData["customerId"];
-        String? buildingId = buildingSaleData[
-            "buildingId"]; // Get the buildingId from the building sale data
+        String? buildingId = buildingSaleData["buildingId"];
 
-        // Fetch customer data using the customer ID
-        DocumentSnapshot customerDoc =
-            await fireStore.collection('customer').doc(customerId).get();
-        Map<String, dynamic>? customerData;
+        // Collect customer and building IDs
+        if (customerId != null) customerIds.add(customerId);
+        if (buildingId != null) buildingIds.add(buildingId);
 
-        if (customerDoc.exists) {
-          customerData = customerDoc.data() as Map<String, dynamic>;
-        } else {
-          isLoadingSales.value=false;
-
-          print("Customer not found for ID: $customerId");
-          customerData = {}; // Initialize as empty map if not found
-        }
-
-        // Fetch building data using the building ID
-        DocumentSnapshot buildingDoc =
-            await fireStore.collection('building').doc(buildingId).get();
-        Map<String, dynamic>? buildingData;
-
-        if (buildingDoc.exists) {
-          buildingData = buildingDoc.data() as Map<String, dynamic>;
-        } else {
-          print("Building not found for ID: $buildingId");
-          buildingData = {}; // Initialize as empty map if not found
-        }
-
-        // Combine the building sale, customer, and building data
+        // Add initial building sale data to the list
         allBuildingSales.add({
-          "documentId": documentId, // Add document ID to the map
+          "documentId": documentId,
           "buildingSale": buildingSaleData,
-          "customer": customerData,
-          "building": buildingData, // Add building data to the map
+          "customer": {}, // Placeholder for customer data
+          "building": {}, // Placeholder for building data
         });
       }
-      isLoadingSales.value=false;
+
+      // Fetch customer data in bulk
+      if (customerIds.isNotEmpty) {
+        var customerDocs = await fireStore.collection('customer').where(FieldPath.documentId, whereIn: customerIds).get();
+        for (var customerDoc in customerDocs.docs) {
+          String customerId = customerDoc.id;
+          Map<String, dynamic> customerData = customerDoc.data() as Map<String, dynamic>;
+
+          // Update corresponding building sales with customer data
+          for (var sale in allBuildingSales) {
+            if (sale["buildingSale"]["customerId"] == customerId) {
+              sale["customer"] = customerData;
+            }
+          }
+        }
+      }
+
+      // Fetch building data in bulk
+      if (buildingIds.isNotEmpty) {
+        var buildingDocs = await fireStore.collection('building').where(FieldPath.documentId, whereIn: buildingIds).get();
+        for (var buildingDoc in buildingDocs.docs) {
+          String buildingId = buildingDoc.id;
+          Map<String, dynamic> buildingData = buildingDoc.data() as Map<String, dynamic>;
+
+          // Update corresponding building sales with building data
+          for (var sale in allBuildingSales) {
+            if (sale["buildingSale"]["buildingId"] == buildingId) {
+              sale["building"] = buildingData;
+            }
+          }
+        }
+      }
 
       // Update the reactive variable
       buildingSales.value = allBuildingSales;
+
     } catch (e) {
-      isLoadingSales.value=false;
       print("Error fetching building sales data: $e");
+    } finally {
+      isLoadingSales.value = false;
     }
   }
 
-  var buildingSaleData =
-      <String, dynamic>{}.obs; // Observable map for building sale data
+// Fetch all building sales data
+//   Future<void> fetchAllBuildingSales() async {
+//     try {
+//       isLoadingSales.value=true;
+//       // Fetch all building sale documents
+//       QuerySnapshot buildingSaleSnapshot =
+//           await fireStore.collection('buildingSale')
+//               .orderBy('BookingDate')
+//
+//               .get();
+//       List<Map<String, dynamic>> allBuildingSales = [];
+//
+//       for (var doc in buildingSaleSnapshot.docs) {
+//         // Get document ID
+//         String documentId = doc.id;
+//         Map<String, dynamic> buildingSaleData =
+//             doc.data() as Map<String, dynamic>;
+//         String? customerId = buildingSaleData["customerId"];
+//         String? buildingId = buildingSaleData[
+//             "buildingId"]; // Get the buildingId from the building sale data
+//
+//         // Fetch customer data using the customer ID
+//         DocumentSnapshot customerDoc =
+//             await fireStore.collection('customer').doc(customerId).get();
+//         Map<String, dynamic>? customerData;
+//
+//         if (customerDoc.exists) {
+//           customerData = customerDoc.data() as Map<String, dynamic>;
+//         } else {
+//           isLoadingSales.value=false;
+//
+//           print("Customer not found for ID: $customerId");
+//           customerData = {}; // Initialize as empty map if not found
+//         }
+//
+//         // Fetch building data using the building ID
+//         DocumentSnapshot buildingDoc =
+//             await fireStore.collection('building').doc(buildingId).get();
+//         Map<String, dynamic>? buildingData;
+//
+//         if (buildingDoc.exists) {
+//           buildingData = buildingDoc.data() as Map<String, dynamic>;
+//         } else {
+//           print("Building not found for ID: $buildingId");
+//           buildingData = {}; // Initialize as empty map if not found
+//         }
+//
+//         // Combine the building sale, customer, and building data
+//         allBuildingSales.add({
+//           "documentId": documentId, // Add document ID to the map
+//           "buildingSale": buildingSaleData,
+//           "customer": customerData,
+//           "building": buildingData, // Add building data to the map
+//         });
+//       }
+//       isLoadingSales.value=false;
+//
+//       // Update the reactive variable
+//       buildingSales.value = allBuildingSales;
+//     } catch (e) {
+//       isLoadingSales.value=false;
+//       print("Error fetching building sales data: $e");
+//     }
+//   }
+
+  var buildingSaleData = <String, dynamic>{}.obs; // Observable map for building sale data
   var isLoading = false.obs; // Observable loading state
 
-  // Method to fetch building sale details using documentId
+// Method to fetch building sale details using documentId
   Future<void> fetchSingleBuildingSale(String documentId) async {
     isLoading.value = true; // Set loading to true
     try {
       final data = await _fetchSingleBuildingSaleFromFirestore(documentId);
       if (data != null) {
         buildingSaleData.value = data;
-        isLoading.value = false; // Set loading to false after fetching
-// Set fetched data to observable
       } else {
-        isLoading.value = false; // Set loading to false after fetching
-
         print("No data found for document ID: $documentId");
       }
     } catch (error) {
-      isLoading.value = false; // Set loading to false after fetching
-
       // Handle error if needed
       print("Error fetching building sale: $error");
     } finally {
@@ -250,32 +319,43 @@ class BuildingSaleController extends GetxController {
     }
   }
 
-  // Private method to handle fetching from Firestore
+// Private method to handle fetching from Firestore
   Future<Map<String, dynamic>?> _fetchSingleBuildingSaleFromFirestore(
       String documentId) async {
     try {
       DocumentSnapshot doc =
-          await fireStore.collection('buildingSale').doc(documentId).get();
+      await fireStore.collection('buildingSale').doc(documentId).get();
 
       if (doc.exists) {
         Map<String, dynamic> buildingSaleData =
-            doc.data() as Map<String, dynamic>;
+        doc.data() as Map<String, dynamic>;
         String? customerId = buildingSaleData["customerId"];
         String? buildingId = buildingSaleData["buildingId"];
 
-        // Fetch customer data
-        DocumentSnapshot customerDoc =
-            await fireStore.collection('customer').doc(customerId).get();
-        Map<String, dynamic>? customerData = customerDoc.exists
-            ? customerDoc.data() as Map<String, dynamic>
-            : null;
+        // Prepare a batch request for fetching customer and building data
+        List<DocumentSnapshot> customerDocs = [];
+        List<DocumentSnapshot> buildingDocs = [];
 
-        // Fetch building data
-        DocumentSnapshot buildingDoc =
-            await fireStore.collection('building').doc(buildingId).get();
-        Map<String, dynamic>? buildingData = buildingDoc.exists
-            ? buildingDoc.data() as Map<String, dynamic>
-            : null;
+        if (customerId != null) {
+          customerDocs.add(await fireStore.collection('customer').doc(customerId).get());
+        }
+
+        if (buildingId != null) {
+          buildingDocs.add(await fireStore.collection('building').doc(buildingId).get());
+        }
+
+        Map<String, dynamic>? customerData;
+        Map<String, dynamic>? buildingData;
+
+        // Extract customer data
+        if (customerDocs.isNotEmpty && customerDocs[0].exists) {
+          customerData = customerDocs[0].data() as Map<String, dynamic>;
+        }
+
+        // Extract building data
+        if (buildingDocs.isNotEmpty && buildingDocs[0].exists) {
+          buildingData = buildingDocs[0].data() as Map<String, dynamic>;
+        }
 
         // Combine data into one map
         return {
@@ -293,6 +373,7 @@ class BuildingSaleController extends GetxController {
       return null;
     }
   }
+
 
   RxList<Map<String, dynamic>> installmentPlan = <Map<String, dynamic>>[].obs;
   void installmentNumberData() {

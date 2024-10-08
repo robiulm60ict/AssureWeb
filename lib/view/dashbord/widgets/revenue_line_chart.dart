@@ -290,7 +290,7 @@ class RevenueLineChart extends StatelessWidget {
       sideTitles: SideTitles(
         showTitles: true,
         reservedSize: 100,
-        interval: calculateYInterval(fullRevenueData),
+        // interval: calculateYInterval(fullRevenueData),
         getTitlesWidget: (double value, TitleMeta meta) {
           return Text(
             '${_formatAmount(value)}',
