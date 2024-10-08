@@ -102,13 +102,13 @@ class BuildingView extends StatelessWidget {
                       const Expanded(
                           flex: 2,
                           child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [Text("Price")])),
                     if (!Responsive.isMobile(context))
                       const Expanded(
                           flex: 1,
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [Text("Action")],
                           ))
                   ],
@@ -169,7 +169,7 @@ class BuildingView extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(10),
                                       child: Image.network(
                                         project.image.toString(),
-                                        fit: BoxFit.cover,
+                                        fit: BoxFit.fill,
                                         loadingBuilder:
                                             (context, child, loadingProgress) {
                                           if (loadingProgress == null) {

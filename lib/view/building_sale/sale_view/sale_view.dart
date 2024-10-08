@@ -22,7 +22,9 @@ class BuildingSalesScreen extends StatelessWidget {
     return  Obx(() {
       // Use the reactive buildingSales variable
       if (controller.isLoadingSales.value == true) {
-        return const Center(child: CircularProgressIndicator());
+        return const SizedBox(
+            height: 400,
+            child: Center(child: CircularProgressIndicator.adaptive()));
       } else if (controller.buildingSales.isEmpty) {
         return Center(
           child: Lottie.asset(AppImage.noData),
