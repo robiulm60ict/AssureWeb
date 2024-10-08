@@ -335,7 +335,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                                 if (dueAmount == null || dueAmount <= 0) {
                                   print("Invalid due amount$dueAmount");
                                   // Optionally show a snackbar or error message
-                                  // wrongSnackBar("You don't have Due");
+                                  wrongSnackBar("You don't have Due");
                                 } else {
                                   // If dueAmount is valid, print it for debugging
                                   print("Valid due amount: $dueAmount");
