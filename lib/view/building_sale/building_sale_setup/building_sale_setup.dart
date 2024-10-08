@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:assure_apps/configs/ghaps.dart';
 import 'package:assure_apps/model/buliding_model.dart';
+import 'package:assure_apps/widgets/snackbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -130,32 +131,44 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                               textInputAction: TextInputAction.done,
                               labelText: "Booking & Down Payment",
                               hintText: "Ex : 10 %",
-                              keyboardType: const TextInputType.numberWithOptions(
-                                  decimal: true),
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                      decimal: true),
                               controller: buildingSaleController
                                   .paymentBookingPercentageCountController,
                               labelColor: AppColors.textColorb1,
                               isBoldLabel: true,
                               inputFormatters: [
-                                FilteringTextInputFormatter.allow(
-                                    RegExp(r'^\d*\.?\d*')),
+                                PercentageInputFormatter(),
+
+                                // FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
                                 // Allows integers and decimals
                               ],
                               hintColor: AppColors.grey,
                               textColor: AppColors.textColorb1,
                               isRequired: true,
                               validator: (value) {
+                                double? percentage =
+                                    double.tryParse(value.toString());
                                 if (value!.isEmpty) {
                                   return "Please enter your booking payment %";
+                                } else if (percentage == null ||
+                                    percentage > 100) {
+                                  return "Percentage must be between 0 and 100";
                                 }
                                 return null;
                               },
                               onChanged: (p0) {
-                                buildingSaleController
-                                    .calculateResult(widget.model.totalCost);
-                                buildingSaleController
-                                    .calculateInstalmentAmountResult(
-                                        widget.model.totalCost);
+                                double? percentage = double.tryParse(p0);
+                                if (percentage != null && percentage <= 100) {
+                                  buildingSaleController
+                                      .calculateResult(widget.model.totalCost);
+                                  buildingSaleController
+                                      .calculateInstalmentAmountResult(
+                                          widget.model.totalCost);
+                                } else {
+                                  // Optionally, you can show an error or limit input here
+                                }
                               },
                             ),
                           ),
@@ -231,7 +244,6 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                               labelText: "Amount Off Installment",
                               hintText: "0.00",
                               readOnly: true,
-
                               keyboardType: TextInputType.number,
                               controller: buildingSaleController
                                   .amountInstallmentController,
@@ -250,14 +262,49 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                             ),
                           ),
                           gapW8,
+                          // Expanded(
+                          //   child: AppTextField(
+                          //     textInputAction: TextInputAction.done,
+                          //     labelText: "Number of Installment",
+                          //     hintText: "Ex : 5",
+                          //     inputFormatters: [
+                          //       FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                          //
+                          //     ],
+                          //     keyboardType: TextInputType.number,
+                          //     controller: buildingSaleController
+                          //         .installmentCountController,
+                          //     labelColor: AppColors.textColorb1,
+                          //     isBoldLabel: true,
+                          //     hintColor: AppColors.grey,
+                          //     textColor: AppColors.textColorb1,
+                          //     isRequired: true,
+                          //     validator: (value) {
+                          //       if (value!.isEmpty) {
+                          //         return "Please enter your number of installment";
+                          //       }
+                          //       return null;
+                          //     },
+                          //     onChanged: (p0) {
+                          //       buildingSaleController
+                          //           .calculateResult(widget.model.totalCost);
+                          //       buildingSaleController
+                          //           .calculateInstalmentAmountResult(
+                          //               widget.model.totalCost);
+                          //       buildingSaleController.installmentNumberData();
+                          //     },
+                          //   ),
+                          // ),
+
                           Expanded(
                             child: AppTextField(
                               textInputAction: TextInputAction.done,
                               labelText: "Number of Installment",
                               hintText: "Ex : 5",
                               inputFormatters: [
-                                FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'[1-9][0-9]*')),
+                                // Restricts input to positive integers only
                               ],
                               keyboardType: TextInputType.number,
                               controller: buildingSaleController
@@ -268,19 +315,39 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                               textColor: AppColors.textColorb1,
                               isRequired: true,
                               validator: (value) {
-                                if (value!.isEmpty) {
-                                  return "Please enter your number of installment";
+                                double? installments = double.tryParse(
+                                    buildingSaleController.dueAmount.text);
+
+                                if (installments == null || installments <= 0) {
+                                  return null;
+                                } else {
+                                  if (value!.isEmpty) {
+                                    return "Please enter your number of installments";
+                                  }
                                 }
                                 return null;
                               },
                               onChanged: (p0) {
-                                buildingSaleController
-                                    .calculateResult(widget.model.totalCost);
-                                buildingSaleController
-                                    .calculateInstalmentAmountResult(
-                                        widget.model.totalCost);
-                                buildingSaleController.installmentNumberData();
+                                // First, parse the due amount as a double
+                                double? dueAmount = double.tryParse(buildingSaleController.dueAmount.text);
+
+                                // Check if the dueAmount is valid and greater than or equal to 0
+                                if (dueAmount == null || dueAmount <= 0) {
+                                  print("Invalid due amount$dueAmount");
+                                  // Optionally show a snackbar or error message
+                                  // wrongSnackBar("You don't have Due");
+                                } else {
+                                  // If dueAmount is valid, print it for debugging
+                                  print("Valid due amount: $dueAmount");
+
+                                  // Perform the result calculations
+                                  buildingSaleController.calculateResult(widget.model.totalCost);
+                                  buildingSaleController.calculateInstalmentAmountResult(widget.model.totalCost);
+                                  buildingSaleController.installmentNumberData();
+                                }
                               },
+
+
                             ),
                           ),
                         ],
@@ -483,7 +550,8 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                                             .customerPhoneController,
                                         labelColor: AppColors.textColorb1,
                                         inputFormatters: [
-                                          FilteringTextInputFormatter.allow(RegExp(r'[0-9-()+ ]')),
+                                          FilteringTextInputFormatter.allow(
+                                              RegExp(r'[0-9-()+ ]')),
                                         ],
                                         isBoldLabel: true,
                                         hintColor: AppColors.grey,
@@ -510,8 +578,9 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                                         labelText: "Customer Email",
                                         hintText: "Enter Customer Email",
                                         inputFormatters: [
-                                          FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9@._-]')),  // Allows alphanumeric, '@', '.', '_', '-'
-
+                                          FilteringTextInputFormatter.allow(
+                                              RegExp(r'[a-zA-Z0-9@._-]')),
+                                          // Allows alphanumeric, '@', '.', '_', '-'
                                         ],
                                         keyboardType:
                                             TextInputType.emailAddress,
@@ -523,7 +592,10 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                                         textColor: AppColors.textColorb1,
                                         isRequired: false,
                                         validator: (value) {
-                                          if (value != null && value.isNotEmpty && !RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                                          if (value != null &&
+                                              value.isNotEmpty &&
+                                              !RegExp(r'^[^@]+@[^@]+\.[^@]+')
+                                                  .hasMatch(value)) {
                                             return 'Please enter a valid email';
                                           }
                                           return null;
@@ -684,281 +756,306 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                   ),
                 ),
                 gapH8,
-                kIsWeb?
-                Container(
-                  margin: EdgeInsets.symmetric(
-                    horizontal: AppDefaults.padding *
-                        (Responsive.isMobile(context) ? 0.5 : 6.5),
-                  ),
-                  width: double.infinity,
-                  height: AppDefaults.height(context) * 0.2,
-                  decoration: BoxDecoration(
-                      color: Colors.grey.shade200,
-                      borderRadius: BorderRadius.circular(12)),
-                  child: Center(
-                    child: Obx(
-                          () => Align(
-                        alignment: Alignment.center,
-                        child: InkWell(
-                          onTap: () async {
-                            final res = await showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                shape: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                                actionsPadding: const EdgeInsets.all(16.0),
-                                alignment: Alignment.center,
-                                title: const Text(
-                                  "Choose Option",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                                content: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    ElevatedButton(
-                                      child: const Text("From Gallery"),
-                                      onPressed: () {
-                                        Navigator.pop(context, true);
-                                      },
+                kIsWeb
+                    ? Container(
+                        margin: EdgeInsets.symmetric(
+                          horizontal: AppDefaults.padding *
+                              (Responsive.isMobile(context) ? 0.5 : 6.5),
+                        ),
+                        width: double.infinity,
+                        height: AppDefaults.height(context) * 0.2,
+                        decoration: BoxDecoration(
+                            color: Colors.grey.shade200,
+                            borderRadius: BorderRadius.circular(12)),
+                        child: Center(
+                          child: Obx(
+                            () => Align(
+                              alignment: Alignment.center,
+                              child: InkWell(
+                                onTap: () async {
+                                  final res = await showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      shape: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
+                                      ),
+                                      actionsPadding:
+                                          const EdgeInsets.all(16.0),
+                                      alignment: Alignment.center,
+                                      title: const Text(
+                                        "Choose Option",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 16.0,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                      content: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          ElevatedButton(
+                                            child: const Text("From Gallery"),
+                                            onPressed: () {
+                                              Navigator.pop(context, true);
+                                            },
+                                          ),
+                                          const SizedBox(height: 10.0),
+                                          Responsive.isMobile(context)
+                                              ? ElevatedButton(
+                                                  child:
+                                                      const Text("Take Photo"),
+                                                  onPressed: () {
+                                                    Navigator.pop(
+                                                        context, false);
+                                                  },
+                                                )
+                                              : Container(),
+                                        ],
+                                      ),
                                     ),
-                                    const SizedBox(height: 10.0),
-                                    Responsive.isMobile(context)?   ElevatedButton(
-                                      child: const Text("Take Photo"),
-                                      onPressed: () {
-                                        Navigator.pop(context, false);
-                                      },
-                                    ):Container(),
+                                  );
+                                  if (res != null) {
+                                    await imageController.pickImage(
+                                        fromGallery: res);
+                                  }
+                                },
+                                child: Stack(
+                                  alignment: Alignment.bottomRight,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: imageController
+                                              .resizedImagePath.value.isNotEmpty
+                                          ? (kIsWeb
+                                              ? Image.network(
+                                                  imageController
+                                                      .resizedImagePath.value,
+                                                  fit: BoxFit.cover,
+                                                  width: 70.0,
+                                                  height: 70.0,
+                                                )
+                                              : Image.file(
+                                                  File(imageController
+                                                      .originalImagePath.value),
+                                                  fit: BoxFit.cover,
+                                                  width: 70.0,
+                                                  height: 70.0,
+                                                ))
+                                          : Container(
+                                              width: Responsive.isMobile(
+                                                      context)
+                                                  ? AppDefaults.width(context) *
+                                                      0.5
+                                                  : AppDefaults.width(context) *
+                                                      0.2,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 6,
+                                                      horizontal: 10),
+                                              decoration: const BoxDecoration(
+                                                  color: Colors.white),
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  const HugeIcon(
+                                                    icon: HugeIcons
+                                                        .strokeRoundedUpload04,
+                                                    color: Colors.black,
+                                                    size: 24.0,
+                                                  ),
+                                                  gapW8,
+                                                  SizedBox(
+                                                    child: Text(
+                                                      "Click or drop image",
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color: Colors
+                                                              .grey.shade500),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                    ),
                                   ],
                                 ),
                               ),
-                            );
-                            if (res != null) {
-                              await imageController.pickImage(fromGallery: res);
-                            }
-                          },
-                          child: Stack(
-                            alignment: Alignment.bottomRight,
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: imageController
-                                    .resizedImagePath.value.isNotEmpty
-                                    ? (kIsWeb
-                                    ? Image.network(
-                                  imageController
-                                      .resizedImagePath.value,
-                                  fit: BoxFit.cover,
-                                  width: 70.0,
-                                  height: 70.0,
-                                )
-                                    : Image.file(
-                                  File(imageController
-                                      .originalImagePath.value),
-                                  fit: BoxFit.cover,
-                                  width: 70.0,
-                                  height: 70.0,
-                                ))
-                                    : Container(
-                                  width: Responsive.isMobile(context)
-                                      ? AppDefaults.width(context) * 0.5
-                                      : AppDefaults.width(context) * 0.2,
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 6, horizontal: 10),
-                                  decoration: const BoxDecoration(
-                                      color: Colors.white),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.center,
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.center,
-                                    children: [
-                                      const HugeIcon(
-                                        icon: HugeIcons
-                                            .strokeRoundedUpload04,
-                                        color: Colors.black,
-                                        size: 24.0,
-                                      ),
-                                      gapW8,
-                                      SizedBox(
-                                        child: Text(
-                                          "Click or drop image",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w500,
-                                              color:
-                                              Colors.grey.shade500),
+                            ),
+                          ),
+                        ),
+                      )
+                    : Container(
+                        width: double.infinity,
+                        height: Responsive.isMobile(context)
+                            ? AppDefaults.height(context) * 0.1
+                            : AppDefaults.height(context) * 0.2,
+                        padding: EdgeInsets.symmetric(
+                          vertical: AppDefaults.padding *
+                              (Responsive.isMobile(context) ? 1 : 0.5),
+                          horizontal: AppDefaults.padding *
+                              (Responsive.isMobile(context) ? 1 : 2.5),
+                        ),
+                        margin: EdgeInsets.symmetric(
+                          // vertical:
+                          //     AppDefaults.padding * (Responsive.isMobile(context) ? 1 : 1.5),
+                          horizontal: AppDefaults.padding *
+                              (Responsive.isMobile(context) ? 1 : 6.5),
+                        ),
+                        decoration: BoxDecoration(
+                            color: Colors.grey.shade200,
+                            borderRadius: BorderRadius.circular(12)),
+                        child: Center(
+                          child: Obx(
+                            () => Align(
+                              alignment: Alignment.center,
+                              child: InkWell(
+                                  onTap: () async {
+                                    final res = await showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        shape: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8.0),
                                         ),
-                                      )
+                                        actionsPadding:
+                                            const EdgeInsets.all(16.0),
+                                        alignment: Alignment.center,
+                                        title: const Text(
+                                          "Choose Option",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                        content: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            ElevatedButton(
+                                              child: const Text("From Gallery"),
+                                              onPressed: () {
+                                                Navigator.pop(context, true);
+                                              },
+                                            ),
+                                            const SizedBox(height: 10.0),
+                                            Responsive.isMobile(context)
+                                                ? ElevatedButton(
+                                                    child: const Text(
+                                                        "Take Photo"),
+                                                    onPressed: () {
+                                                      Navigator.pop(
+                                                          context, false);
+                                                    },
+                                                  )
+                                                : Container(),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                    if (res != null) {
+                                      await imageController.pickImage(
+                                          fromGallery: res);
+                                    } else {
+                                      // Get.snackbar(
+                                      //     '', 'Select an option to continue');
+                                    }
+                                  },
+                                  child: Stack(
+                                    alignment: Alignment.bottomRight,
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        // Adjust the radius as needed
+                                        child: imageController.resizedImagePath
+                                                .value.isNotEmpty
+                                            ? Container(
+                                                width: 70.0,
+                                                height: 70.0,
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                    image: FileImage(File(
+                                                        imageController
+                                                            .originalImagePath
+                                                            .value)),
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                              )
+                                            : Container(
+                                                width:
+                                                    Responsive.isMobile(context)
+                                                        ? AppDefaults.width(
+                                                                context) *
+                                                            0.5
+                                                        : AppDefaults.width(
+                                                                context) *
+                                                            0.2,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 6,
+                                                        horizontal: 10),
+                                                decoration: const BoxDecoration(
+                                                    color: Colors.white),
+                                                child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    const HugeIcon(
+                                                      icon: HugeIcons
+                                                          .strokeRoundedUpload04,
+                                                      color: Colors.black,
+                                                      size: 24.0,
+                                                    ),
+                                                    gapW8,
+                                                    SizedBox(
+                                                      // width: AppDefaults.width(
+                                                      //   context) *
+                                                      //   0.3,
+                                                      child: Text(
+                                                        "Click or drop image",
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color: Colors
+                                                                .grey.shade500),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                      ),
+                                      // const Positioned(
+                                      //   right: 4,
+                                      //   child: Icon(
+                                      //     Icons.camera_alt_outlined,
+                                      //     size: 18.0,
+                                      //     color: Colors.blue,
+                                      //   ),
+                                      // ),
                                     ],
-                                  ),
-                                ),
-                              ),
-                            ],
+                                  )),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
-                ):
-                Container(
-                  width: double.infinity,
-                  height: Responsive.isMobile(context)
-                      ? AppDefaults.height(context) * 0.1
-                      : AppDefaults.height(context) * 0.2,
-                  padding: EdgeInsets.symmetric(
-                    vertical: AppDefaults.padding *
-                        (Responsive.isMobile(context) ? 1 : 0.5),
-                    horizontal: AppDefaults.padding *
-                        (Responsive.isMobile(context) ? 1 : 2.5),
-                  ),
-                  margin: EdgeInsets.symmetric(
-                    // vertical:
-                    //     AppDefaults.padding * (Responsive.isMobile(context) ? 1 : 1.5),
-                    horizontal: AppDefaults.padding *
-                        (Responsive.isMobile(context) ? 1 : 6.5),
-                  ),
-                  decoration: BoxDecoration(
-                      color: Colors.grey.shade200,
-                      borderRadius: BorderRadius.circular(12)),
-                  child: Center(
-                    child: Obx(
-                      () => Align(
-                        alignment: Alignment.center,
-                        child: InkWell(
-                            onTap: () async {
-                              final res = await showDialog(
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                  shape: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                  ),
-                                  actionsPadding: const EdgeInsets.all(16.0),
-                                  alignment: Alignment.center,
-                                  title: const Text(
-                                    "Choose Option",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                  content: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      ElevatedButton(
-                                        child: const Text("From Gallery"),
-                                        onPressed: () {
-                                          Navigator.pop(context, true);
-                                        },
-                                      ),
-                                      const SizedBox(height: 10.0),
-
-                                      Responsive.isMobile(context)?
-                                      ElevatedButton(
-                                        child: const Text("Take Photo"),
-                                        onPressed: () {
-                                          Navigator.pop(context, false);
-                                        },
-                                      ):Container(),
-                                    ],
-                                  ),
-                                ),
-                              );
-                              if (res != null) {
-                                await imageController.pickImage(
-                                    fromGallery: res);
-                              } else {
-                                // Get.snackbar(
-                                //     '', 'Select an option to continue');
-                              }
-                            },
-                            child: Stack(
-                              alignment: Alignment.bottomRight,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  // Adjust the radius as needed
-                                  child: imageController
-                                          .resizedImagePath.value.isNotEmpty
-                                      ? Container(
-                                          width: 70.0,
-                                          height: 70.0,
-                                          decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                              image: FileImage(File(
-                                                  imageController
-                                                      .originalImagePath
-                                                      .value)),
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                        )
-                                      : Container(
-                                          width: Responsive.isMobile(context)
-                                              ? AppDefaults.width(context) * 0.5
-                                              : AppDefaults.width(context) *
-                                                  0.2,
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 6, horizontal: 10),
-                                          decoration: const BoxDecoration(
-                                              color: Colors.white),
-                                          child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              const HugeIcon(
-                                                icon: HugeIcons
-                                                    .strokeRoundedUpload04,
-                                                color: Colors.black,
-                                                size: 24.0,
-                                              ),
-                                              gapW8,
-                                              SizedBox(
-                                                // width: AppDefaults.width(
-                                                //   context) *
-                                                //   0.3,
-                                                child: Text(
-                                                  "Click or drop image",
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      color:
-                                                          Colors.grey.shade500),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                ),
-                                // const Positioned(
-                                //   right: 4,
-                                //   child: Icon(
-                                //     Icons.camera_alt_outlined,
-                                //     size: 18.0,
-                                //     color: Colors.blue,
-                                //   ),
-                                // ),
-                              ],
-                            )),
-                      ),
-                    ),
-                  ),
-                ),
                 gapH8,
                 if (!Responsive.isMobile(context)) gapH24,
-                Obx(() => Container( margin: EdgeInsets.symmetric(
-                  horizontal: AppDefaults.padding *
-                      (Responsive.isMobile(context) ? 0.5 : 6.5),
-                ),
+                Obx(() => Container(
+                      margin: EdgeInsets.symmetric(
+                        horizontal: AppDefaults.padding *
+                            (Responsive.isMobile(context) ? 0.5 : 6.5),
+                      ),
                       // width: double.infinity,
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
@@ -974,7 +1071,6 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                             horizontal: AppDefaults.padding *
                                 (Responsive.isMobile(context) ? 1 : 2.5),
                           ),
-
                           child: DataTable(
                             // columnSpacing: Responsive.isMobile(context) ? 20 : null,
                             columns: const <DataColumn>[
@@ -1076,5 +1172,24 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
         buildingSaleController.installmentNumberData();
       });
     }
+  }
+}
+
+class PercentageInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    final text = newValue.text;
+    if (text.isEmpty) {
+      return newValue;
+    }
+
+    // Ensure the value is a valid double and restrict between 0 and 100
+    final double? value = double.tryParse(text);
+    if (value == null || value < 0 || value > 100) {
+      return oldValue; // If the input is invalid, retain the old value
+    }
+
+    return newValue; // Otherwise, accept the new value
   }
 }

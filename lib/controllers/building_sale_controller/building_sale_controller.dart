@@ -295,7 +295,6 @@ class BuildingSaleController extends GetxController {
   }
 
   RxList<Map<String, dynamic>> installmentPlan = <Map<String, dynamic>>[].obs;
-
   void installmentNumberData() {
     // Clear previous installment plans if necessary
     installmentPlan.clear();
@@ -303,8 +302,7 @@ class BuildingSaleController extends GetxController {
     int installmentCount = int.tryParse(installmentCountController.text) ?? 0;
 
     // Get the base due date from the controller
-    String baseDueDate =
-        installmentDateController.text; // Expecting format "YYYY-MM-DD"
+    String baseDueDate = installmentDateController.text; // Expecting format "YYYY-MM-DD"
 
     // Ensure the base date is not empty or invalid
     if (baseDueDate.isEmpty) {
@@ -312,18 +310,21 @@ class BuildingSaleController extends GetxController {
       return;
     }
 
+    // Parse the baseDueDate
+    DateTime? baseDate = DateTime.tryParse(baseDueDate);
+    if (baseDate == null) {
+      print("Invalid base due date format.");
+      return;
+    }
+
     // Generate installment plan based on installment count
     for (int i = 0; i < installmentCount; i++) {
-      // Parse the baseDueDate
-      DateTime? baseDate = DateTime.tryParse(baseDueDate);
-      if (baseDate == null) {
-        print("Invalid base due date format.");
-        return;
-      }
-
-      // Set the installment due date based on the base date
-      DateTime installmentDate =
-          DateTime(baseDate.year, baseDate.month + i, baseDate.day);
+      // Correct month and year increment to avoid invalid months
+      DateTime installmentDate = DateTime(
+          baseDate.year + ((baseDate.month + i - 1) ~/ 12),  // Handles year rollover
+          ((baseDate.month + i - 1) % 12) + 1,               // Handles month rollover
+          baseDate.day
+      );
 
       // Format the due date as "YYYY-MM-DD"
       String dueDate = installmentDate.toIso8601String().substring(0, 10);
@@ -349,6 +350,60 @@ class BuildingSaleController extends GetxController {
     // Print the entire installment plan after creation
     print("Complete Installment Plan: $installmentPlan");
   }
+
+  // void installmentNumberData() {
+  //   // Clear previous installment plans if necessary
+  //   installmentPlan.clear();
+  //
+  //   int installmentCount = int.tryParse(installmentCountController.text) ?? 0;
+  //
+  //   // Get the base due date from the controller
+  //   String baseDueDate =
+  //       installmentDateController.text; // Expecting format "YYYY-MM-DD"
+  //
+  //   // Ensure the base date is not empty or invalid
+  //   if (baseDueDate.isEmpty) {
+  //     print("No base due date provided.");
+  //     return;
+  //   }
+  //
+  //   // Generate installment plan based on installment count
+  //   for (int i = 0; i < installmentCount; i++) {
+  //     // Parse the baseDueDate
+  //     DateTime? baseDate = DateTime.tryParse(baseDueDate);
+  //     if (baseDate == null) {
+  //       print("Invalid base due date format.");
+  //       return;
+  //     }
+  //
+  //     // Set the installment due date based on the base date
+  //     DateTime installmentDate =
+  //         DateTime(baseDate.year, baseDate.month + i, baseDate.day);
+  //
+  //     // Format the due date as "YYYY-MM-DD"
+  //     String dueDate = installmentDate.toIso8601String().substring(0, 10);
+  //
+  //     // Fetch the amount dynamically from the controller
+  //     double amount = double.tryParse(amountInstallmentController.text) ?? 0.0;
+  //
+  //     // Create the installment entry
+  //     var installmentEntry = {
+  //       "id": i + 1,
+  //       "dueDate": dueDate,
+  //       "amount": amount,
+  //       "status": "Unpaid",
+  //     };
+  //
+  //     // Add to the installment plan list
+  //     installmentPlan.add(installmentEntry);
+  //
+  //     // Print the installment entry for debugging
+  //     print("Installment Entry: $installmentEntry");
+  //   }
+  //
+  //   // Print the entire installment plan after creation
+  //   print("Complete Installment Plan: $installmentPlan");
+  // }
 
 // Date picker function to handle user input
 

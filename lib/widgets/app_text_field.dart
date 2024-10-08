@@ -23,6 +23,7 @@ class AppTextField extends StatelessWidget {
     this.focusNode,
     this.readOnly = false,
     this.isBoldLabel = false,
+    this.enabled = true,
     this.needLabel = true,
     this.fillColor,
     this.labelColor,
@@ -53,6 +54,7 @@ class AppTextField extends StatelessWidget {
   final Color? hintColor;
   final Color? textColor;
   final bool? isRequired;
+  final bool? enabled;
   final bool isBoldLabel;
   final bool needLabel;
   final VoidCallback? onTap;
@@ -100,6 +102,7 @@ class AppTextField extends StatelessWidget {
           obscuringCharacter: '*',
           onEditingComplete: onEditingComplete,
           readOnly: readOnly,
+          enabled: enabled,
           cursorColor: textColor ?? AppColors.textColorb1,
           style: myText(
               color: textColor ?? AppColors.textColorb1,
