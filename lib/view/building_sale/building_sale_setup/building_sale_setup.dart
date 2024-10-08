@@ -12,6 +12,7 @@ import '../../../configs/app_constants.dart';
 import '../../../configs/defaults.dart';
 import '../../../responsive.dart';
 import '../../../widgets/app_text_field.dart';
+import '../../../widgets/snackbar.dart';
 
 class BuildingSaleSetup extends StatefulWidget {
   BuildingSaleSetup({super.key, required this.model});
@@ -138,25 +139,33 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                               labelColor: AppColors.textColorb1,
                               isBoldLabel: true,
                               inputFormatters: [
-                                FilteringTextInputFormatter.allow(
-                                    RegExp(r'^\d*\.?\d*')),
-                                // Allows integers and decimals
+                                PercentageInputFormatter(),
                               ],
                               hintColor: AppColors.grey,
                               textColor: AppColors.textColorb1,
                               isRequired: true,
                               validator: (value) {
+                                double? percentage =
+                                    double.tryParse(value.toString());
                                 if (value!.isEmpty) {
                                   return "Please enter your booking payment %";
+                                } else if (percentage == null ||
+                                    percentage > 100) {
+                                  return "Percentage must be between 0 and 100";
                                 }
                                 return null;
                               },
                               onChanged: (p0) {
-                                buildingSaleController
-                                    .calculateResult(widget.model.totalCost);
-                                buildingSaleController
-                                    .calculateInstalmentAmountResult(
-                                        widget.model.totalCost);
+                                double? percentage = double.tryParse(p0);
+                                if (percentage != null && percentage <= 100) {
+                                  buildingSaleController
+                                      .calculateResult(widget.model.totalCost);
+                                  buildingSaleController
+                                      .calculateInstalmentAmountResult(
+                                          widget.model.totalCost);
+                                } else {
+                                  // Optionally, you can show an error or limit input here
+                                }
                               },
                             ),
                           ),
@@ -268,18 +277,36 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                               textColor: AppColors.textColorb1,
                               isRequired: true,
                               validator: (value) {
-                                if (value!.isEmpty) {
-                                  return "Please enter your number of installment";
+                                double? installments = double.tryParse(
+                                    buildingSaleController.dueAmount.text);
+
+                                if (installments == null || installments <= 0) {
+                                  return null;
+                                } else {
+                                  if (value!.isEmpty) {
+                                    return "Please enter your number of installments";
+                                  }
                                 }
                                 return null;
                               },
                               onChanged: (p0) {
-                                buildingSaleController
-                                    .calculateResult(widget.model.totalCost);
-                                buildingSaleController
-                                    .calculateInstalmentAmountResult(
-                                        widget.model.totalCost);
-                                buildingSaleController.installmentNumberData();
+                                // First, parse the due amount as a double
+                                double? dueAmount = double.tryParse(buildingSaleController.dueAmount.text);
+
+                                // Check if the dueAmount is valid and greater than or equal to 0
+                                if (dueAmount == null || dueAmount <= 0) {
+                                  print("Invalid due amount$dueAmount");
+                                  // Optionally show a snackbar or error message
+                                  wrongSnackBar("You don't have Due");
+                                } else {
+                                  // If dueAmount is valid, print it for debugging
+                                  print("Valid due amount: $dueAmount");
+
+                                  // Perform the result calculations
+                                  buildingSaleController.calculateResult(widget.model.totalCost);
+                                  buildingSaleController.calculateInstalmentAmountResult(widget.model.totalCost);
+                                  buildingSaleController.installmentNumberData();
+                                }
                               },
                             ),
                           ),
@@ -865,7 +892,6 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                             horizontal: AppDefaults.padding *
                                 (Responsive.isMobile(context) ? 1 : 2.5),
                           ),
-
                           child: DataTable(
                             // columnSpacing: Responsive.isMobile(context) ? 20 : null,
                             columns: const <DataColumn>[
@@ -967,5 +993,24 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
         buildingSaleController.installmentNumberData();
       });
     }
+  }
+}
+
+class PercentageInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    final text = newValue.text;
+    if (text.isEmpty) {
+      return newValue;
+    }
+
+    // Ensure the value is a valid double and restrict between 0 and 100
+    final double? value = double.tryParse(text);
+    if (value == null || value < 0 || value > 100) {
+      return oldValue; // If the input is invalid, retain the old value
+    }
+
+    return newValue; // Otherwise, accept the new value
   }
 }

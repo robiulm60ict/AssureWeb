@@ -290,20 +290,20 @@ class RevenueLineChart extends StatelessWidget {
       sideTitles: SideTitles(
         showTitles: true,
         reservedSize: 100,
-        interval: calculateYInterval(fullRevenueData),
+        // interval: calculateYInterval(fullRevenueData),
         getTitlesWidget: (double value, TitleMeta meta) {
           return Text(
             '${_formatAmount(value)}',
-            // style: const TextStyle(
-            //  // fontWeight: FontWeight.bold,
-            //   fontSize: 5,
-            //   color: Colors.black, // Changed color from black to grey in initial answer
-            // ),
-           // textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 12, // Adjust font size to make it visible
+              color: Colors.red, // Change color for visibility
+            ),
+            textAlign: TextAlign.center,
           );
         },
       ),
     ),
+
     topTitles: AxisTitles(
       sideTitles: SideTitles(showTitles: false),
     ),
@@ -314,24 +314,24 @@ class RevenueLineChart extends StatelessWidget {
 
   /// Calculates Y-axis interval based on maximum revenue
   double calculateYInterval(List<RevenueData> fullRevenueData) {
-    if (fullRevenueData.isEmpty) return 20000;
-    double max = fullRevenueData.map((data) => data.amount).reduce((a, b) => a > b ? a : b);
+    if (fullRevenueData.isEmpty) return 20000; // Default interval for empty list
+    double max = fullRevenueData.map((data) => data.amount).reduce((a, b) => a > b ? a : b); // Finding maximum amount
 
     // Define intervals based on magnitude
     if (max <= 1000) {
-      return 200;
+      return 200; // For values less than or equal to 1000
     } else if (max <= 10000) {
-      return 2000;
+      return 2000; // For values between 1001 and 10,000
     } else if (max <= 50000) {
-      return 5000;
+      return 5000; // For values between 10,001 and 50,000
     } else if (max <= 100000) {
-      return 10000;
+      return 10000; // For values between 50,001 and 100,000
     } else if (max <= 500000) {
-      return 50000;
+      return 50000; // For values between 100,001 and 500,000
     } else if (max <= 1000000) {
-      return 100000;
+      return 100000; // For values between 500,001 and 1,000,000
     } else if (max <= 5000000) {
-      return 500000;
+      return 500000; // For values between 1,000,001 and 5,000,000
     } else {
       return 1000000; // For values above 5,000,000
     }
