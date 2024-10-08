@@ -159,10 +159,10 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                                 double? percentage = double.tryParse(p0);
                                 if (percentage != null && percentage <= 100) {
                                   buildingSaleController
-                                      .calculateResult(widget.model.totalCost);
+                                      .calculateResult(double.parse(widget.model.totalCost.toString()));
                                   buildingSaleController
                                       .calculateInstalmentAmountResult(
-                                          widget.model.totalCost);
+                                          double.parse(widget.model.totalCost.toString()));
                                 } else {
                                   // Optionally, you can show an error or limit input here
                                 }
@@ -303,8 +303,8 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                                   print("Valid due amount: $dueAmount");
 
                                   // Perform the result calculations
-                                  buildingSaleController.calculateResult(widget.model.totalCost);
-                                  buildingSaleController.calculateInstalmentAmountResult(widget.model.totalCost);
+                                  buildingSaleController.calculateResult(double.parse(widget.model.totalCost.toString()));
+                                  buildingSaleController.calculateInstalmentAmountResult(double.parse(widget.model.totalCost.toString()));
                                   buildingSaleController.installmentNumberData();
                                 }
                               },
