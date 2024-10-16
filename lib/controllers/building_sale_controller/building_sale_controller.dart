@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import '../../model/buliding_model.dart';
 import '../../widgets/app_loader.dart';
 import '../../widgets/snackbar.dart';
@@ -373,15 +374,69 @@ class BuildingSaleController extends GetxController {
 
   RxList<Map<String, dynamic>> installmentPlan = <Map<String, dynamic>>[].obs;
 
+  // void installmentNumberData() {
+  //   // Clear previous installment plans if necessary
+  //   installmentPlan.clear();
+  //
+  //   int installmentCount = int.tryParse(installmentCountController.text) ?? 0;
+  //
+  //   // Get the base due date from the controller
+  //   String baseDueDate =
+  //       installmentDateController.text; // Expecting format "YYYY-MM-DD"
+  //
+  //   // Ensure the base date is not empty or invalid
+  //   if (baseDueDate.isEmpty) {
+  //     print("No base due date provided.");
+  //     return;
+  //   }
+  //
+  //   // Generate installment plan based on installment count
+  //   for (int i = 0; i < installmentCount; i++) {
+  //     // Parse the baseDueDate
+  //     DateTime? baseDate = DateTime.tryParse(baseDueDate);
+  //     if (baseDate == null) {
+  //       print("Invalid base due date format.");
+  //       return;
+  //     }
+  //
+  //     // Set the installment due date based on the base date
+  //     DateTime installmentDate =
+  //         DateTime(baseDate.year, baseDate.month + i, baseDate.day);
+  //
+  //     // Format the due date as "YYYY-MM-DD"
+  //     String dueDate = installmentDate.toIso8601String().substring(0, 10);
+  //
+  //     // Fetch the amount dynamically from the controller
+  //     double amount = double.tryParse(amountInstallmentController.text) ?? 0.0;
+  //
+  //     // Create the installment entry
+  //     var installmentEntry = {
+  //       "id": i + 1,
+  //       "dueDate": dueDate,
+  //       "amount": amount,
+  //       "status": "Unpaid",
+  //     };
+  //
+  //     // Add to the installment plan list
+  //     installmentPlan.add(installmentEntry);
+  //
+  //     // Print the installment entry for debugging
+  //     print("Installment Entry: $installmentEntry");
+  //   }
+  //
+  //   // Print the entire installment plan after creation
+  //   print("Complete Installment Plan: $installmentPlan");
+  // }
+
+
   void installmentNumberData() {
     // Clear previous installment plans if necessary
     installmentPlan.clear();
 
     int installmentCount = int.tryParse(installmentCountController.text) ?? 0;
 
-    // Get the base due date from the controller
-    String baseDueDate =
-        installmentDateController.text; // Expecting format "YYYY-MM-DD"
+    // Get the base due date from the controller (Expecting format "DD-MM-YYYY")
+    String baseDueDate = installmentDateController.text;
 
     // Ensure the base date is not empty or invalid
     if (baseDueDate.isEmpty) {
@@ -389,21 +444,29 @@ class BuildingSaleController extends GetxController {
       return;
     }
 
+    // Define the date format used in the input (dd-MM-yyyy)
+    DateFormat dateFormat = DateFormat('dd-MM-yyyy');
+
+    // Parse the base due date using the correct format
+    DateTime? baseDate;
+    try {
+      baseDate = dateFormat.parseStrict(baseDueDate); // Parse in the format dd-MM-yyyy
+    } catch (e) {
+      print("Invalid base due date format: $e");
+      return;
+    }
+
     // Generate installment plan based on installment count
     for (int i = 0; i < installmentCount; i++) {
-      // Parse the baseDueDate
-      DateTime? baseDate = DateTime.tryParse(baseDueDate);
-      if (baseDate == null) {
-        print("Invalid base due date format.");
-        return;
-      }
+      // Calculate the installment due date (incrementing month by i)
+      DateTime installmentDate = DateTime(
+        baseDate.year,
+        baseDate.month + i,
+        baseDate.day,
+      );
 
-      // Set the installment due date based on the base date
-      DateTime installmentDate =
-          DateTime(baseDate.year, baseDate.month + i, baseDate.day);
-
-      // Format the due date as "YYYY-MM-DD"
-      String dueDate = installmentDate.toIso8601String().substring(0, 10);
+      // Format the due date as "dd-MM-yyyy"
+      String dueDate = dateFormat.format(installmentDate);
 
       // Fetch the amount dynamically from the controller
       double amount = double.tryParse(amountInstallmentController.text) ?? 0.0;

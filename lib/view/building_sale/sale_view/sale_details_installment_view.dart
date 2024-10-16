@@ -602,9 +602,7 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                                         ),
                                       ),
                                       TextSpan(
-                                        text: DateFormat('dd-MM-yyyy').format(
-                                            DateTime.parse(
-                                                buildingSale['handoverDate'])),
+                                        text: buildingSale['handoverDate'],
                                         style: const TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.w600,

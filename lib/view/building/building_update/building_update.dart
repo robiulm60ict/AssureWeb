@@ -284,7 +284,7 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                           labelText: "Per sqft. Price",
                           hintText: "Enter Your Per sqft. Price",
                           keyboardType:
-                              TextInputType.numberWithOptions(decimal: true),
+                              const TextInputType.numberWithOptions(decimal: true),
                           controller: buildingController.persqftPriceController,
                           labelColor: AppColors.textColorb1,
                           inputFormatters: [

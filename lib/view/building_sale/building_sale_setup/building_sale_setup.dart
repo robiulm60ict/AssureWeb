@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:intl/intl.dart';
 
 import '../../../configs/app_colors.dart';
 import '../../../configs/app_constants.dart';
@@ -32,9 +33,9 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
         double.parse(widget.model.totalCost.toString()));
 
     buildingSaleController.handoverDateController.text =
-        DateTime.now().toIso8601String().split('T')[0];
+        DateFormat('dd-MM-yyyy').format(DateTime.now());
     buildingSaleController.installmentDateController.text =
-        DateTime.now().toIso8601String().split('T')[0];
+        DateFormat('dd-MM-yyyy').format(DateTime.now());
     // TODO: implement initState
     super.initState();
   }
@@ -179,7 +180,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                               child: AppTextField(
                             textInputAction: TextInputAction.done,
                             labelText: "Hand Over Date",
-                            hintText: "0.00",
+                            hintText: "DD-MM-YYYY",
                             keyboardType: TextInputType.number,
                             controller:
                                 buildingSaleController.handoverDateController,
@@ -202,7 +203,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                             child: AppTextField(
                               textInputAction: TextInputAction.done,
                               labelText: "Installment Date",
-                              hintText: "YYYY-MM-DD",
+                              hintText: "DD-MM-YYYY",
                               // Updated hint for date format
                               keyboardType: TextInputType.datetime,
                               // Changed to datetime for date input
@@ -972,7 +973,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
     if (pickedDate != null) {
       setState(() {
         buildingSaleController.handoverDateController.text =
-            pickedDate.toIso8601String().split('T')[0];
+            DateFormat('dd-MM-yyyy').format(pickedDate);
       });
     }
   }
@@ -987,8 +988,8 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
 
     if (pickedDate != null) {
       setState(() {
-        buildingSaleController.installmentDateController.text =
-            pickedDate.toIso8601String().split('T')[0];
+        buildingSaleController.installmentDateController.text =  DateFormat('dd-MM-yyyy').format(pickedDate);
+            // pickedDate.toIso8601String().split('T')[0];
 
         buildingSaleController
             .calculateInstalmentAmountResult(widget.model.totalCost);
