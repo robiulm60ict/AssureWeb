@@ -111,7 +111,7 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                   child: Column(
                     children: [
                       const Text(
-                        "Product Information",
+                        "Building Information",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       Row(
@@ -226,7 +226,7 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                                                 ),
                                                 gapW4,
                                                 Text(
-                                                  "${building["appointmentSize"]} sft ,",
+                                                  "${building["appointmentSize"]} sqft ,",
                                                   style: const TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold),
@@ -244,7 +244,7 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                                                 // ),
                                                 // gapW4,
                                                 Text(
-                                                  "Per Sft ${building['perSftPrice']} BDT",
+                                                  "Per sqft ${building['persqftPrice']} BDT",
                                                   style: const TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold),
@@ -285,7 +285,7 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                                   ),
                                   gapW8,
                                   Text(
-                                    "${building['appointmentSize']} sft",
+                                    "${building['appointmentSize']} sqft",
                                     style: const TextStyle(
                                         fontWeight: FontWeight.bold),
                                   )
@@ -297,7 +297,7 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                               child: Row(
                                 children: [
                                   Text(
-                                    "Per sft ${building['perSftPrice']} BDT",
+                                    "Per sqft ${building['persqftPrice']} BDT",
                                     style: const TextStyle(
                                         fontWeight: FontWeight.bold),
                                   )
@@ -577,7 +577,7 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                   child: Column(
                     children: [
                       const Text(
-                        "Building Sale Information",
+                        "Building Sale details",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       gapH16,
@@ -613,64 +613,64 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                                       ),
                                     ])),
                                     gapH4,
-                                    if (Responsive.isMobile(context))
-                                      Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                const HugeIcon(
-                                                  icon: HugeIcons
-                                                      .strokeRoundedBuilding03,
-                                                  color: Colors.black,
-                                                  size: 24.0,
-                                                ),
-                                                gapW8,
-                                                Text(
-                                                  "${building["appointmentSize"]} sft ,",
-                                                  style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                )
-                                              ],
-                                            ),
-                                            gapW8,
-                                            Row(
-                                              children: [
-                                                // const HugeIcon(
-                                                //   icon: HugeIcons
-                                                //       .strokeRoundedMoney01,
-                                                //   color: Colors.black,
-                                                //   size: 24.0,
-                                                // ),
-                                                // gapW8,
-                                                Text(
-                                                  "Per sft ${building['perSftPrice']} BDT",
-                                                  style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                )
-                                              ],
-                                            ),
-                                            gapW4,
-                                            Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 5,
-                                                      horizontal: 14),
-                                              decoration: BoxDecoration(
-                                                  color: Colors.green.shade100,
-                                                  borderRadius:
-                                                      BorderRadius.circular(8)),
-                                              child: Text(
-                                                "${building['totalCost']} BDT",
-                                                style: const TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.w700),
-                                              ),
-                                            )
-                                          ]),
+                                    // if (Responsive.isMobile(context))
+                                    //   Row(
+                                    //       mainAxisAlignment:
+                                    //           MainAxisAlignment.end,
+                                    //       children: [
+                                    //         Row(
+                                    //           children: [
+                                    //             const HugeIcon(
+                                    //               icon: HugeIcons
+                                    //                   .strokeRoundedBuilding03,
+                                    //               color: Colors.black,
+                                    //               size: 24.0,
+                                    //             ),
+                                    //             gapW8,
+                                    //             Text(
+                                    //               "${building["appointmentSize"]} sqft ,",
+                                    //               style: const TextStyle(
+                                    //                   fontWeight:
+                                    //                       FontWeight.bold),
+                                    //             )
+                                    //           ],
+                                    //         ),
+                                    //         gapW8,
+                                    //         Row(
+                                    //           children: [
+                                    //             // const HugeIcon(
+                                    //             //   icon: HugeIcons
+                                    //             //       .strokeRoundedMoney01,
+                                    //             //   color: Colors.black,
+                                    //             //   size: 24.0,
+                                    //             // ),
+                                    //             // gapW8,
+                                    //             Text(
+                                    //               "Per sqft ${building['persqftPrice']} BDT",
+                                    //               style: const TextStyle(
+                                    //                   fontWeight:
+                                    //                       FontWeight.bold),
+                                    //             )
+                                    //           ],
+                                    //         ),
+                                    //         gapW4,
+                                    //         Container(
+                                    //           padding:
+                                    //               const EdgeInsets.symmetric(
+                                    //                   vertical: 5,
+                                    //                   horizontal: 14),
+                                    //           decoration: BoxDecoration(
+                                    //               color: Colors.green.shade100,
+                                    //               borderRadius:
+                                    //                   BorderRadius.circular(8)),
+                                    //           child: Text(
+                                    //             "${building['totalCost']} BDT",
+                                    //             style: const TextStyle(
+                                    //                 fontWeight:
+                                    //                     FontWeight.w700),
+                                    //           ),
+                                    //         )
+                                    //       ]),
                                   ],
                                 ),
                               ],

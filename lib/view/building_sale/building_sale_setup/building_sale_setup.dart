@@ -505,13 +505,15 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                                         textInputAction: TextInputAction.done,
                                         labelText: "Customer Phone",
                                         hintText: "Enter Customer Phone",
-                                        keyboardType: TextInputType.name,
+                                        keyboardType: TextInputType.phone,
                                         controller: buildingSaleController
                                             .customerPhoneController,
                                         labelColor: AppColors.textColorb1,
+
                                         inputFormatters: [
                                           FilteringTextInputFormatter.allow(
                                               RegExp(r'[0-9-()+ ]')),
+                                          LengthLimitingTextInputFormatter(11),
                                         ],
                                         isBoldLabel: true,
                                         hintColor: AppColors.grey,

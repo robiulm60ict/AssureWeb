@@ -23,7 +23,7 @@ class BuildingController extends GetxController {
   final TextEditingController projectAddressController = TextEditingController();
   final TextEditingController floorNoController = TextEditingController();
   final TextEditingController appointmentSizeController = TextEditingController();
-  final TextEditingController perSftPriceController = TextEditingController();
+  final TextEditingController persqftPriceController = TextEditingController();
   final TextEditingController totalUnitPriceController = TextEditingController();
   final TextEditingController carParkingController = TextEditingController();
   final TextEditingController unitCostController = TextEditingController();
@@ -33,7 +33,7 @@ class BuildingController extends GetxController {
 
   clearData(){
     prospectNameController.clear();
-    perSftPriceController.clear();
+    persqftPriceController.clear();
     projectAddressController.clear();
     projectNameController.clear();
     totalCostController.clear();
@@ -51,7 +51,7 @@ class BuildingController extends GetxController {
   void onInit() {
     super.onInit();
     appointmentSizeController.addListener(updateTotalUnitPrice);
-    perSftPriceController.addListener(updateTotalUnitPrice);
+    persqftPriceController.addListener(updateTotalUnitPrice);
     unitCostController.addListener(updateTotalCost);
     carParkingController.addListener(updateTotalCost);
     fetchProjects(); // Fetch projects on initialization
@@ -61,7 +61,7 @@ class BuildingController extends GetxController {
   void onClose() {
     // Dispose of the controllers
     appointmentSizeController.dispose();
-    perSftPriceController.dispose();
+    persqftPriceController.dispose();
     totalUnitPriceController.dispose();
     unitCostController.dispose();
     carParkingController.dispose();
@@ -70,9 +70,9 @@ class BuildingController extends GetxController {
   }
   void updateTotalUnitPrice() {
     final appointmentSize = double.tryParse(appointmentSizeController.text) ?? 0;
-    final perSftPrice = double.tryParse(perSftPriceController.text) ?? 0;
+    final persqftPrice = double.tryParse(persqftPriceController.text) ?? 0;
 
-    final totalUnitPrice = appointmentSize * perSftPrice;
+    final totalUnitPrice = appointmentSize * persqftPrice;
     totalUnitPriceController.text = totalUnitPrice.toStringAsFixed(2);
 
     updateTotalCost(); // Update total cost whenever total unit price changes

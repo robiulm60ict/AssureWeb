@@ -76,7 +76,7 @@ class _SalesListReportScreenState extends State<SalesListReportScreen> {
               vertical: AppDefaults.padding *
                   (Responsive.isMobile(context) ? 0.3 : 0.5),
               horizontal: AppDefaults.padding *
-                  (Responsive.isMobile(context) ? 0.5 : 0.5),
+                  (Responsive.isMobile(context) ?1 : 0.5),
             ),
             padding: const EdgeInsets.symmetric(
                 horizontal: AppDefaults.padding, vertical: AppDefaults.padding),

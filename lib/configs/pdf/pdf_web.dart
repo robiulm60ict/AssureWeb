@@ -372,7 +372,7 @@
 //                 pw.Container(
 //                   width: 100, // Adjust width as needed
 //                   padding: const pw.EdgeInsets.all(4.0),
-//                   child: pw.Center(child: pw.Text('Per Sft. Price')),
+//                   child: pw.Center(child: pw.Text('Per sqft. Price')),
 //                 ),
 //                 pw.Container(
 //                   width: 50,

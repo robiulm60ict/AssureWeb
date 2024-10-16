@@ -77,7 +77,7 @@ class _BuildingSetupState extends State<BuildingSetup> {
                       child: AppTextField(
                         textInputAction: TextInputAction.next,
                         labelText: "Prospect's Name",
-                        hintText: "Enter Your Prospect's Name",
+                        hintText: "Enter Name",
                         keyboardType: TextInputType.text,
                         controller: buildingController.prospectNameController,
                         labelColor: AppColors.textColorb1,
@@ -101,7 +101,7 @@ class _BuildingSetupState extends State<BuildingSetup> {
                       child: AppTextField(
                         textInputAction: TextInputAction.next,
                         labelText: "Project Name",
-                        hintText: "Enter Your Project Name",
+                        hintText: "Enter Project Name",
                         keyboardType: TextInputType.text,
                         controller: buildingController.projectNameController,
                         labelColor: AppColors.textColorb1,
@@ -127,7 +127,7 @@ class _BuildingSetupState extends State<BuildingSetup> {
                       child: AppTextField(
                         textInputAction: TextInputAction.next,
                         labelText: "Project Address",
-                        hintText: "Enter Your Project Address",
+                        hintText: "Enter Your Address",
                         keyboardType: TextInputType.name,
                         controller: buildingController.projectAddressController,
                         labelColor: AppColors.textColorb1,
@@ -176,9 +176,9 @@ class _BuildingSetupState extends State<BuildingSetup> {
                     Expanded(
                       child: AppTextField(
                         textInputAction: TextInputAction.next,
-                        labelText: "Appointment Size",
+                        labelText: "Apartment Size",
                         hintText: "Ex : 1000",
-                        suffixIcon: const Text("Sft",style: TextStyle(fontWeight: FontWeight.w600),textAlign: TextAlign.center,),
+                        suffixIcon: const Text("sqft",style: TextStyle(fontWeight: FontWeight.w600),textAlign: TextAlign.center,),
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),  // Allows integers and decimals
                         ],
@@ -205,10 +205,10 @@ class _BuildingSetupState extends State<BuildingSetup> {
                     Expanded(
                       child: AppTextField(
                         textInputAction: TextInputAction.next,
-                        labelText: "Per sft. Price",
+                        labelText: "Per sqft. Price",
                         hintText: "Ex : 1000",
                         keyboardType: TextInputType.number,
-                        controller: buildingController.perSftPriceController,
+                        controller: buildingController.persqftPriceController,
                         labelColor: AppColors.textColorb1,
                         isBoldLabel: true,
                         hintColor: AppColors.grey,
@@ -219,7 +219,7 @@ class _BuildingSetupState extends State<BuildingSetup> {
                         ],
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return "Please enter floor Per sft. Price";
+                            return "Please enter floor Per sqft. Price";
                           }
                           return null;
                         },
@@ -494,8 +494,8 @@ class _BuildingSetupState extends State<BuildingSetup> {
                             floorNo: buildingController.floorNoController.text,
                             appointmentSize: buildingController
                                 .appointmentSizeController.text,
-                            perSftPrice: int.parse(
-                                buildingController.perSftPriceController.text),
+                            persqftPrice: int.parse(
+                                buildingController.persqftPriceController.text),
                             totalUnitPrice: double.parse(buildingController
                                 .totalUnitPriceController.text),
                             carParking: buildingController

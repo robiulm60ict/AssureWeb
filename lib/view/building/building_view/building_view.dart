@@ -275,7 +275,7 @@ class BuildingView extends StatelessWidget {
                                             ),
                                             gapW8,
                                             Text(
-                                              "${project.appointmentSize} sft",
+                                              "${project.appointmentSize} sqft",
                                               style: const TextStyle(
                                                   fontWeight: FontWeight.bold),
                                             ),
@@ -337,7 +337,7 @@ class BuildingView extends StatelessWidget {
                                     ),
                                     gapW8,
                                     Text(
-                                      "${project.appointmentSize} sft",
+                                      "${project.appointmentSize} sqft",
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold),
                                     )

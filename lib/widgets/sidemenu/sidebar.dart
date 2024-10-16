@@ -304,7 +304,7 @@ class Sidebar extends StatelessWidget {
                             vertical: 10, horizontal: 4),
                         child: InkWell(
                           onTap: () {
-                            appAlertDialog(context, "Are you sure to logout?",
+                            appAlertDialog(context, "Are you sure you want to logout ?",
                                 title: "Logout",
                                 actions: [
                                   TextButton(

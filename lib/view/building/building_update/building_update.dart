@@ -37,8 +37,8 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
           widget.model.floorNo.toString() ?? "";
       buildingController.appointmentSizeController.text =
           widget.model.appointmentSize.toString() ?? "";
-      buildingController.perSftPriceController.text =
-          widget.model.perSftPrice.toString() ?? "";
+      buildingController.persqftPriceController.text =
+          widget.model.persqftPrice.toString() ?? "";
       buildingController.totalUnitPriceController.text =
           widget.model.totalUnitPrice.toString() ?? "";
       buildingController.carParkingController.text =
@@ -247,10 +247,10 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                       Expanded(
                         child: AppTextField(
                           textInputAction: TextInputAction.next,
-                          labelText: "Appointment Size",
+                          labelText: "Apartment Size",
                           hintText: "Ex : 200",
                           suffixIcon: const Text(
-                            "Sft",
+                            "sqft",
                             style: TextStyle(fontWeight: FontWeight.w600),
                             textAlign: TextAlign.center,
                           ),
@@ -281,11 +281,11 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                       Expanded(
                         child: AppTextField(
                           textInputAction: TextInputAction.next,
-                          labelText: "Per sft. Price",
-                          hintText: "Enter Your Per sft. Price",
+                          labelText: "Per sqft. Price",
+                          hintText: "Enter Your Per sqft. Price",
                           keyboardType:
                               TextInputType.numberWithOptions(decimal: true),
-                          controller: buildingController.perSftPriceController,
+                          controller: buildingController.persqftPriceController,
                           labelColor: AppColors.textColorb1,
                           inputFormatters: [
                             FilteringTextInputFormatter.allow(RegExp(
@@ -297,7 +297,7 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                           isRequired: true,
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return "Please enter floor Per sft. Price";
+                              return "Please enter floor Per sqft. Price";
                             }
                             return null;
                           },
@@ -606,8 +606,8 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                                     buildingController.floorNoController.text,
                                 appointmentSize: buildingController
                                     .appointmentSizeController.text,
-                                perSftPrice: int.parse(buildingController
-                                    .perSftPriceController.text),
+                                persqftPrice: int.parse(buildingController
+                                    .persqftPriceController.text),
                                 totalUnitPrice: double.parse(buildingController
                                     .totalUnitPriceController.text),
                                 carParking: double.parse(buildingController

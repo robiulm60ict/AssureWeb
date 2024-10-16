@@ -360,7 +360,7 @@ class PdfInvoice {
                   pw.Container(
                     width: 100, // Adjust width as needed
                     padding: const pw.EdgeInsets.all(4.0),
-                    child: pw.Center(child: pw.Text('Per Sft. Price')),
+                    child: pw.Center(child: pw.Text('Per sqft. Price')),
                   ),
                   pw.Container(
                     width: 50,
@@ -371,7 +371,7 @@ class PdfInvoice {
                     width: 50,
                     padding: const pw.EdgeInsets.all(4.0),
                     child:
-                        pw.Center(child: pw.Text('${building['perSftPrice']}')),
+                        pw.Center(child: pw.Text('${building['persqftPrice']}')),
                   ),
                 ],
               ),

@@ -7,7 +7,7 @@ class BuildingModel {
   String projectAddress;
   String floorNo;
   String appointmentSize;
-  int perSftPrice;
+  int persqftPrice;
   dynamic totalUnitPrice;
   dynamic carParking;
   dynamic unitCost;
@@ -24,7 +24,7 @@ class BuildingModel {
     required this.projectAddress,
     required this.floorNo,
     required this.appointmentSize,
-    required this.perSftPrice,
+    required this.persqftPrice,
     required this.totalUnitPrice,
     this.carParking,
     this.unitCost,
@@ -44,7 +44,7 @@ class BuildingModel {
       projectAddress: data['projectAddress'],
       floorNo: data['floorNo'],
       appointmentSize: data['appointmentSize'],
-      perSftPrice: data['perSftPrice'],
+      persqftPrice: data['persqftPrice'],
       totalUnitPrice: data['totalUnitPrice'],
       carParking: data['carParking'],
       unitCost: data['unitCost'],
@@ -68,7 +68,7 @@ class BuildingModel {
       'projectAddress': projectAddress,
       'floorNo': floorNo,
       'appointmentSize': appointmentSize,
-      'perSftPrice': perSftPrice,
+      'persqftPrice': persqftPrice,
       'totalUnitPrice': totalUnitPrice,
       'carParking': carParking,
       'unitCost': unitCost,
