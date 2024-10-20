@@ -14,7 +14,7 @@ import flutter_image_compress_macos
 import open_file_mac
 import path_provider_foundation
 import printing
-import sqflite
+import sqflite_darwin
 import url_launcher_macos
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
