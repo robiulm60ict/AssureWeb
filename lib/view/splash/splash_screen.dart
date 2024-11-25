@@ -25,6 +25,7 @@ class SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController animationController;
   late Animation<double> animation;
+  final GlobalKey<ScaffoldState> scaffoldKeySplash = GlobalKey<ScaffoldState>();
 
   @override
   void dispose() {
@@ -53,17 +54,15 @@ class SplashScreenState extends State<SplashScreen>
     final myData = await LocalDB.getLoginInfo();
     if (myData?['email'] == "") {
       // AppRoutes.push(context, page: SignInPage());
-      Navigator.pushNamed(context, '/signInPage');
-
-      //   context.go('/sign-in');
+      // Navigator.pushNamed(context, '/signInPage');
+      Get.toNamed( '/signInPage');
     } else {
-      Navigator.pushNamed(context, '/entryPoint');
+
 
       print("info.................$myData");
+      Get.toNamed( '/entryPoint');
       print("info.................${myData?['email']}");
-      // AppRoutes.push(context, page: EntryPoint());
 
-      //   context.go('/entry-point');
     }
 
   }
@@ -75,6 +74,7 @@ class SplashScreenState extends State<SplashScreen>
     );
 
     return Scaffold(
+      key: scaffoldKeySplash,
         backgroundColor: Colors.white,
         body: Container(
           decoration: const BoxDecoration(color: AppColors.white),

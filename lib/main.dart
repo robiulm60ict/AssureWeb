@@ -1,4 +1,5 @@
 import 'package:assure_apps/configs/app_constants.dart';
+import 'package:assure_apps/test.dart';
 import 'package:assure_apps/view/building_sale/building_sale_setup/building_sale_setup.dart';
 import 'package:assure_apps/view/building_sale/sale_view/sale_details_installment_view.dart';
 import 'package:assure_apps/view/entry_point.dart';
@@ -14,6 +15,7 @@ import 'package:url_strategy/url_strategy.dart';
 
 import 'configs/app_theme.dart';
 import 'configs/database/login.dart';
+import 'controllers/building_controller/building_controller.dart';
 import 'firebase_options.dart';
 import 'model/buliding_model.dart';
 import 'view/splash/splash_screen.dart';
@@ -39,6 +41,9 @@ void main() async {
   );
   setPathUrlStrategy();
 
+  // Put the BuildingController into memory before running the app
+  Get.put(BuildingController());
+
   // Run the app
   runApp(const MainApp());
 }
@@ -49,35 +54,59 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: AppConstants.appName,
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.light(context),
-      // home: const SplashScreen(),
       initialRoute: '/',
-      routes: {
-        '/': (context) => const SplashScreen(),
-        '/signInPage': (context) =>  SignInPage(),
-        '/entryPoint': (context) =>  const EntryPoint(),
-        '/buildingSaleDetailScreen': (context) {
-          // Extract the arguments from the ModalRoute
-          final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+      getPages: [
+        GetPage(name: '/', page: () => const SplashScreen()),
+        GetPage(name: '/signInPage', page: () => SignInPage()),
+        GetPage(name: '/entryPoint', page: () => const EntryPoint()),
+        // You can also use arguments in GetX routes
+        GetPage(
+          name: '/buildingSaleDetailScreen',
+          page: () {
+            // Arguments can be passed directly using Get arguments
+            final args = Get.arguments as Map<String, dynamic>;
+            return BuildingSaleDetailScreen(
+              documentId: args['documentId'],
+              buildingSales: args['buildingSales'],
+            );
+          },
+        ),
+        // GetPage(
+        //   name: '/buildingSaleSetup',
+        //   page: () {
+        //     final args = Get.arguments as BuildingModel?;
+        //     print("argsSsssssssss$args");
+        //
+        //     return BuildingSaleSetup(model: args); // Pass the non-null model
+        //   },
+        // ),
 
-          // Ensure 'documentId' and 'buildingSales' are correctly extracted from the arguments
-          final documentId = args['documentId'] as String;
-          final buildingSales = args['buildingSales'] as Map<String, dynamic>;
+        GetPage(
+          name: '/buildingSaleSetup',
+          page: () {
+            final buildingController = Get.find<BuildingController>();
 
-          // Return the BuildingSaleDetailScreen with the extracted arguments
-          return BuildingSaleDetailScreen(
-            documentId: documentId,
-            buildingSales: buildingSales,
-          );
-        },
-        '/buildingSaleSetup': (context) {
-          final args = ModalRoute.of(context)?.settings.arguments as BuildingModel?;
-          return BuildingSaleSetup(model: args); // Pass the nullable model
-        },
+            return FutureBuilder(
+              future: buildingController.loadBuildingModel(), // Make sure this is awaited
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Scaffold(body: Center(child: CircularProgressIndicator())); // Show loading indicator
+                } else if (snapshot.hasError) {
+                  return Scaffold(body: Center(child: Text('Error: ${snapshot.error}')));
+                } else {
+                  final buildingModel = buildingController.getBuildingModel();
+                  return buildingModel == null
+                      ? Scaffold(body: Center(child: Text('No data available')))
+                      : BuildingSaleSetup(model: buildingModel);
+                }
+              },
+            );
+          },
+        )
 
-      },
+
+      ],
     );
+
   }
 }

@@ -14,7 +14,7 @@ class DashbordScreenController extends GetxController {
 
   var dataIndex=0.obs;
   List<Widget> myScreen=[
-    DashboardPage(),
+    const DashboardPage(),
     BuildingSetup(),
     BuildingView(),
     SaleBuildingListView(),

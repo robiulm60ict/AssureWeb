@@ -12,6 +12,7 @@ import '../../../../responsive.dart';
 import '../../../../widgets/delete_dialog.dart';
 import '../../../configs/app_constants.dart';
 import '../../../configs/app_image.dart';
+import '../../../controllers/building_controller/building_controller.dart';
 import '../../../widgets/snackbar.dart';
 import '../../building_sale/building_sale_setup/building_sale_setup.dart';
 import 'widget/view_alert_dilog.dart';
@@ -126,11 +127,14 @@ class BuildingView extends StatelessWidget {
 
                     if(project.status.toString() == "available"){
                       // AppRoutes.push(context, page: BuildingSaleSetup(model: project,));
-                      Navigator.pushNamed(
-                        context,
-                        '/buildingSaleSetup',
-                        arguments: project,
-                      );
+                      // Navigator.pushNamed(
+                      //   context,
+                      //   '/buildingSaleSetup',
+                      //   arguments: project,
+                      // );
+                      // Save BuildingModel and navigate to the next page
+                      Get.find<BuildingController>().saveBuildingModel(project);
+                      Get.toNamed('/buildingSaleSetup', arguments: project);
 
 
                     }else{

@@ -15,7 +15,6 @@ class BuildingSaleController extends GetxController {
   var projects = <BuildingModel>[].obs;
 
   final FirebaseFirestore fireStore = FirebaseFirestore.instance;
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   final TextEditingController amountInstallmentController =
       TextEditingController();

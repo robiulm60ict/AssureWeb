@@ -8,14 +8,14 @@ class BuildingModel {
   String floorNo;
   String appointmentSize;
   int persqftPrice;
-  dynamic totalUnitPrice;
-  dynamic carParking;
-  dynamic unitCost;
-  dynamic totalCost;
-  String? image; // New image field
-  DateTime? createDateTime; // Auto-generated create time
-  DateTime? updateDateTime; // Auto-updated when modified
-  String? status; // New field for status ('available' or 'booked')
+  dynamic totalUnitPrice;  // Can be dynamic (int, double, or null)
+  dynamic carParking;      // Can be dynamic (int, bool, or null)
+  dynamic unitCost;        // Can be dynamic (int, double, or null)
+  dynamic totalCost;       // Can be dynamic (int, double, or null)
+  String? image;           // Optional, for image URL
+  DateTime? createDateTime;  // Optional DateTime for creation timestamp
+  DateTime? updateDateTime;  // Optional DateTime for last update timestamp
+  String status;             // Optional, default could be 'available'
 
   BuildingModel({
     required this.id,
@@ -32,7 +32,7 @@ class BuildingModel {
     this.image,
     this.createDateTime,
     this.updateDateTime,
-    this.status, // Include status in the constructor
+    this.status = 'available',  // Default value for status
   });
 
   // Convert from Firestore document
@@ -45,21 +45,20 @@ class BuildingModel {
       floorNo: data['floorNo'] ?? 'N/A',
       appointmentSize: data['appointmentSize'] ?? 'N/A',
       persqftPrice: data['persqftPrice'] != null ? data['persqftPrice'] as int : 0,
-      totalUnitPrice: data['totalUnitPrice'] ?? 0,
-      carParking: data['carParking'] ?? 0,
-      unitCost: data['unitCost'] ?? 0,
-      totalCost: data['totalCost'] ?? 0,
+      totalUnitPrice: data['totalUnitPrice'] ?? 0,  // Ensure default if null
+      carParking: data['carParking'],  // Optional, could be null or any type
+      unitCost: data['unitCost'],      // Optional, could be null or any type
+      totalCost: data['totalCost'] ?? 0,  // Ensure default if null
       image: data['image'],
       createDateTime: data['createDateTime'] != null
           ? (data['createDateTime'] as Timestamp).toDate()
-          : DateTime.now(),
+          : DateTime.now(),  // Default to current time if null
       updateDateTime: data['updateDateTime'] != null
           ? (data['updateDateTime'] as Timestamp).toDate()
           : null,
-      status: data['status'] ?? 'available',
+      status: data['status'] ?? 'available',  // Default to 'available' if null
     );
   }
-
 
   // Convert to Firestore document
   Map<String, dynamic> toFirestore() {
@@ -75,9 +74,9 @@ class BuildingModel {
       'unitCost': unitCost,
       'totalCost': totalCost,
       'image': image,
-      'createDateTime': createDateTime,
-      'updateDateTime': updateDateTime ?? FieldValue.serverTimestamp(), // Auto-updated
-      'status': status, // Include status in the Firestore document
+      'createDateTime': createDateTime != null ? Timestamp.fromDate(createDateTime!) : null,
+      'updateDateTime': updateDateTime != null ? Timestamp.fromDate(updateDateTime!) : FieldValue.serverTimestamp(),  // Use server timestamp if null
+      'status': status,
     };
   }
 }

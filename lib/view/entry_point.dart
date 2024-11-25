@@ -7,41 +7,44 @@ import '../responsive.dart';
 import '../widgets/header.dart';
 import '../widgets/sidemenu/sidebar.dart';
 
-final GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 
-class EntryPoint extends StatelessWidget {
+class EntryPoint extends StatefulWidget {
   const EntryPoint({super.key});
 
   @override
+  State<EntryPoint> createState() => _EntryPointState();
+}
+
+class _EntryPointState extends State<EntryPoint> {
+  final GlobalKey<ScaffoldState> scaffoldKeySidebar = GlobalKey();
+  final GlobalKey<ScaffoldState> scaffoldKeyEntry = GlobalKey<ScaffoldState>();
+
+  @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      key: _drawerKey,
+      key: scaffoldKeyEntry,
       drawer: Responsive.isMobile(context) ? const Sidebar() : null,
-      body: PopScope(      canPop: false,
+      body: PopScope(
+        canPop: false,
         onPopInvoked: (v) async {
-
-            await exitAlertDialog(context, from: 'exit');
-            return;
-
+          await exitAlertDialog(context, from: 'exit');
+          return;
         },
         child: RefreshIndicator(
           onRefresh: () async {
             customerController.fetchCustomer();
-
             buildingController.fetchProjects();
             buildingSaleController.fetchAllBuildingSales();
           },
           child: Row(
             children: [
               if (Responsive.isDesktop(context)) const Sidebar(),
-              // if (Responsive.isTablet(context)) const TabSidebar(),
               if (Responsive.isTablet(context)) const Sidebar(),
               Obx(
-                () => Expanded(
+                    () => Expanded(
                   child: Column(
                     children: [
-                      Header(drawerKey: _drawerKey),
+                      Header(drawerKey: scaffoldKeySidebar),
                       Expanded(
                         child: ListView(
                           padding: EdgeInsets.zero,
@@ -53,7 +56,7 @@ class EntryPoint extends StatelessWidget {
                                     (Responsive.isMobile(context) ? 0.5 : 1.5),
                               ),
                               child: dashbordScreenController.myScreen[
-                                  dashbordScreenController.dataIndex.value],
+                              dashbordScreenController.dataIndex.value],
                             ),
                           ],
                         ),
@@ -69,3 +72,5 @@ class EntryPoint extends StatelessWidget {
     );
   }
 }
+
+

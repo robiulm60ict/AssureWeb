@@ -6,6 +6,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:hive/hive.dart';
 import '../../model/buliding_model.dart';
 import '../../widgets/app_loader.dart';
 import '../../widgets/snackbar.dart';
@@ -79,7 +81,36 @@ class BuildingController extends GetxController {
 
     updateTotalCost(); // Update total cost whenever total unit price changes
   }
+  final storage = GetStorage();
+  Rx<BuildingModel?> buildingModel = Rx<BuildingModel?>(null);
 
+  // Save BuildingModel to GetStorage
+  void saveBuildingModel(BuildingModel model) {
+    // Save the model as a Firestore-compatible Map
+    final modelData = model.toFirestore();
+    storage.write('buildingModel', modelData);
+    print("BuildingModel saved: $modelData");
+  }
+
+
+  Future<void> loadBuildingModel() async {
+    try {
+      // Assuming you're using Hive for storage
+      var box = await Hive.openBox('buildingBox');
+      buildingModel.value = box.get('buildingModel');
+
+      // If the model is not found, you can optionally provide a default value
+      // buildingModel.value ??= BuildingModel();
+    } catch (e,k) {
+      print("Error loading BuildingModel: $k");
+      print("Error loading BuildingModel: $e");
+      buildingModel.value = null; // Set to null if error occurs
+    }
+  }
+  // Get the BuildingModel
+  BuildingModel? getBuildingModel() {
+    return buildingModel.value;
+  }
   void updateTotalCost() {
     final totalUnitPrice = double.tryParse(totalUnitPriceController.text) ?? 0;
     final unitCost = double.tryParse(unitCostController.text) ?? 0;

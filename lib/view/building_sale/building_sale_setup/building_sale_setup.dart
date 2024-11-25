@@ -41,6 +41,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
     // TODO: implement initState
     super.initState();
   }
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +66,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
         width: double.infinity,
         child: SingleChildScrollView(
           child: Form(
-            key: buildingSaleController.formKey,
+            key: formKey,
             child: Column(
               children: [
                 Container(
@@ -1465,7 +1466,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                         side: const BorderSide(width: 1.0, color: Colors.blue),
                       ),
                       onPressed: () {
-                        if (buildingSaleController.formKey.currentState!
+                        if (formKey.currentState!
                             .validate()) {
                           buildingSaleController
                               .uploadImageAndCreateBuildingSale(

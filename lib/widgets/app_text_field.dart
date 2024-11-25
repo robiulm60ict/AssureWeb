@@ -91,6 +91,7 @@ class AppTextField extends StatelessWidget {
         TextFormField(
           controller: controller,
           keyboardType: keyboardType,
+
           onTap: onTap,
           textInputAction: textInputAction,
           focusNode: focusNode,
@@ -112,6 +113,7 @@ class AppTextField extends StatelessWidget {
             prefixIcon: prefixIcon,
             suffixIcon: suffixIcon,
             // labelText: labelText,
+            contentPadding: EdgeInsets.all(20.0),
             hintText: hintText,
             isDense: true,
             filled: true,
