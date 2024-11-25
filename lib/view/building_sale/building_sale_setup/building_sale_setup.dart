@@ -21,7 +21,7 @@ import '../../../widgets/app_text_field.dart';
 class BuildingSaleSetup extends StatefulWidget {
   BuildingSaleSetup({super.key, required this.model});
 
-  BuildingModel model;
+  final BuildingModel? model;
 
   @override
   State<BuildingSaleSetup> createState() => _BuildingSaleSetupState();
@@ -30,10 +30,9 @@ class BuildingSaleSetup extends StatefulWidget {
 class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
   @override
   void initState() {
-    buildingSaleController.calculateInstalmentAmountResult(
-        double.parse(widget.model!.totalCost.toString()));
-    buildingSaleController.calculateInstalmentAmountResult(
-        double.parse(widget.model!.totalCost.toString()));
+
+    // buildingSaleController.calculateInstalmentAmountResult(
+    //     double.parse(widget.model!.totalCost.toString()));
 
     buildingSaleController.handoverDateController.text =
         DateFormat('dd-MM-yyyy').format(DateTime.now());
@@ -1470,10 +1469,10 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                             .validate()) {
                           buildingSaleController
                               .uploadImageAndCreateBuildingSale(
-                                  widget.model.id,
+                                  widget.model!.id,
                                   imageController.resizedImagePath.value,
                                   context,
-                                  widget.model.totalCost);
+                                  widget.model?.totalCost);
                         }
                       },
                       child: const Text("Building Sale")),
@@ -1516,7 +1515,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
             pickedDate.toIso8601String().split('T')[0];
 
         buildingSaleController
-            .calculateInstalmentAmountResult(widget.model.totalCost);
+            .calculateInstalmentAmountResult(widget.model?.totalCost);
         buildingSaleController.installmentNumberData();
       });
     }

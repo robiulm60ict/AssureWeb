@@ -140,12 +140,22 @@ class BuildingSalesScreen extends StatelessWidget {
                 ),
                 child: InkWell(
                   onTap: () {
-                    AppRoutes.push(context,
-                        page: BuildingSaleDetailScreen(
-                          documentId: buildingSaleController.buildingSales[index]
-                          ['documentId'],
-                          buildingSales: buildingSaleController.buildingSales[index],
-                        ));
+                    Navigator.pushNamed(
+                      context,
+                      '/buildingSaleDetailScreen',
+                      arguments: {
+                        'documentId': buildingSaleController.buildingSales[index]['documentId'],
+                        'buildingSales': buildingSaleController.buildingSales[index],
+                      },
+                    );
+
+                    // AppRoutes.push(context,
+                    //     page: BuildingSaleDetailScreen(
+                    //
+                    //       documentId: buildingSaleController.buildingSales[index]
+                    //       ['documentId'],
+                    //       buildingSales: buildingSaleController.buildingSales[index],
+                    //     ));
                     // AppRoutes.pushReplacement(context, page: BuildingSalesInstallmentScreen(buildingSales: controller.buildingSales[index],));
                   },
                   child: Row(

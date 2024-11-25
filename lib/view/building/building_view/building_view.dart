@@ -125,7 +125,13 @@ class BuildingView extends StatelessWidget {
                   onTap: (){
 
                     if(project.status.toString() == "available"){
-                      AppRoutes.push(context, page: BuildingSaleSetup(model: project,));
+                      // AppRoutes.push(context, page: BuildingSaleSetup(model: project,));
+                      Navigator.pushNamed(
+                        context,
+                        '/buildingSaleSetup',
+                        arguments: project,
+                      );
+
 
                     }else{
                       wrongSnackBar(context,title: "Building","This building not available");

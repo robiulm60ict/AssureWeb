@@ -298,7 +298,7 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                               child: Row(
                                 children: [
                                   Text(
-                                    "Per sft ${building['perSftPrice']} BDT",
+                                    "Per sft ${building['persqftPrice']} BDT",
                                     style: const TextStyle(
                                         fontWeight: FontWeight.bold),
                                   )
@@ -601,9 +601,7 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                                         ),
                                       ),
                                       TextSpan(
-                                        text: DateFormat('dd-MM-yyyy').format(
-                                            DateTime.parse(
-                                                buildingSale['handoverDate'])),
+                                        text:buildingSale['handoverDate'],
                                         style: const TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.w600,
@@ -635,23 +633,23 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                                               ],
                                             ),
                                             gapW8,
-                                            Row(
-                                              children: [
-                                                // const HugeIcon(
-                                                //   icon: HugeIcons
-                                                //       .strokeRoundedMoney01,
-                                                //   color: Colors.black,
-                                                //   size: 24.0,
-                                                // ),
-                                                // gapW8,
-                                                Text(
-                                                  "Per sft ${building['perSftPrice']} BDT",
-                                                  style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                )
-                                              ],
-                                            ),
+                                            // Row(
+                                            //   children: [
+                                            //     // const HugeIcon(
+                                            //     //   icon: HugeIcons
+                                            //     //       .strokeRoundedMoney01,
+                                            //     //   color: Colors.black,
+                                            //     //   size: 24.0,
+                                            //     // ),
+                                            //     // gapW8,
+                                            //     Text(
+                                            //       "Per sft ${building??"0.0"} BDT",
+                                            //       style: const TextStyle(
+                                            //           fontWeight:
+                                            //               FontWeight.bold),
+                                            //     )
+                                            //   ],
+                                            // ),
                                             gapW4,
                                             Container(
                                               padding:
