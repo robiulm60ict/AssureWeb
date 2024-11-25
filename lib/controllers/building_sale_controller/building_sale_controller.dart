@@ -27,80 +27,92 @@ class BuildingSaleController extends GetxController {
   final TextEditingController percentageAmountController =
       TextEditingController();
 
+  final TextEditingController totalDueAmount = TextEditingController();
+  final TextEditingController totalDiscount = TextEditingController();
+  final TextEditingController totalAllCalculationDiscount = TextEditingController();
+  final TextEditingController dueAmountDiscountController = TextEditingController();
+
   var totalAmount = 0.0.obs;
 
   // var paymentBookingPercentageCount = 0.0.obs;
   var result = 0.0.obs;
   var percentageAmount = 0.0.obs;
 
-  double calculateResult(double totalAmount) {
-    // Get the percentage input from the TextEditingController as text
-    String paymentPercentageText = paymentBookingPercentageCountController.text;
+  RxDouble discountTotalAmount=0.0.obs;
+  var discountAmountTotal="0.0".obs;
+  RxDouble discountDueAmount=0.0.obs;
+  RxDouble discountDueTotalAmount=0.0.obs;
 
-    // Check if the input is either empty or not a valid number
-    if (paymentPercentageText.isEmpty ||
-        double.tryParse(paymentPercentageText) == null) {
-      // If invalid, set dueAmount to totalAmount
-      dueAmount.text = totalAmount.toStringAsFixed(2);
-      print(
-          'Invalid or empty percentage input, dueAmount is set to totalAmount');
 
-      // Store and return the totalAmount
-      result.value = totalAmount;
-      return result.value;
+  // var paymentBookingPercentageCount = 0.0.obs;
+
+
+  String selectedDiscountType = 'no';
+  String selectTotalAmountDiscountType = 'fixed';
+  String selectDueAmountDiscountType = 'fixed';
+  double calculateInstalmentAmountResult(double totalAmount) {
+    // Step 1: Apply total discount (if any)
+    String discountText = totalDiscount.text;
+    if (discountText.isNotEmpty && double.tryParse(discountText) != null) {
+      // Parse the discount amount and clear due discount if needed
+      dueAmountDiscountController.clear();
+      discountTotalAmount.value = double.parse(discountText);
+
+      // Apply discount as a percentage or fixed amount
+      if (selectTotalAmountDiscountType == 'percent') {
+        discountTotalAmount.value = totalAmount * (discountTotalAmount.value / 100);
+      }
+      totalAmount -= discountTotalAmount.value; // Apply discount to total amount
+      discountAmountTotal.value=discountTotalAmount.value.toStringAsFixed(2);
+      print('Discount applied: $discountText%');
+      print('Discount amount: ${discountTotalAmount.value}');
+      print('Total amount after discount: $totalAmount');
     }
 
-    // If the percentage input is valid, parse it to a double
-    double paymentBookingPercentage = double.parse(paymentPercentageText);
-
-    // Calculate the percentage amount from the totalAmount
+    // Step 2: Calculate initial payment based on booking percentage
+    double paymentBookingPercentage = double.tryParse(paymentBookingPercentageCountController.text) ?? 0.0;
     percentageAmount.value = totalAmount * paymentBookingPercentage / 100;
 
-    // Calculate the due amount (remaining amount after the percentage is deducted)
-    double due = totalAmount - percentageAmount.value;
+    double initialPayment = percentageAmount.value; // Initial payment
+    print('Initial payment amount (based on $paymentBookingPercentage%): $initialPayment');
 
-    // Update the dueAmount TextEditingController to display the due amount
+    // Step 3: Calculate due amount after initial payment
+    double due = totalAmount - initialPayment;
+
+    // Update controllers with the initial payment and due amount
+    percentageAmountController.text = initialPayment.toStringAsFixed(2);
     dueAmount.text = due.toStringAsFixed(2);
 
-    // Display the percentage amount (paymentBookingPercentage% of totalAmount)
-    percentageAmountController.text = percentageAmount.toStringAsFixed(2);
-    print('$paymentBookingPercentage% of Total Amount: $percentageAmount');
+    // Step 4: Apply due discount (if any)
+    String dueDiscountText = dueAmountDiscountController.text;
+    if (dueDiscountText.isNotEmpty && double.tryParse(dueDiscountText) != null) {
+      discountDueAmount.value = double.parse(dueDiscountText);
 
-    // Store and return the calculated due amount
-    result.value = due;
-    print('Calculated due amount: $due');
-
-    return result.value;
-  }
-
-  double calculateInstalmentAmountResult(double totalAmount) {
-    // Get the percentage input and installment count as text
-    String paymentPercentageText = paymentBookingPercentageCountController.text;
-    String installmentCountText = installmentCountController.text;
-
-    // Calculate the due amount based on the percentage input
-    double due = totalAmount; // Default to totalAmount
-    if (paymentPercentageText.isNotEmpty &&
-        double.tryParse(paymentPercentageText) != null) {
-      double paymentBookingPercentage = double.parse(paymentPercentageText);
-      due = totalAmount - (totalAmount * paymentBookingPercentage / 100);
-      print('Calculated due amount: $due');
-    } else {
-      print(
-          'Invalid or empty percentage input, dueAmount is set to totalAmount');
+      // Apply due discount as a percentage or fixed amount
+      if (selectDueAmountDiscountType == 'percent') {
+        discountDueAmount.value = due * (discountDueAmount.value / 100);
+      }
+      due -= discountDueAmount.value; // Apply discount to due amount
+      totalDueAmount.text = due.toStringAsFixed(2);
+      dueAmount.text = due.toStringAsFixed(2);
+      print('Due discount applied: $dueDiscountText%');
+      print('Due discount amount: ${discountDueAmount.value}');
+      print('Due amount after due discount: $due');
     }
 
-    // Update the dueAmount TextEditingController
-    dueAmount.text = due.toStringAsFixed(2);
+    // Step 5: Calculate installment amount if applicable
+    String installmentCountText = installmentCountController.text;
+    if (installmentCountText.isNotEmpty && int.tryParse(installmentCountText) != null) {
 
-    // Calculate installment amount if the installment count is valid
-    if (installmentCountText.isNotEmpty &&
-        int.tryParse(installmentCountText) != null) {
+      discountDueTotalAmount.value=due;
       int installmentCount = int.parse(installmentCountText);
       if (installmentCount > 0) {
         double installment = due / installmentCount;
-        print('Installment amount: $installment');
         amountInstallmentController.text = installment.toStringAsFixed(2);
+
+        print('Installment amount: $installment');
+        installmentNumberData();
+
         return installment;
       } else {
         print('Installment count must be greater than 0');
@@ -108,10 +120,9 @@ class BuildingSaleController extends GetxController {
     } else {
       print('Invalid or empty installment count');
     }
-
-    // Return the due amount if no valid installment was calculated
+    // Step 6: Return the final due amount if no valid installment was calculated
     result.value = due;
-    print(result.value);
+    print('Final due amount: ${result.value}');
     return result.value;
   }
 
@@ -537,7 +548,7 @@ class BuildingSaleController extends GetxController {
 
   Future<void> uploadBuildingStates(
     String documentId,
-    String newStatus,
+    String newStatus, BuildContext context,
   ) async {
     try {
       // Reference to the document in Firestore
@@ -557,11 +568,11 @@ class BuildingSaleController extends GetxController {
         // successSnackBar(title: "Success", "Building status updated to $newStatus."); // Show success message
       } else {
         print("Document does not exist.");
-        wrongSnackBar(title: "Error", "Document does not exist.");
+        wrongSnackBar(context,title: "Error", "Document does not exist.");
       }
     } catch (e) {
       print("Failed to update building status: $e");
-      wrongSnackBar(title: "Exception", "Failed to update building status: $e");
+      wrongSnackBar(context,title: "Exception", "Failed to update building status: $e");
     }
   }
 
@@ -573,7 +584,11 @@ class BuildingSaleController extends GetxController {
       // Await the customer ID from the customer creation function
       String? customerId =
           await uploadImageAndCreateCustomer(imagePath, context);
+      double totalCost = double.tryParse(grandTotal.toString()) ?? 0.0;
+      double discountAmount = double.tryParse(buildingSaleController.discountAmountTotal.value) ?? 0.0;
+      double finalAmount = totalCost - discountAmount;
 
+      // Prepare the body for building sale
       // Prepare the body for building sale
       Map<String, dynamic> body = {
         "buildingId": buildingId,
@@ -581,19 +596,33 @@ class BuildingSaleController extends GetxController {
         "installmentCount": installmentCountController.text,
         "bookDownPayment": percentageAmount.value,
         "handoverDate": handoverDateController.text,
-        "installmentPlan": installmentPlan,
         "bookingPaymentPercent": paymentBookingPercentageCountController.text,
         "dueAmount": dueAmount.text,
         "totalCost": grandTotal ?? 0.0,
         "status": "Pending",
-        "BookingDate": DateTime.now()
+        "BookingDate": DateTime.now(),
+        "discountType": selectedDiscountType,
+        "discountFull": {
+          "apply_Discount": totalDiscount.text.trim(),
+          "apply_Discount_type": selectTotalAmountDiscountType.toString(),
+          "discountAmount": discountTotalAmount.value,
+          "totalDue": finalAmount.toStringAsFixed(2),
+        },
+        "discountDue": {
+          "apply_Discount": dueAmountDiscountController.text.trim(),
+          "apply_Discount_type": selectDueAmountDiscountType.toString(),
+          "discountAmount": discountDueAmount.value,
+          "totalDue": totalDueAmount.text,
+        },
+        "installmentPlan": installmentPlan,
       };
 
       print(body);
+
       // Save the building sale to Firestore
       DocumentReference docRef =
           await fireStore.collection('buildingSale').add(body);
-      uploadBuildingStates(buildingId, "Book");
+      uploadBuildingStates(buildingId, "Book",context);
       createSaleReport(context,
           buildingId: buildingId,
           customerId: customerId,
@@ -611,7 +640,7 @@ class BuildingSaleController extends GetxController {
       successSnackBar("Building Sale created successfully!");
     } catch (e, stackTrace) {
       Navigator.pop(context);
-      wrongSnackBar(title: "Exception", "Failed to create building sale: $e");
+      wrongSnackBar(context,title: "Exception", "Failed to create building sale: $e");
       print("Error adding building sale: $e");
       print("StackTrace: $stackTrace");
     }
@@ -692,7 +721,7 @@ class BuildingSaleController extends GetxController {
       return docRef.id;
     } catch (e, stackTrace) {
       Navigator.pop(context);
-      wrongSnackBar(title: "Exception", "Failed to create customer: $e");
+      wrongSnackBar(context,title: "Exception", "Failed to create customer: $e");
       print("Error adding customer: $e");
       print("StackTrace: $stackTrace");
       return null; // Return null if there was an error

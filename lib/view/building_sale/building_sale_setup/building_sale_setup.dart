@@ -3,11 +3,14 @@ import 'dart:io';
 import 'package:assure_apps/configs/ghaps.dart';
 import 'package:assure_apps/model/buliding_model.dart';
 import 'package:assure_apps/widgets/snackbar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:intl/intl.dart';
 
 import '../../../configs/app_colors.dart';
 import '../../../configs/app_constants.dart';
@@ -27,14 +30,15 @@ class BuildingSaleSetup extends StatefulWidget {
 class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
   @override
   void initState() {
-    buildingSaleController.calculateResult(widget.model.totalCost);
-    buildingSaleController
-        .calculateInstalmentAmountResult(widget.model.totalCost);
+    buildingSaleController.calculateInstalmentAmountResult(
+        double.parse(widget.model!.totalCost.toString()));
+    buildingSaleController.calculateInstalmentAmountResult(
+        double.parse(widget.model!.totalCost.toString()));
 
     buildingSaleController.handoverDateController.text =
-        DateTime.now().toIso8601String().split('T')[0];
+        DateFormat('dd-MM-yyyy').format(DateTime.now());
     buildingSaleController.installmentDateController.text =
-        DateTime.now().toIso8601String().split('T')[0];
+        DateFormat('dd-MM-yyyy').format(DateTime.now());
     // TODO: implement initState
     super.initState();
   }
@@ -83,24 +87,265 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Payment Information",
-                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                              fontWeight: FontWeight.w600,
-                              fontSize:
-                                  Responsive.isDesktop(context) ? null : 16,
-                            ),
+                        "Building Total Amount ${widget.model?.totalCost.toString()}",
+                        style: const TextStyle(fontWeight: FontWeight.w400),
                       ),
-                      Text(
-                        "Building Total Amount ${widget.model.totalCost.toString()}",
-                        style: const TextStyle(fontWeight: FontWeight.w700),
-                      ),
+                      buildingSaleController.selectedDiscountType.toString() ==
+                              "full"
+                          ? Obx(
+                              () {
+                                // Safely parse the total cost and discount amount, providing default values if necessary
+                                double totalCost = double.tryParse(
+                                        widget.model?.totalCost.toString() ??
+                                            '0') ??
+                                    0.0;
+                                double discountAmount = double.tryParse(
+                                        buildingSaleController
+                                            .discountAmountTotal.value) ??
+                                    0.0;
+
+                                // Calculate the final amount after applying the discount
+                                double finalAmount = totalCost - discountAmount;
+
+                                return Text(
+                                  "Applying ${buildingSaleController.totalDiscount.text} ${buildingSaleController.selectTotalAmountDiscountType == 'fixed' ? "৳" : "%"} Discount Amount: ${discountAmount.toStringAsFixed(2)}\nTotal Amount: ${finalAmount.toStringAsFixed(2)}",
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w400),
+                                );
+                              },
+                            )
+                          : Container(),
                       Obx(
                         () => Text(
                           "Booking & Down Payment Amount ${buildingSaleController.percentageAmount.value}",
-                          style: const TextStyle(fontWeight: FontWeight.w700),
+                          style: const TextStyle(fontWeight: FontWeight.w400),
                         ),
                       ),
+                      buildingSaleController.selectedDiscountType.toString() ==
+                              "due"
+                          ? Obx(
+                              () => Text(
+                                "Applying ${buildingSaleController.dueAmountDiscountController.text} ${buildingSaleController.selectDueAmountDiscountType == 'fixed' ? "৳" : "%"} Discount Amount : ${buildingSaleController.discountDueAmount.value}\n Due Amount : ${buildingSaleController.totalDueAmount.text}",
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w400),
+                              ),
+                            )
+                          : Container(),
                       gapH8,
+                      CupertinoSegmentedControl<String>(
+                        padding: EdgeInsets.zero,
+                        children: {
+                          'no': Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10.0, horizontal: 10.0),
+                            child: Text(
+                              'No Discount',
+                              style: TextStyle(
+                                fontFamily:
+                                    GoogleFonts.playfairDisplay().fontFamily,
+                                color: buildingSaleController
+                                            .selectedDiscountType ==
+                                        'no'
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
+                            ),
+                          ),
+                          'full': Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10.0, horizontal: 10.0),
+                            child: Text(
+                              'Full Discount',
+                              style: TextStyle(
+                                fontFamily:
+                                    GoogleFonts.playfairDisplay().fontFamily,
+                                color: buildingSaleController
+                                            .selectedDiscountType ==
+                                        'full'
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
+                            ),
+                          ),
+                          'due': Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10.0, horizontal: 16.0),
+                            child: Text(
+                              'Due Discount',
+                              style: TextStyle(
+                                fontFamily:
+                                    GoogleFonts.playfairDisplay().fontFamily,
+                                color: buildingSaleController
+                                            .selectedDiscountType ==
+                                        'due'
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
+                            ),
+                          ),
+                        },
+                        onValueChanged: (value) {
+                          setState(() {
+                            buildingSaleController.clearData();
+                            buildingSaleController.selectedDiscountType = value;
+                            buildingSaleController.dueAmountDiscountController
+                                .clear();
+                            buildingSaleController.discountTotalAmount.value =
+                                0.0;
+                            buildingSaleController.totalDiscount.clear();
+                            buildingSaleController.discountTotalAmount.value =
+                                0.0;
+                            buildingSaleController
+                                .paymentBookingPercentageCountController
+                                .clear();
+                            buildingSaleController.installmentCountController
+                                .clear();
+
+                            buildingSaleController
+                                .calculateInstalmentAmountResult(
+                                    widget.model?.totalCost);
+                          });
+                        },
+                        groupValue: buildingSaleController.selectedDiscountType,
+                        unselectedColor: Colors.grey[300],
+                        selectedColor: AppColors.primary,
+                        borderColor: AppColors.primary,
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      buildingSaleController.selectedDiscountType.toString() ==
+                              "full"
+                          ? Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  flex: 4,
+                                  child: CupertinoSegmentedControl<String>(
+                                    padding: EdgeInsets.zero,
+                                    children: {
+                                      'fixed': Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 8.0, horizontal: 1.0),
+                                        child: Text(
+                                          'Discount Fixed(৳)',
+                                          style: TextStyle(
+                                            fontFamily:
+                                                GoogleFonts.playfairDisplay()
+                                                    .fontFamily,
+                                            color: buildingSaleController
+                                                        .selectTotalAmountDiscountType ==
+                                                    'fixed'
+                                                ? Colors.white
+                                                : Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                      'percent': Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 10, horizontal: 0.0),
+                                        child: Text(
+                                          ' Percent(%)',
+                                          style: TextStyle(
+                                            fontFamily:
+                                                GoogleFonts.playfairDisplay()
+                                                    .fontFamily,
+                                            color: buildingSaleController
+                                                        .selectTotalAmountDiscountType ==
+                                                    'percent'
+                                                ? Colors.white
+                                                : Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                    },
+                                    onValueChanged: (value) {
+                                      setState(() {
+                                        buildingSaleController
+                                                .selectTotalAmountDiscountType =
+                                            value;
+
+                                        buildingSaleController
+                                            .calculateInstalmentAmountResult(
+                                                widget.model?.totalCost);
+                                        // Recalculate total when discount type changes
+                                      });
+                                    },
+                                    groupValue: buildingSaleController
+                                        .selectTotalAmountDiscountType,
+                                    unselectedColor: Colors.grey[300],
+                                    selectedColor: AppColors.primary,
+                                    borderColor: AppColors.primary,
+                                  ),
+                                ),
+                                gapW8,
+                                Expanded(
+                                  flex: 2,
+                                  child: AppTextField(
+                                    needLabel: false,
+                                    textInputAction: TextInputAction.done,
+                                    labelText: "Discount Amount",
+                                    hintText: "0.00",
+                                    keyboardType: TextInputType.number,
+                                    controller:
+                                        buildingSaleController.totalDiscount,
+                                    labelColor: AppColors.textColorb1,
+                                    isBoldLabel: true,
+                                    hintColor: AppColors.grey,
+                                    textColor: AppColors.textColorb1,
+                                    isRequired: false,
+                                    onChanged: (p0) {
+                                      if (p0.isNotEmpty) {
+                                        setState(() {
+                                          if (buildingSaleController
+                                                  .selectedDiscountType
+                                                  .toString() ==
+                                              "full") {
+                                            double totalCost = double.tryParse(
+                                                    widget.model?.totalCost
+                                                            .toString() ??
+                                                        '0') ??
+                                                0.0;
+                                            double discountAmount =
+                                                double.tryParse(
+                                                        buildingSaleController
+                                                            .discountAmountTotal
+                                                            .value) ??
+                                                    0.0;
+
+                                            // Calculate the final amount after applying the discount
+                                            double finalAmount =
+                                                totalCost - discountAmount;
+                                            // if (p0.isEmpty) {
+                                            //   buildingSaleController
+                                            //       .totalDiscount
+                                            //       .clear();
+                                            // } else {
+                                            //   buildingSaleController
+                                            //           .totalDiscount.text =
+                                            //       finalAmount
+                                            //           .toStringAsFixed(2);
+                                            // }
+
+                                          }
+                                          buildingSaleController
+                                              .discountAmountTotal
+                                              .value = "0.0";
+                                          buildingSaleController
+                                              .calculateInstalmentAmountResult(
+                                                  widget.model?.totalCost);
+                                        });
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ],
+                            )
+                          : Container(),
+                      const SizedBox(
+                        height: 5,
+                      ),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -120,7 +365,8 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                               isRequired: false,
                               onChanged: (p0) {
                                 buildingSaleController
-                                    .calculateResult(widget.model.totalCost);
+                                    .calculateInstalmentAmountResult(
+                                        widget.model?.totalCost);
                               },
                             ),
                           ),
@@ -129,7 +375,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                             flex: 2,
                             child: AppTextField(
                               textInputAction: TextInputAction.done,
-                              labelText: "Booking & Down Payment",
+                              labelText: "Booking & Down Payment (%)",
                               hintText: "Ex : 10 %",
                               keyboardType:
                                   const TextInputType.numberWithOptions(
@@ -140,9 +386,6 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                               isBoldLabel: true,
                               inputFormatters: [
                                 PercentageInputFormatter(),
-
-                                // FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
-                                // Allows integers and decimals
                               ],
                               hintColor: AppColors.grey,
                               textColor: AppColors.textColorb1,
@@ -160,12 +403,38 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                               },
                               onChanged: (p0) {
                                 double? percentage = double.tryParse(p0);
-                                if (percentage != null && percentage <= 100) {
+                                if (p0.isEmpty) {
+                                  double totalCost = double.tryParse(
+                                          widget.model?.totalCost.toString() ??
+                                              '0') ??
+                                      0.0;
+                                  double discountAmount = double.tryParse(
+                                          buildingSaleController
+                                              .discountAmountTotal.value) ??
+                                      0.0;
+
+                                  // Calculate the final amount after applying the discount
+                                  double finalAmount =
+                                      totalCost - discountAmount;
+                                  buildingSaleController.dueAmount.text =
+                                      finalAmount.toStringAsFixed(2);
                                   buildingSaleController
-                                      .calculateResult(widget.model.totalCost);
+                                      .percentageAmount.value = 0.0;
+                                }
+                                setState(() {});
+                                if (buildingSaleController
+                                    .installmentCountController.text.isEmpty) {
+                                  buildingSaleController
+                                      .amountInstallmentController
+                                      .clear();
+                                }
+                                if (percentage != null && percentage <= 100) {
+                                  // buildingSaleController
+                                  //     .calculateInstalmentAmountResult(double.parse(widget.model!.totalCost.toString()));
                                   buildingSaleController
                                       .calculateInstalmentAmountResult(
-                                          widget.model.totalCost);
+                                          double.parse(widget.model!.totalCost
+                                              .toString()));
                                 } else {
                                   // Optionally, you can show an error or limit input here
                                 }
@@ -175,6 +444,110 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                         ],
                       ),
                       gapH8,
+                      buildingSaleController.selectedDiscountType.toString() ==
+                              "due"
+                          ? Row(
+                              // crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  flex: 5,
+                                  child: CupertinoSegmentedControl<String>(
+                                    padding: EdgeInsets.zero,
+                                    children: {
+                                      'fixed': Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 0.0, horizontal: 0.0),
+                                        child: Text(
+                                          'Discount Fixed(৳)',
+                                          style: TextStyle(
+                                            fontFamily:
+                                                GoogleFonts.playfairDisplay()
+                                                    .fontFamily,
+                                            color: buildingSaleController
+                                                        .selectDueAmountDiscountType ==
+                                                    'fixed'
+                                                ? Colors.white
+                                                : Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                      'percent': Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 10, horizontal: 0.0),
+                                        child: Text(
+                                          ' Percent (%)',
+                                          style: TextStyle(
+                                            fontFamily:
+                                                GoogleFonts.playfairDisplay()
+                                                    .fontFamily,
+                                            color: buildingSaleController
+                                                        .selectDueAmountDiscountType ==
+                                                    'percent'
+                                                ? Colors.white
+                                                : Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                    },
+                                    onValueChanged: (value) {
+                                      setState(() {
+                                        buildingSaleController
+                                                .selectDueAmountDiscountType =
+                                            value;
+                                        buildingSaleController
+                                            .calculateInstalmentAmountResult(
+                                                widget.model?.totalCost);
+                                        // Recalculate total when discount type changes
+                                      });
+                                    },
+                                    groupValue: buildingSaleController
+                                        .selectDueAmountDiscountType,
+                                    unselectedColor: Colors.grey[300],
+                                    selectedColor: AppColors.primary,
+                                    borderColor: AppColors.primary,
+                                  ),
+                                ),
+                                gapW8,
+                                Expanded(
+                                  flex: 2,
+                                  child: AppTextField(
+                                    needLabel: false,
+                                    textInputAction: TextInputAction.done,
+                                    labelText: "Discount Amount",
+                                    hintText: "0.00",
+                                    keyboardType: TextInputType.number,
+                                    controller: buildingSaleController
+                                        .dueAmountDiscountController,
+                                    labelColor: AppColors.textColorb1,
+                                    isBoldLabel: true,
+                                    hintColor: AppColors.grey,
+                                    textColor: AppColors.textColorb1,
+                                    isRequired: false,
+                                    onChanged: (p0) {
+                                      if (p0.isEmpty) {
+                                        setState(() {
+                                          buildingSaleController
+                                              .dueAmountDiscountController
+                                              .clear();
+                                          buildingSaleController
+                                              .discountDueAmount.value = 0.0;
+                                          buildingSaleController
+                                                  .totalDueAmount.text =
+                                              buildingSaleController
+                                                  .dueAmount.text;
+                                        });
+                                      }
+                                      buildingSaleController
+                                          .calculateInstalmentAmountResult(
+                                              widget.model?.totalCost);
+                                    },
+                                  ),
+                                ),
+                              ],
+                            )
+                          : Container(),
+                      gapH8,
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -182,7 +555,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                               child: AppTextField(
                             textInputAction: TextInputAction.done,
                             labelText: "Hand Over Date",
-                            hintText: "0.00",
+                            hintText: "DD-MM-YYYY",
                             keyboardType: TextInputType.number,
                             controller:
                                 buildingSaleController.handoverDateController,
@@ -193,10 +566,11 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                             isRequired: true,
                             onChanged: (p0) {
                               buildingSaleController
-                                  .calculateResult(widget.model.totalCost);
+                                  .calculateInstalmentAmountResult(
+                                      widget.model?.totalCost);
                               buildingSaleController
                                   .calculateInstalmentAmountResult(
-                                      widget.model.totalCost);
+                                      widget.model?.totalCost);
                             },
                             onTap: _selectDate,
                           )),
@@ -205,7 +579,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                             child: AppTextField(
                               textInputAction: TextInputAction.done,
                               labelText: "Installment Date",
-                              hintText: "YYYY-MM-DD",
+                              hintText: "DD-MM-YYYY",
                               // Updated hint for date format
                               keyboardType: TextInputType.datetime,
                               // Changed to datetime for date input
@@ -220,11 +594,11 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                               // Triggered when the user changes the date manually
                               onChanged: (p0) {
                                 // Ensure the input is in the correct date format before calculating
-                                buildingSaleController
-                                    .calculateResult(widget.model.totalCost);
+                                // buildingSaleController
+                                //     .calculateInstalmentAmountResult(widget.model?.totalCost);
                                 buildingSaleController
                                     .calculateInstalmentAmountResult(
-                                        widget.model.totalCost);
+                                        widget.model?.totalCost);
                                 buildingSaleController.installmentNumberData();
                               },
 
@@ -241,7 +615,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                           Expanded(
                             child: AppTextField(
                               textInputAction: TextInputAction.next,
-                              labelText: "Amount Off Installment",
+                              labelText: "Amount Of Installment",
                               hintText: "0.00",
                               readOnly: true,
                               keyboardType: TextInputType.number,
@@ -253,49 +627,15 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                               textColor: AppColors.textColorb1,
                               isRequired: false,
                               onChanged: (p0) {
-                                buildingSaleController
-                                    .calculateResult(widget.model.totalCost);
+                                // buildingSaleController
+                                //     .calculateInstalmentAmountResult(widget.model?.totalCost);
                                 buildingSaleController
                                     .calculateInstalmentAmountResult(
-                                        widget.model.totalCost);
+                                        widget.model?.totalCost);
                               },
                             ),
                           ),
                           gapW8,
-                          // Expanded(
-                          //   child: AppTextField(
-                          //     textInputAction: TextInputAction.done,
-                          //     labelText: "Number of Installment",
-                          //     hintText: "Ex : 5",
-                          //     inputFormatters: [
-                          //       FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                          //
-                          //     ],
-                          //     keyboardType: TextInputType.number,
-                          //     controller: buildingSaleController
-                          //         .installmentCountController,
-                          //     labelColor: AppColors.textColorb1,
-                          //     isBoldLabel: true,
-                          //     hintColor: AppColors.grey,
-                          //     textColor: AppColors.textColorb1,
-                          //     isRequired: true,
-                          //     validator: (value) {
-                          //       if (value!.isEmpty) {
-                          //         return "Please enter your number of installment";
-                          //       }
-                          //       return null;
-                          //     },
-                          //     onChanged: (p0) {
-                          //       buildingSaleController
-                          //           .calculateResult(widget.model.totalCost);
-                          //       buildingSaleController
-                          //           .calculateInstalmentAmountResult(
-                          //               widget.model.totalCost);
-                          //       buildingSaleController.installmentNumberData();
-                          //     },
-                          //   ),
-                          // ),
-
                           Expanded(
                             child: AppTextField(
                               textInputAction: TextInputAction.done,
@@ -303,8 +643,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                               hintText: "Ex : 5",
                               inputFormatters: [
                                 FilteringTextInputFormatter.allow(
-                                    RegExp(r'[1-9][0-9]*')),
-                                // Restricts input to positive integers only
+                                    RegExp(r'[0-9]')),
                               ],
                               keyboardType: TextInputType.number,
                               controller: buildingSaleController
@@ -329,25 +668,34 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                               },
                               onChanged: (p0) {
                                 // First, parse the due amount as a double
-                                double? dueAmount = double.tryParse(buildingSaleController.dueAmount.text);
+                                if (p0.isEmpty) {
+                                  buildingSaleController
+                                      .amountInstallmentController
+                                      .clear();
+                                  // buildingSaleController. interestAmount.value=0.0;
+                                }
+                                double? dueAmount = double.tryParse(
+                                    buildingSaleController.dueAmount.text);
 
                                 // Check if the dueAmount is valid and greater than or equal to 0
                                 if (dueAmount == null || dueAmount <= 0) {
                                   print("Invalid due amount$dueAmount");
                                   // Optionally show a snackbar or error message
-                                  wrongSnackBar("You don't have Due");
+                                  wrongSnackBar(context, "You don't have Due");
                                 } else {
                                   // If dueAmount is valid, print it for debugging
                                   print("Valid due amount: $dueAmount");
 
                                   // Perform the result calculations
-                                  buildingSaleController.calculateResult(widget.model.totalCost);
-                                  buildingSaleController.calculateInstalmentAmountResult(widget.model.totalCost);
-                                  buildingSaleController.installmentNumberData();
+                                  // buildingSaleController.calculateInstalmentAmountResult(double.parse(widget.model!.totalCost.toString()));
+                                  buildingSaleController
+                                      .calculateInstalmentAmountResult(
+                                          double.parse(widget.model!.totalCost
+                                              .toString()));
+                                  buildingSaleController
+                                      .installmentNumberData();
                                 }
                               },
-
-
                             ),
                           ),
                         ],

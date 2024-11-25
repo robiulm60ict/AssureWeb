@@ -71,7 +71,22 @@ class AuthController extends GetxController {
 
 
       });
-    } catch (e) {
+    }
+
+    on FirebaseAuthException catch (e) {
+      Navigator.pop(context); // Close loader dialog
+
+      print(e.code);
+      print(e.message);
+
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.message.toString()),
+        ),
+      );
+    }
+    catch (e) {
       Navigator.pop(context);
       Get.snackbar("Login Error", e.toString());
     }

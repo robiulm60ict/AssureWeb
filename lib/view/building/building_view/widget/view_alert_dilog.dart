@@ -167,7 +167,7 @@ void showAlertDialog(BuildingModel project, BuildContext context) {
                                       ),
                                     ),
                                     TextSpan(
-                                      text: project.perSftPrice.toString(),
+                                      text: project.persqftPrice.toString(),
                                       style: const TextStyle(
                                         color: Colors.black,
                                         fontWeight: FontWeight.w300,
@@ -333,7 +333,7 @@ void showAlertDialog(BuildingModel project, BuildContext context) {
                             ),
                           ),
                           TextSpan(
-                            text: project.perSftPrice.toString(),
+                            text: project.persqftPrice.toString(),
                             style: const TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w300,

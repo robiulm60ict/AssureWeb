@@ -39,7 +39,7 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
       buildingController.appointmentSizeController.text =
           widget.model.appointmentSize.toString() ?? "";
       buildingController.perSftPriceController.text =
-          widget.model.perSftPrice.toString() ?? "";
+          widget.model.persqftPrice.toString() ?? "";
       buildingController.totalUnitPriceController.text =
           widget.model.totalUnitPrice.toString() ?? "";
       buildingController.carParkingController.text =
@@ -729,7 +729,7 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                                   buildingController.floorNoController.text,
                                   appointmentSize: buildingController
                                       .appointmentSizeController.text,
-                                  perSftPrice: int.parse(buildingController
+                                    persqftPrice: int.parse(buildingController
                                       .perSftPriceController.text),
                                   totalUnitPrice: double.parse(buildingController
                                       .totalUnitPriceController.text),
@@ -763,7 +763,7 @@ class _BuildingUpdateState extends State<BuildingUpdate> {
                                   buildingController.floorNoController.text,
                                   appointmentSize: buildingController
                                       .appointmentSizeController.text,
-                                  perSftPrice: int.parse(buildingController
+                                  persqftPrice: int.parse(buildingController
                                       .perSftPriceController.text),
                                   totalUnitPrice: double.parse(buildingController
                                       .totalUnitPriceController.text),

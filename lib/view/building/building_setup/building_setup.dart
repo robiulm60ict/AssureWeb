@@ -176,9 +176,8 @@ class _BuildingSetupState extends State<BuildingSetup> {
                     Expanded(
                       child: AppTextField(
                         textInputAction: TextInputAction.next,
-                        labelText: "Appointment Size",
+                        labelText: "Appointment Size(sqft)",
                         hintText: "Ex : 1000",
-                        suffixIcon: const Text("Sft",style: TextStyle(fontWeight: FontWeight.w600),textAlign: TextAlign.center,),
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),  // Allows integers and decimals
                         ],
@@ -614,8 +613,8 @@ class _BuildingSetupState extends State<BuildingSetup> {
                               floorNo: buildingController.floorNoController.text,
                               appointmentSize: buildingController
                                   .appointmentSizeController.text,
-                              perSftPrice: int.parse(
-                                  buildingController.perSftPriceController.text),
+                              persqftPrice: int.parse(
+                                  buildingController.persqftPriceController.text),
                               totalUnitPrice: double.parse(buildingController
                                   .totalUnitPriceController.text),
                               carParking: buildingController
@@ -652,7 +651,7 @@ class _BuildingSetupState extends State<BuildingSetup> {
                               floorNo: buildingController.floorNoController.text,
                               appointmentSize: buildingController
                                   .appointmentSizeController.text,
-                              perSftPrice: int.parse(
+                              persqftPrice: int.parse(
                                   buildingController.perSftPriceController.text),
                               totalUnitPrice: double.parse(buildingController
                                   .totalUnitPriceController.text),

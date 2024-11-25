@@ -7,7 +7,7 @@ class BuildingModel {
   String projectAddress;
   String floorNo;
   String appointmentSize;
-  int perSftPrice;
+  int persqftPrice;
   dynamic totalUnitPrice;
   dynamic carParking;
   dynamic unitCost;
@@ -24,7 +24,7 @@ class BuildingModel {
     required this.projectAddress,
     required this.floorNo,
     required this.appointmentSize,
-    required this.perSftPrice,
+    required this.persqftPrice,
     required this.totalUnitPrice,
     this.carParking,
     this.unitCost,
@@ -32,33 +32,34 @@ class BuildingModel {
     this.image,
     this.createDateTime,
     this.updateDateTime,
-     this.status, // Include status in the constructor
+    this.status, // Include status in the constructor
   });
 
   // Convert from Firestore document
   factory BuildingModel.fromFirestore(Map<String, dynamic> data, String documentId) {
     return BuildingModel(
       id: documentId,
-      prospectName: data['prospectName'],
-      projectName: data['projectName'],
-      projectAddress: data['projectAddress'],
-      floorNo: data['floorNo'],
-      appointmentSize: data['appointmentSize'],
-      perSftPrice: data['perSftPrice'],
-      totalUnitPrice: data['totalUnitPrice'],
-      carParking: data['carParking'],
-      unitCost: data['unitCost'],
-      totalCost: data['totalCost'],
+      prospectName: data['prospectName'] ?? 'Unknown',
+      projectName: data['projectName'] ?? 'Unknown',
+      projectAddress: data['projectAddress'] ?? 'Unknown',
+      floorNo: data['floorNo'] ?? 'N/A',
+      appointmentSize: data['appointmentSize'] ?? 'N/A',
+      persqftPrice: data['persqftPrice'] != null ? data['persqftPrice'] as int : 0,
+      totalUnitPrice: data['totalUnitPrice'] ?? 0,
+      carParking: data['carParking'] ?? 0,
+      unitCost: data['unitCost'] ?? 0,
+      totalCost: data['totalCost'] ?? 0,
       image: data['image'],
       createDateTime: data['createDateTime'] != null
           ? (data['createDateTime'] as Timestamp).toDate()
-          : DateTime.now(), // Default to current time if null
+          : DateTime.now(),
       updateDateTime: data['updateDateTime'] != null
           ? (data['updateDateTime'] as Timestamp).toDate()
-          : null, // Nullable updateDateTime
-      status: data['status'], // Default to 'available' if null
+          : null,
+      status: data['status'] ?? 'available',
     );
   }
+
 
   // Convert to Firestore document
   Map<String, dynamic> toFirestore() {
@@ -68,7 +69,7 @@ class BuildingModel {
       'projectAddress': projectAddress,
       'floorNo': floorNo,
       'appointmentSize': appointmentSize,
-      'perSftPrice': perSftPrice,
+      'persqftPrice': persqftPrice,
       'totalUnitPrice': totalUnitPrice,
       'carParking': carParking,
       'unitCost': unitCost,

@@ -72,7 +72,7 @@ class PopularProducts extends StatelessWidget {
                             AppRoutes.push(context, page: BuildingSaleSetup(model: project,));
 
                           }else{
-                            wrongSnackBar(title: "Building","This building not available");
+                            wrongSnackBar(context,title: "Building","This building not available");
                           }
 
                         },

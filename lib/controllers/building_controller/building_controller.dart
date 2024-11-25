@@ -20,6 +20,7 @@ class BuildingController extends GetxController {
   final GlobalKey<FormState> formKeyUpdate = GlobalKey<FormState>();
 
   final TextEditingController prospectNameController = TextEditingController();
+  final TextEditingController persqftPriceController = TextEditingController();
   final TextEditingController projectNameController = TextEditingController();
   final TextEditingController projectAddressController = TextEditingController();
   final TextEditingController floorNoController = TextEditingController();
@@ -130,7 +131,7 @@ class BuildingController extends GetxController {
           project.image = imageUrl;
         } catch (uploadError) {
           print("Error uploading image: $uploadError");
-          wrongSnackBar(title: "Upload Error", "Failed to upload image: $uploadError");
+          wrongSnackBar(context,title: "Upload Error", "Failed to upload image: $uploadError");
           // Optionally, you can decide to proceed without the image
           // project.image = null; // Uncomment if you want to set it to null
         }
@@ -148,7 +149,7 @@ class BuildingController extends GetxController {
 
     } catch (e, stackTrace) {
       Navigator.pop(context);
-      wrongSnackBar(title: "Exception", "Failed to create building: $e");
+      wrongSnackBar(context,title: "Exception", "Failed to create building: $e");
       print("Error adding project: $e");
       print("StackTrace: $stackTrace");
     }
@@ -235,7 +236,7 @@ class BuildingController extends GetxController {
 
     } catch (e, stackTrace) {
       Navigator.pop(context);
-      wrongSnackBar(title: "Exception", "Failed to create building: $e");
+      wrongSnackBar(context,title: "Exception", "Failed to create building: $e");
     }
   }
 
@@ -340,7 +341,7 @@ class BuildingController extends GetxController {
 
     } catch (e) {
       Navigator.pop(context);
-      wrongSnackBar(title: "Exception", "Failed to update building: $e");
+      wrongSnackBar(context,title: "Exception", "Failed to update building: $e");
     }
   }
 
@@ -373,7 +374,7 @@ class BuildingController extends GetxController {
 
     } catch (e) {
       Navigator.pop(context);
-      wrongSnackBar(title: "Exception", "Failed to update building: $e");
+      wrongSnackBar(context,title: "Exception", "Failed to update building: $e");
     }
   }
 

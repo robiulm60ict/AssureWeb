@@ -128,7 +128,7 @@ class BuildingView extends StatelessWidget {
                       AppRoutes.push(context, page: BuildingSaleSetup(model: project,));
 
                     }else{
-                      wrongSnackBar(title: "Building","This building not available");
+                      wrongSnackBar(context,title: "Building","This building not available");
                     }
                   },
                   child: Container(
@@ -371,6 +371,8 @@ class BuildingView extends StatelessWidget {
                                   flex: 1,
                                   child: Wrap(
                                     children: [
+                                      project.status.toString() == "available"
+                                          ?
                                       IconButton(
                                         onPressed: () {
                                           AppRoutes.push(context,
@@ -384,7 +386,9 @@ class BuildingView extends StatelessWidget {
                                           color: Colors.black,
                                           size: 24.0,
                                         ),
-                                      ),
+                                      ):Container(),
+                                      project.status.toString() == "available"
+                                          ?
                                       IconButton(
                                           onPressed: () async {
                                             bool shouldDelete =
@@ -400,7 +404,7 @@ class BuildingView extends StatelessWidget {
                                                 .strokeRoundedDeleteThrow,
                                             color: Colors.black,
                                             size: 24.0,
-                                          )),
+                                          )):Container(),
                                       IconButton(
                                           onPressed: () async {
                                             showAlertDialog(project, context);
