@@ -125,7 +125,7 @@ class Header extends StatelessWidget {
                           TextButton(
                             onPressed: () {
                               LocalDB.delLoginInfo();
-                              Get.toNamed("signInPage");
+                              Get.toNamed("/signInPage");
                               // AppRoutes.pushAndRemoveUntil(context, page: SignInPage());
                             },
                             child: const Text(

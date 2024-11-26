@@ -50,10 +50,14 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
     });
 
     // Setup other controllers
-    buildingSaleController.handoverDateController.text =
-        DateFormat('dd-MM-yyyy').format(DateTime.now());
-    buildingSaleController.installmentDateController.text =
-        DateFormat('dd-MM-yyyy').format(DateTime.now());
+    // buildingSaleController.handoverDateController.text =
+    //     DateFormat('dd-MM-yyyy').format(DateTime.now());
+    // buildingSaleController.installmentDateController.text =
+    //     DateFormat('dd-MM-yyyy').format(DateTime.now());
+
+    setState(() {
+
+    });
   }
 
   // @override
