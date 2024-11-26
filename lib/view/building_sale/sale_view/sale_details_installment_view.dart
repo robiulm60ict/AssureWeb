@@ -16,10 +16,9 @@ import '../../../widgets/delete_dialog.dart';
 
 class BuildingSaleDetailScreen extends StatefulWidget {
   final String documentId;
-  var buildingSales = <String, dynamic>{};
 
   BuildingSaleDetailScreen(
-      {required this.documentId, required this.buildingSales}) {
+      {required this.documentId,}) {
     // Fetch the building sale details when the screen is initialized
     buildingSaleController.fetchSingleBuildingSale(documentId);
   }
@@ -30,8 +29,17 @@ class BuildingSaleDetailScreen extends StatefulWidget {
 }
 
 class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
-  final BuildingSaleController buildingSaleController =
-      Get.put(BuildingSaleController());
+  // var buildingSales = <String, dynamic>{};
+
+  @override
+  void initState() {
+    buildingSaleController.fetchSingleBuildingSale(widget.documentId);
+    // TODO: implement initState
+    super.initState();
+  }
+
+  // final BuildingSaleController buildingSaleController =
+  //     Get.put(BuildingSaleController());
 
   @override
   Widget build(BuildContext context) {
@@ -822,12 +830,10 @@ class _BuildingSaleDetailScreenState extends State<BuildingSaleDetailScreen> {
                                                         await showConfirmConfirmationDialog(
                                                             context);
                                                     if (shouldDelete) {
-                                                      // Update installment to "Paid"
+                                                     // Update installment to "Paid"
                                                       buildingSaleController
                                                           .updateInstallmentPlanStatus(
-                                                        widget.buildingSales[
-                                                                'documentId']
-                                                            .toString(),
+                                                       widget.documentId,
                                                         buildingSale[
                                                             'buildingId'],
                                                         installment['id'],

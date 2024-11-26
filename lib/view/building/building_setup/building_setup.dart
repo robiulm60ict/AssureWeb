@@ -633,6 +633,7 @@ class _BuildingSetupState extends State<BuildingSetup> {
                               totalCost: double.parse(
                                   buildingController.totalCostController.text),
                               createDateTime: DateTime.now(),
+                              updateDateTime: DateTime.now(),
                             ),
                             imageController.resizedImagePath.value,
                             // Pass the resized image path

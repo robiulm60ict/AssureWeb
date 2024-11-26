@@ -140,14 +140,10 @@ class BuildingSalesScreen extends StatelessWidget {
                 ),
                 child: InkWell(
                   onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      '/buildingSaleDetailScreen',
-                      arguments: {
-                        'documentId': buildingSaleController.buildingSales[index]['documentId'],
-                        'buildingSales': buildingSaleController.buildingSales[index],
-                      },
-                    );
+                    Get.find<BuildingSaleController>().saveBuildingSaleId( buildingSaleController.buildingSales[index]['documentId']);
+
+                    Get.toNamed('/buildingSaleDetail', arguments:  buildingSaleController.buildingSales[index]['documentId'],);
+
 
                     // AppRoutes.push(context,
                     //     page: BuildingSaleDetailScreen(

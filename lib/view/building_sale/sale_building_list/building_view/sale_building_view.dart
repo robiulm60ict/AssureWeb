@@ -9,6 +9,7 @@ import 'package:lottie/lottie.dart';
 import '../../../../configs/app_constants.dart';
 import '../../../../configs/app_image.dart';
 import '../../../../configs/defaults.dart';
+import '../../../../controllers/building_controller/building_controller.dart';
 import '../../../../responsive.dart';
 import '../../building_sale_setup/building_sale_setup.dart';
 
@@ -141,10 +142,12 @@ class SaleBuildingListView extends StatelessWidget {
                 ),
                 child: InkWell(
                   onTap: () {
-                    AppRoutes.push(context,
-                        page: BuildingSaleSetup(
-                          model: project,
-                        ));
+                    Get.find<BuildingController>().saveBuildingModelId(project.id);
+                    Get.toNamed('/buildingSaleSetup', arguments: project);
+                    // AppRoutes.push(context,
+                    //     page: BuildingSaleSetup(
+                    //       model: project,
+                    //     ));
                   },
                   child: Row(
                     children: [

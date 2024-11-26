@@ -164,7 +164,7 @@ class _ProductOverviewsState extends State<ProductOverviews> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(AppDefaults.padding),
-      decoration: const BoxDecoration(
+      decoration:  BoxDecoration(
         color: AppColors.bgSecondayLight,
         borderRadius:
         BorderRadius.all(Radius.circular(AppDefaults.borderRadius)),
@@ -213,7 +213,7 @@ class _ProductOverviewsState extends State<ProductOverviews> {
             ],
           ),
           gapH24,
-          const BuildingSalesViewReport(),
+           BuildingSalesViewReport(),
         ],
       ),
     );
@@ -221,7 +221,7 @@ class _ProductOverviewsState extends State<ProductOverviews> {
 }
 
 class BarChartSample8 extends StatefulWidget {
-  const BarChartSample8({super.key});
+   BarChartSample8({super.key});
 
   final Color barBackgroundColor = AppColors.bgSecondayLight;
   final Color barColor = AppColors.secondaryMintGreen;
@@ -376,7 +376,7 @@ class BarChartSample1State extends State<BarChartSample8> {
 }
 
 class BuildingSalesViewReport extends StatefulWidget {
-  const BuildingSalesViewReport({super.key});
+   BuildingSalesViewReport({super.key});
 
   // Define bar chart color properties
   final Color barBackgroundColor = AppColors.bgSecondayLight;

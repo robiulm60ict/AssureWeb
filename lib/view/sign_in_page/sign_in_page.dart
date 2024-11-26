@@ -1,7 +1,9 @@
 import 'package:assure_apps/configs/app_image.dart';
+import 'package:assure_apps/controllers/building_controller/building_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 
+import '../../configs/app_colors.dart';
 import '../../configs/app_constants.dart';
 import '../../configs/defaults.dart';
 import '../../configs/ghaps.dart';
@@ -71,8 +73,29 @@ class _SignInPageState extends State<SignInPage> {
                       controller: authController.emailController,
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
-                      decoration: const InputDecoration(
-                        prefixIcon: HugeIcon(
+                      decoration: InputDecoration(
+                        errorBorder: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.circular(AppSizes.bodyPadding - 5),
+                            borderSide:
+                                BorderSide(color: AppColors.error, width: 0.5)),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.circular(AppSizes.bodyPadding - 5),
+                            borderSide: const BorderSide(
+                                color: AppColors.primary, width: 0.5)),
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.circular(AppSizes.bodyPadding - 5),
+                            borderSide: BorderSide(
+                                color: AppColors.focusColor(context),
+                                width: 0.5)),
+                        focusedErrorBorder: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.circular(AppSizes.bodyPadding - 5),
+                            borderSide: const BorderSide(
+                                color: AppColors.error, width: 0.5)),
+                        prefixIcon: const HugeIcon(
                           icon: HugeIcons.strokeRoundedMail02,
                           color: Colors.black,
                           size: 24.0,
@@ -96,8 +119,30 @@ class _SignInPageState extends State<SignInPage> {
                       controller: authController.passwordController,
                       keyboardType: TextInputType.visiblePassword,
                       textInputAction: TextInputAction.done,
-                      obscureText: !_isPasswordVisible, // Toggles visibility
+                      obscureText: !_isPasswordVisible,
+                      // Toggles visibility
                       decoration: InputDecoration(
+                        errorBorder: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.circular(AppSizes.bodyPadding - 5),
+                            borderSide: const BorderSide(
+                                color: AppColors.error, width: 0.5)),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.circular(AppSizes.bodyPadding - 5),
+                            borderSide: const BorderSide(
+                                color: AppColors.primary, width: 0.5)),
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.circular(AppSizes.bodyPadding - 5),
+                            borderSide: BorderSide(
+                                color: AppColors.focusColor(context),
+                                width: 0.5)),
+                        focusedErrorBorder: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.circular(AppSizes.bodyPadding - 5),
+                            borderSide: const BorderSide(
+                                color: AppColors.error, width: 0.5)),
                         prefixIcon: const HugeIcon(
                           icon: HugeIcons.strokeRoundedSquareLock02,
                           color: Colors.black,
@@ -129,17 +174,27 @@ class _SignInPageState extends State<SignInPage> {
                     /// SIGN IN BUTTON
                     SizedBox(
                       width: 320,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          if (formKey.currentState!.validate()) {
-                            authController.login(
-                                authController.emailController.text,
-                                authController.passwordController.text,
-                                context);
-                          }
-                        },
-                        child: const Text('Sign in'),
-                      ),
+                      child: MaterialButton(
+                          elevation: 0,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 5),
+                          color: AppColors.primary,
+                          onPressed: () {
+                            if (formKey.currentState!.validate()) {
+                              authController.login(
+                                  authController.emailController.text,
+                                  authController.passwordController.text,
+                                  context);
+                            }
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 8),
+                            child: Text(
+                              'Sign in',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          )),
                     ),
                     gapH24,
                   ],

@@ -126,14 +126,8 @@ class BuildingView extends StatelessWidget {
                   onTap: (){
 
                     if(project.status.toString() == "available"){
-                      // AppRoutes.push(context, page: BuildingSaleSetup(model: project,));
-                      // Navigator.pushNamed(
-                      //   context,
-                      //   '/buildingSaleSetup',
-                      //   arguments: project,
-                      // );
-                      // Save BuildingModel and navigate to the next page
-                      Get.find<BuildingController>().saveBuildingModel(project);
+
+                      Get.find<BuildingController>().saveBuildingModelId(project.id);
                       Get.toNamed('/buildingSaleSetup', arguments: project);
 
 

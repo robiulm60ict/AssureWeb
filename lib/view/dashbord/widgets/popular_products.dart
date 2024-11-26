@@ -8,6 +8,7 @@ import '../../../configs/app_colors.dart';
 import '../../../configs/app_constants.dart';
 import '../../../configs/defaults.dart';
 import '../../../configs/ghaps.dart';
+import '../../../controllers/building_controller/building_controller.dart';
 import '../../../widgets/section_title.dart';
 import '../../../widgets/snackbar.dart';
 import '../../building_sale/building_sale_setup/building_sale_setup.dart';
@@ -19,7 +20,7 @@ class PopularProducts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration:  BoxDecoration(
         color: AppColors.bgSecondayLight,
         borderRadius: BorderRadius.all(
           Radius.circular(AppDefaults.borderRadius),
@@ -68,8 +69,9 @@ class PopularProducts extends StatelessWidget {
                         isActive: project.status.toString(),
                         onPressed: () {
                           if(project.status.toString() == "available"){
-
-                            AppRoutes.push(context, page: BuildingSaleSetup(model: project,));
+                            Get.find<BuildingController>().saveBuildingModelId(project.id);
+                            Get.toNamed('/buildingSaleSetup', arguments: project);
+                            // AppRoutes.push(context, page: BuildingSaleSetup(model: project,));
 
                           }else{
                             wrongSnackBar(context,title: "Building","This building not available");

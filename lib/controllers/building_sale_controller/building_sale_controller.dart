@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import '../../model/buliding_model.dart';
 import '../../widgets/app_loader.dart';
 import '../../widgets/snackbar.dart';
@@ -310,6 +311,20 @@ class BuildingSaleController extends GetxController {
 
   var buildingSaleData = <String, dynamic>{}.obs; // Observable map for building sale data
   var isLoading = false.obs; // Observable loading state
+
+
+  final storage = GetStorage();
+
+
+  void saveBuildingSaleId(String id) {
+    // Save only the ID to storage
+    storage.write('buildingModelId', id);
+    print("BuildingModel ID saved: $id");
+  }
+  Future<String?> loadBuildingSaleId() async {
+    return storage.read<String>('buildingModelId');
+  }
+
 
 // Method to fetch building sale details using documentId
   Future<void> fetchSingleBuildingSale(String documentId) async {

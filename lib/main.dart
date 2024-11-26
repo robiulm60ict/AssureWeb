@@ -3,6 +3,7 @@ import 'package:assure_apps/test.dart';
 import 'package:assure_apps/view/building_sale/building_sale_setup/building_sale_setup.dart';
 import 'package:assure_apps/view/building_sale/sale_view/sale_details_installment_view.dart';
 import 'package:assure_apps/view/entry_point.dart';
+import 'package:assure_apps/view/sales_report_view_list/sale_report_view.dart';
 import 'package:assure_apps/view/sign_in_page/sign_in_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,23 +17,22 @@ import 'package:url_strategy/url_strategy.dart';
 import 'configs/app_theme.dart';
 import 'configs/database/login.dart';
 import 'controllers/building_controller/building_controller.dart';
+import 'controllers/building_sale_controller/building_sale_controller.dart';
 import 'firebase_options.dart';
 import 'model/buliding_model.dart';
 import 'view/splash/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter(); // Call Hive initialization for Flutter
-  await LocalDB.init(); // Open the Hive box here
+  await Hive.initFlutter(); // Initialize Hive for Flutter
+  await LocalDB.init(); // Open Hive box for local storage
 
-  // Initialize Hive
+  // Initialize Hive for mobile/desktop
   if (!kIsWeb) {
-    // Only initialize Hive on mobile/desktop
     final directory = await getApplicationDocumentsDirectory();
     Hive.init(directory.path);
   } else {
-    // For web, we can use a temporary path or skip Hive initialization if not needed
-    Hive.init('web_storage'); // Provide a placeholder path for web
+    Hive.init('web_storage'); // For web, provide a placeholder path
   }
 
   // Initialize Firebase
@@ -41,8 +41,9 @@ void main() async {
   );
   setPathUrlStrategy();
 
-  // Put the BuildingController into memory before running the app
-  Get.put(BuildingController());
+  // Register controllers before running the app
+  Get.put(BuildingController()); // Register BuildingController
+  Get.put(BuildingSaleController()); // Register BuildingSaleController
 
   // Run the app
   runApp(const MainApp());
@@ -54,59 +55,89 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       initialRoute: '/',
       getPages: [
         GetPage(name: '/', page: () => const SplashScreen()),
-        GetPage(name: '/signInPage', page: () => SignInPage()),
+
         GetPage(name: '/entryPoint', page: () => const EntryPoint()),
-        // You can also use arguments in GetX routes
-        GetPage(
-          name: '/buildingSaleDetailScreen',
-          page: () {
-            // Arguments can be passed directly using Get arguments
-            final args = Get.arguments as Map<String, dynamic>;
-            return BuildingSaleDetailScreen(
-              documentId: args['documentId'],
-              buildingSales: args['buildingSales'],
-            );
-          },
-        ),
-        // GetPage(
-        //   name: '/buildingSaleSetup',
-        //   page: () {
-        //     final args = Get.arguments as BuildingModel?;
-        //     print("argsSsssssssss$args");
-        //
-        //     return BuildingSaleSetup(model: args); // Pass the non-null model
-        //   },
-        // ),
+        GetPage(name: '/signInPage', page: () => SignInPage()),
 
+        // Route for building sale details
         GetPage(
-          name: '/buildingSaleSetup',
+          name: '/buildingSaleDetail',
           page: () {
-            final buildingController = Get.find<BuildingController>();
-
             return FutureBuilder(
-              future: buildingController.loadBuildingModel(), // Make sure this is awaited
+              future: Get.find<BuildingSaleController>().loadBuildingSaleId(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Scaffold(body: Center(child: CircularProgressIndicator())); // Show loading indicator
+                  return const Scaffold(
+                    body: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
                 } else if (snapshot.hasError) {
-                  return Scaffold(body: Center(child: Text('Error: ${snapshot.error}')));
+                  return Scaffold(
+                    body: Center(
+                      child: Text('Error: ${snapshot.error}'),
+                    ),
+                  );
                 } else {
-                  final buildingModel = buildingController.getBuildingModel();
-                  return buildingModel == null
-                      ? Scaffold(body: Center(child: Text('No data available')))
-                      : BuildingSaleSetup(model: buildingModel);
+                  final buildingId = snapshot.data;
+                  if (buildingId == null || buildingId.isEmpty) {
+                    return const Scaffold(
+                      body: Center(
+                        child: Text('No Building available'),
+                      ),
+                    );
+                  }
+                  return BuildingSaleDetailScreen(documentId: buildingId);
                 }
               },
             );
           },
-        )
+          binding: BindingsBuilder(() {
+            Get.lazyPut<BuildingSaleController>(() => BuildingSaleController());
+          }),
+        ),
 
+        // Route for building sale setup
+        GetPage(
+          name: '/buildingSaleSetup',
+          page: () {
+            final buildingController = Get.find<BuildingController>();
+            return FutureBuilder(
+              future: buildingController.loadBuildingModelId(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Scaffold(
+                    body: Center(
+                      child: CircularProgressIndicator(), // Show loading indicator
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return Scaffold(
+                    body: Center(
+                      child: Text('Error: ${snapshot.error}'), // Display error message
+                    ),
+                  );
+                } else {
+                  final buildingId = snapshot.data; // Loaded ID from storage
+                  if (buildingId == null || buildingId.isEmpty) {
+                    return const Scaffold(
+                      body: Center(
+                        child: Text('No Building available'), // Handle missing ID
+                      ),
+                    );
+                  }
 
+                  return BuildingSaleSetup(id: buildingId); // Pass the model to the widget
+                }
+              },
+            );
+          },
+        ),
       ],
     );
-
   }
 }

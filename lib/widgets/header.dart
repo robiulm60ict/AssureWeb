@@ -68,8 +68,9 @@ class Header extends StatelessWidget {
                         showEmailLogoutDialog(context);
                       },
                       icon: const CircleAvatar(
-                        backgroundImage: NetworkImage(
-                            "https://cdn.create.vista.com/api/media/small/339818716/stock-photo-doubtful-hispanic-man-looking-with-disbelief-expression"),
+                        radius: 35,
+                       
+                        child: Icon(Icons.person,size: 30,),
                       ),
                     ),
 
@@ -124,7 +125,8 @@ class Header extends StatelessWidget {
                           TextButton(
                             onPressed: () {
                               LocalDB.delLoginInfo();
-                              AppRoutes.pushAndRemoveUntil(context, page: SignInPage());
+                              Get.toNamed("signInPage");
+                              // AppRoutes.pushAndRemoveUntil(context, page: SignInPage());
                             },
                             child: const Text(
                               "Logout",

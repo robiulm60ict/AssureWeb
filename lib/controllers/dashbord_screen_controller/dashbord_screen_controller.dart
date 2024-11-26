@@ -16,10 +16,10 @@ class DashbordScreenController extends GetxController {
   List<Widget> myScreen=[
     const DashboardPage(),
     BuildingSetup(),
-    BuildingView(),
-    SaleBuildingListView(),
+    const BuildingView(),
+    const SaleBuildingListView(),
     BuildingSalesScreen(),
-    CustomerListView(),
+    const CustomerListView(),
     SalesListReportScreen(),
   ];
 

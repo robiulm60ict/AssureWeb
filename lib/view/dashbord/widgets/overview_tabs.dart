@@ -50,7 +50,7 @@ class _OverviewTabsState extends State<OverviewTabs>
             dividerHeight: 0,
             padding: const EdgeInsets.symmetric(
                 horizontal: 0, vertical: AppDefaults.padding),
-            indicator: const BoxDecoration(
+            indicator:  BoxDecoration(
               borderRadius: BorderRadius.all(
                 Radius.circular(AppDefaults.borderRadius),
               ),

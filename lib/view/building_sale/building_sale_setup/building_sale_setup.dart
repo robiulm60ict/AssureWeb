@@ -19,28 +19,56 @@ import '../../../responsive.dart';
 import '../../../widgets/app_text_field.dart';
 
 class BuildingSaleSetup extends StatefulWidget {
-  BuildingSaleSetup({super.key, required this.model});
+  BuildingSaleSetup({super.key, required this.id});
 
-  final BuildingModel? model;
+  final id;
+
+  // final BuildingModel? model;
 
   @override
   State<BuildingSaleSetup> createState() => _BuildingSaleSetupState();
 }
 
 class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
+  late BuildingModel? model;
+
   @override
   void initState() {
+    super.initState();
 
-    // buildingSaleController.calculateInstalmentAmountResult(
-    //     double.parse(widget.model!.totalCost.toString()));
+    // Fetch the single project and set up other fields
+    buildingController
+        .fetchSingleProjects(widget.id.toString())
+        .then((fetchedModel) {
+      setState(() {
+        model = fetchedModel;
+      });
+    }).catchError((error) {
+      if (kDebugMode) {
+        print("Error fetching single project: $error");
+      }
+    });
 
+    // Setup other controllers
     buildingSaleController.handoverDateController.text =
         DateFormat('dd-MM-yyyy').format(DateTime.now());
     buildingSaleController.installmentDateController.text =
         DateFormat('dd-MM-yyyy').format(DateTime.now());
-    // TODO: implement initState
-    super.initState();
   }
+
+  // @override
+  // void initState() {
+  //
+  //   // buildingSaleController.calculateInstalmentAmountResult(
+  //   //     double.parse(widget.model!.totalCost.toString()));
+  //
+  //   buildingSaleController.handoverDateController.text =
+  //       DateFormat('dd-MM-yyyy').format(DateTime.now());
+  //   buildingSaleController.installmentDateController.text =
+  //       DateFormat('dd-MM-yyyy').format(DateTime.now());
+  //   // TODO: implement initState
+  //   super.initState();
+  // }
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
@@ -49,9 +77,8 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
       appBar: AppBar(
           leading: IconButton(
             onPressed: () {
-              Navigator.pop(context);
-              // context.go('/saleBuildingListView');
-              // GoRouter.of(context).pop(); // Navigate back
+              Get.back();
+
             },
             icon: const HugeIcon(
               icon: HugeIcons.strokeRoundedArrowLeft02,
@@ -62,7 +89,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
           backgroundColor: AppColors.bg,
           title: const Text('Building Sale')),
       backgroundColor: AppColors.bg,
-      body: SizedBox(
+      body:buildingController.isSingleLoading.value==true?const Center(child: CircularProgressIndicator(),): SizedBox(
         width: double.infinity,
         child: SingleChildScrollView(
           child: Form(
@@ -87,7 +114,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Building Total Amount ${widget.model?.totalCost.toString()}",
+                        "Building Total Amount ${model?.totalCost.toString()}",
                         style: const TextStyle(fontWeight: FontWeight.w400),
                       ),
                       buildingSaleController.selectedDiscountType.toString() ==
@@ -96,8 +123,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                               () {
                                 // Safely parse the total cost and discount amount, providing default values if necessary
                                 double totalCost = double.tryParse(
-                                        widget.model?.totalCost.toString() ??
-                                            '0') ??
+                                        model?.totalCost.toString() ?? '0') ??
                                     0.0;
                                 double discountAmount = double.tryParse(
                                         buildingSaleController
@@ -117,7 +143,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                           : Container(),
                       Obx(
                         () => Text(
-                          "Booking & Down Payment Amount ${buildingSaleController.percentageAmount.value}",
+                          "Booking & Down Payment Amount ${buildingSaleController.percentageAmount.value.toStringAsFixed(2)}",
                           style: const TextStyle(fontWeight: FontWeight.w400),
                         ),
                       ),
@@ -125,7 +151,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                               "due"
                           ? Obx(
                               () => Text(
-                                "Applying ${buildingSaleController.dueAmountDiscountController.text} ${buildingSaleController.selectDueAmountDiscountType == 'fixed' ? "৳" : "%"} Discount Amount : ${buildingSaleController.discountDueAmount.value}\n Due Amount : ${buildingSaleController.totalDueAmount.text}",
+                                "Applying ${buildingSaleController.dueAmountDiscountController.text} ${buildingSaleController.selectDueAmountDiscountType == 'fixed' ? "৳" : "%"} Discount Amount : ${buildingSaleController.discountDueAmount.value.toStringAsFixed(2)}\n Due Amount : ${buildingSaleController.totalDueAmount.text}",
                                 style: const TextStyle(
                                     fontWeight: FontWeight.w400),
                               ),
@@ -203,7 +229,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
 
                             buildingSaleController
                                 .calculateInstalmentAmountResult(
-                                    widget.model?.totalCost);
+                                    model?.totalCost);
                           });
                         },
                         groupValue: buildingSaleController.selectedDiscountType,
@@ -265,10 +291,11 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                                         buildingSaleController
                                                 .selectTotalAmountDiscountType =
                                             value;
+                                        buildingSaleController.totalDiscount.clear();
 
                                         buildingSaleController
                                             .calculateInstalmentAmountResult(
-                                                widget.model?.totalCost);
+                                                model?.totalCost);
                                         // Recalculate total when discount type changes
                                       });
                                     },
@@ -287,7 +314,11 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                                     textInputAction: TextInputAction.done,
                                     labelText: "Discount Amount",
                                     hintText: "0.00",
-                                    keyboardType: TextInputType.number,
+                                    keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                    inputFormatters:   buildingSaleController.selectTotalAmountDiscountType.toString() == "percent"
+                                    ?
+                                      [PercentageInputFormatter()]:[NumericOnlyInputFormatter()]
+                                        ,
                                     controller:
                                         buildingSaleController.totalDiscount,
                                     labelColor: AppColors.textColorb1,
@@ -298,45 +329,19 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                                     onChanged: (p0) {
                                       if (p0.isNotEmpty) {
                                         setState(() {
-                                          if (buildingSaleController
-                                                  .selectedDiscountType
-                                                  .toString() ==
-                                              "full") {
-                                            double totalCost = double.tryParse(
-                                                    widget.model?.totalCost
-                                                            .toString() ??
-                                                        '0') ??
-                                                0.0;
-                                            double discountAmount =
-                                                double.tryParse(
-                                                        buildingSaleController
-                                                            .discountAmountTotal
-                                                            .value) ??
-                                                    0.0;
-
-                                            // Calculate the final amount after applying the discount
-                                            double finalAmount =
-                                                totalCost - discountAmount;
-                                            // if (p0.isEmpty) {
-                                            //   buildingSaleController
-                                            //       .totalDiscount
-                                            //       .clear();
-                                            // } else {
-                                            //   buildingSaleController
-                                            //           .totalDiscount.text =
-                                            //       finalAmount
-                                            //           .toStringAsFixed(2);
-                                            // }
-
-                                          }
                                           buildingSaleController
                                               .discountAmountTotal
                                               .value = "0.0";
                                           buildingSaleController
                                               .calculateInstalmentAmountResult(
-                                                  widget.model?.totalCost);
+                                              model?.totalCost);
+
                                         });
                                       }
+
+
+                                      //   });
+                                      // }
                                     },
                                   ),
                                 ),
@@ -366,7 +371,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                               onChanged: (p0) {
                                 buildingSaleController
                                     .calculateInstalmentAmountResult(
-                                        widget.model?.totalCost);
+                                       model?.totalCost);
                               },
                             ),
                           ),
@@ -405,7 +410,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                                 double? percentage = double.tryParse(p0);
                                 if (p0.isEmpty) {
                                   double totalCost = double.tryParse(
-                                          widget.model?.totalCost.toString() ??
+                                          model?.totalCost.toString() ??
                                               '0') ??
                                       0.0;
                                   double discountAmount = double.tryParse(
@@ -433,7 +438,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                                   //     .calculateInstalmentAmountResult(double.parse(widget.model!.totalCost.toString()));
                                   buildingSaleController
                                       .calculateInstalmentAmountResult(
-                                          double.parse(widget.model!.totalCost
+                                          double.parse(model!.totalCost
                                               .toString()));
                                 } else {
                                   // Optionally, you can show an error or limit input here
@@ -496,8 +501,10 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                                                 .selectDueAmountDiscountType =
                                             value;
                                         buildingSaleController
+                                            .dueAmountDiscountController.clear();
+                                        buildingSaleController
                                             .calculateInstalmentAmountResult(
-                                                widget.model?.totalCost);
+                                                model?.totalCost);
                                         // Recalculate total when discount type changes
                                       });
                                     },
@@ -522,6 +529,10 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                                     labelColor: AppColors.textColorb1,
                                     isBoldLabel: true,
                                     hintColor: AppColors.grey,
+                                    inputFormatters:   buildingSaleController.selectDueAmountDiscountType.toString() == "percent"
+                                        ?
+                                    [PercentageInputFormatter()]:[NumericOnlyInputFormatter()]
+                                    ,
                                     textColor: AppColors.textColorb1,
                                     isRequired: false,
                                     onChanged: (p0) {
@@ -540,7 +551,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                                       }
                                       buildingSaleController
                                           .calculateInstalmentAmountResult(
-                                              widget.model?.totalCost);
+                                              model?.totalCost);
                                     },
                                   ),
                                 ),
@@ -567,10 +578,8 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                             onChanged: (p0) {
                               buildingSaleController
                                   .calculateInstalmentAmountResult(
-                                      widget.model?.totalCost);
-                              buildingSaleController
-                                  .calculateInstalmentAmountResult(
-                                      widget.model?.totalCost);
+                                    model?.totalCost);
+
                             },
                             onTap: _selectDate,
                           )),
@@ -598,7 +607,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                                 //     .calculateInstalmentAmountResult(widget.model?.totalCost);
                                 buildingSaleController
                                     .calculateInstalmentAmountResult(
-                                        widget.model?.totalCost);
+                                        model?.totalCost);
                                 buildingSaleController.installmentNumberData();
                               },
 
@@ -631,7 +640,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                                 //     .calculateInstalmentAmountResult(widget.model?.totalCost);
                                 buildingSaleController
                                     .calculateInstalmentAmountResult(
-                                        widget.model?.totalCost);
+                                     model?.totalCost);
                               },
                             ),
                           ),
@@ -690,7 +699,7 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                                   // buildingSaleController.calculateInstalmentAmountResult(double.parse(widget.model!.totalCost.toString()));
                                   buildingSaleController
                                       .calculateInstalmentAmountResult(
-                                          double.parse(widget.model!.totalCost
+                                          double.parse(model!.totalCost
                                               .toString()));
                                   buildingSaleController
                                       .installmentNumberData();
@@ -1461,22 +1470,22 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
                     horizontal: AppDefaults.padding *
                         (Responsive.isMobile(context) ? 1 : 6.5),
                   ),
-                  child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(width: 1.0, color: Colors.blue),
-                      ),
+                  child: MaterialButton(
+                    minWidth: 320,
+                      height: 50,
+                      elevation: 0,
+                      color: AppColors.primary,
                       onPressed: () {
-                        if (formKey.currentState!
-                            .validate()) {
+                        if (formKey.currentState!.validate()) {
                           buildingSaleController
                               .uploadImageAndCreateBuildingSale(
-                                  widget.model!.id,
+                                  model!.id,
                                   imageController.resizedImagePath.value,
                                   context,
-                                  widget.model?.totalCost);
+                                  model?.totalCost);
                         }
                       },
-                      child: const Text("Building Sale")),
+                      child: const Text("Building Sale",style: TextStyle(color: Colors.white),)),
                 )
               ],
             ),
@@ -1516,12 +1525,33 @@ class _BuildingSaleSetupState extends State<BuildingSaleSetup> {
             pickedDate.toIso8601String().split('T')[0];
 
         buildingSaleController
-            .calculateInstalmentAmountResult(widget.model?.totalCost);
+            .calculateInstalmentAmountResult(model?.totalCost);
         buildingSaleController.installmentNumberData();
       });
     }
   }
 }
+class NumericOnlyInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    final text = newValue.text;
+
+    // If the text is empty, allow it
+    if (text.isEmpty) {
+      return newValue;
+    }
+
+    // Allow only numeric input, reject anything that's not a number
+    final numericValue = int.tryParse(text);
+    if (numericValue == null) {
+      return oldValue; // Keep the previous valid value if the input is invalid
+    }
+
+    return newValue; // Accept the new value if it's a valid number
+  }
+}
+
 
 class PercentageInputFormatter extends TextInputFormatter {
   @override

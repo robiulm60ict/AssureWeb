@@ -23,7 +23,6 @@ class AppTextField extends StatelessWidget {
     this.focusNode,
     this.readOnly = false,
     this.isBoldLabel = false,
-    this.enabled = true,
     this.needLabel = true,
     this.fillColor,
     this.labelColor,
@@ -54,7 +53,6 @@ class AppTextField extends StatelessWidget {
   final Color? hintColor;
   final Color? textColor;
   final bool? isRequired;
-  final bool? enabled;
   final bool isBoldLabel;
   final bool needLabel;
   final VoidCallback? onTap;
@@ -72,26 +70,26 @@ class AppTextField extends StatelessWidget {
                 labelText,
                 style: myText(
                   color: labelColor ?? AppColors.textColorb1,
-                  fontWeight: isBoldLabel ? FontWeight.bold : FontWeight.w300,
+                  fontWeight: isBoldLabel ? FontWeight.bold : FontWeight.w400,
                 ),
               ),
               if (isRequired ?? false)
-                SizedBox(
+                const SizedBox(
                   width: 5,
                 ),
               if (isRequired ?? false)
                 Text(
                   "*",
                   style:
-                      myText(color: AppColors.red, fontWeight: FontWeight.w500),
+                  myText(color: AppColors.red, fontWeight: FontWeight.w500),
                 ),
             ],
           ),
         if (needLabel) SizedBox(height: AppDefaults.bodyPadding),
         TextFormField(
+
           controller: controller,
           keyboardType: keyboardType,
-
           onTap: onTap,
           textInputAction: textInputAction,
           focusNode: focusNode,
@@ -103,44 +101,44 @@ class AppTextField extends StatelessWidget {
           obscuringCharacter: '*',
           onEditingComplete: onEditingComplete,
           readOnly: readOnly,
-          enabled: enabled,
           cursorColor: textColor ?? AppColors.textColorb1,
           style: myText(
               color: textColor ?? AppColors.textColorb1,
               fontWeight: FontWeight.w500),
           textAlignVertical: TextAlignVertical.center,
           decoration: InputDecoration(
+            contentPadding: const EdgeInsets.all(10.0),
+
             prefixIcon: prefixIcon,
             suffixIcon: suffixIcon,
             // labelText: labelText,
-            contentPadding: EdgeInsets.all(20.0),
             hintText: hintText,
             isDense: true,
             filled: true,
             fillColor: fillColor ?? AppColors.bg,
             floatingLabelBehavior: FloatingLabelBehavior.always,
             // labelStyle: const TextStyle(color: AppColors.textColorb3),
-            // hintStyle: TextStyle(
-            //     fontWeight: FontWeight.w400,
-            //     color: hintColor ?? Colors.grey.shade500),
-            // errorBorder: OutlineInputBorder(
-            //     borderRadius:
-            //         BorderRadius.circular(AppDefaults.bodyPadding - 5),
-            //     borderSide: BorderSide(color: AppColors.error, width: 0.5)),
-            // focusedBorder: OutlineInputBorder(
-            //     borderRadius:
-            //         BorderRadius.circular(AppDefaults.bodyPadding - 5),
-            //     borderSide:
-            //         const BorderSide(color: AppColors.seed, width: 0.5)),
-            // enabledBorder: OutlineInputBorder(
-            //     borderRadius:
-            //         BorderRadius.circular(AppDefaults.bodyPadding - 5),
-            //     borderSide:
-            //         const BorderSide(color: AppColors.primary, width: 0.5)),
-            // focusedErrorBorder: OutlineInputBorder(
-            //     borderRadius:
-            //         BorderRadius.circular(AppDefaults.bodyPadding - 5),
-            //     borderSide: BorderSide(color: AppColors.error, width: 0.5)),
+            hintStyle: TextStyle(
+                fontWeight: FontWeight.w400,
+                color: hintColor ?? Colors.grey.shade500),
+            errorBorder: OutlineInputBorder(
+                borderRadius:
+                BorderRadius.circular(AppDefaults.borderRadius - 5),
+                borderSide: const BorderSide(color: AppColors.error, width: 1)),
+            focusedBorder: OutlineInputBorder(
+                borderRadius:
+                BorderRadius.circular(AppDefaults.borderRadius - 5),
+                borderSide:
+                BorderSide(color: AppColors.seed, width: 1)),
+            enabledBorder: OutlineInputBorder(
+                borderRadius:
+                BorderRadius.circular(AppDefaults.borderRadius - 5),
+                borderSide:
+                BorderSide(color: AppColors.primary, width: 1)),
+            focusedErrorBorder: OutlineInputBorder(
+                borderRadius:
+                BorderRadius.circular(AppDefaults.borderRadius - 5),
+                borderSide: const BorderSide(color: AppColors.error, width: 1)),
           ),
           onTapOutside: (event) => FocusScope.of(context).unfocus(),
         ),
@@ -213,14 +211,14 @@ class AppTextFieldUnderline extends StatelessWidget {
                 ),
               ),
               if (isRequired ?? false)
-                SizedBox(
+                const SizedBox(
                   width: 5,
                 ),
               if (isRequired ?? false)
                 Text(
                   "*",
                   style:
-                      myText(color: AppColors.red, fontWeight: FontWeight.w500),
+                  myText(color: AppColors.red, fontWeight: FontWeight.w500),
                 ),
             ],
           ),
@@ -243,7 +241,7 @@ class AppTextFieldUnderline extends StatelessWidget {
               fontWeight: FontWeight.w500),
           textAlignVertical: TextAlignVertical.center,
           decoration: InputDecoration(
-            contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 5),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
             prefixIcon: prefixIcon,
             suffixIcon: suffixIcon,
             // labelText: labelText,
@@ -256,18 +254,18 @@ class AppTextFieldUnderline extends StatelessWidget {
             hintStyle: TextStyle(
                 fontWeight: FontWeight.w400,
                 color: hintColor ?? Colors.grey.shade500),
-            errorBorder: UnderlineInputBorder(
-                // borderRadius: BorderRadius.circular(AppSizes.bodyPadding - 5),
+            errorBorder: const UnderlineInputBorder(
+              // borderRadius: BorderRadius.circular(AppSizes.bodyPadding - 5),
                 borderSide: BorderSide(color: AppColors.error, width: 0.5)),
-            focusedBorder: const UnderlineInputBorder(
-                // borderRadius: BorderRadius.circular(AppSizes.bodyPadding - 5),
+            focusedBorder: UnderlineInputBorder(
+              // borderRadius: BorderRadius.circular(AppSizes.bodyPadding - 5),
                 borderSide: BorderSide(color: AppColors.seed, width: 0.5)),
             enabledBorder: const UnderlineInputBorder(
-                // borderRadius: BorderRadius.circular(AppSizes.bodyPadding - 5),
+              // borderRadius: BorderRadius.circular(AppSizes.bodyPadding - 5),
                 borderSide:
-                    BorderSide(color: AppColors.textColorb3, width: 0.5)),
-            focusedErrorBorder: UnderlineInputBorder(
-                // borderRadius: BorderRadius.circular(AppSizes.bodyPadding - 5),
+                BorderSide(color: AppColors.textColorb3, width: 0.5)),
+            focusedErrorBorder: const UnderlineInputBorder(
+              // borderRadius: BorderRadius.circular(AppSizes.bodyPadding - 5),
                 borderSide: BorderSide(color: AppColors.error, width: 0.5)),
           ),
           onTapOutside: (event) => FocusScope.of(context).unfocus(),

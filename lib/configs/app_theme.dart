@@ -9,7 +9,7 @@ class AppTheme {
   static ThemeData light(BuildContext context) {
     return ThemeData(
       scaffoldBackgroundColor: AppColors.bgLight,
-      drawerTheme: const DrawerThemeData(
+      drawerTheme: DrawerThemeData(
         backgroundColor: AppColors.bgSecondayLight,
         surfaceTintColor: AppColors.bgSecondayLight,
       ),

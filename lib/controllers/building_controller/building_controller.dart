@@ -16,6 +16,7 @@ import 'dart:html' as html; // Import this for web compatibility
 class BuildingController extends GetxController {
   var projects = <BuildingModel>[].obs;
   var isLoading=false.obs;
+  var isSingleLoading=false.obs;
 
   final FirebaseFirestore fireStore = FirebaseFirestore.instance;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -81,36 +82,7 @@ class BuildingController extends GetxController {
 
     updateTotalCost(); // Update total cost whenever total unit price changes
   }
-  final storage = GetStorage();
-  Rx<BuildingModel?> buildingModel = Rx<BuildingModel?>(null);
-
-  // Save BuildingModel to GetStorage
-  void saveBuildingModel(BuildingModel model) {
-    // Save the model as a Firestore-compatible Map
-    final modelData = model.toFirestore();
-    storage.write('buildingModel', modelData);
-    print("BuildingModel saved: $modelData");
-  }
-
-
-  Future<void> loadBuildingModel() async {
-    try {
-      // Assuming you're using Hive for storage
-      var box = await Hive.openBox('buildingBox');
-      buildingModel.value = box.get('buildingModel');
-
-      // If the model is not found, you can optionally provide a default value
-      // buildingModel.value ??= BuildingModel();
-    } catch (e,k) {
-      print("Error loading BuildingModel: $k");
-      print("Error loading BuildingModel: $e");
-      buildingModel.value = null; // Set to null if error occurs
-    }
-  }
-  // Get the BuildingModel
-  BuildingModel? getBuildingModel() {
-    return buildingModel.value;
-  }
+ 
   void updateTotalCost() {
     final totalUnitPrice = double.tryParse(totalUnitPriceController.text) ?? 0;
     final unitCost = double.tryParse(unitCostController.text) ?? 0;
@@ -119,6 +91,21 @@ class BuildingController extends GetxController {
     final totalCost = totalUnitPrice + unitCost + carParking;
     totalCostController.text = totalCost.toStringAsFixed(2); // Format to 2 decimal places
   }
+  final storage = GetStorage();
+
+
+  void saveBuildingModelId(String id) {
+    // Save only the ID to storage
+    storage.write('buildingModelId', id);
+    print("BuildingModel ID saved: $id");
+  }
+  Future<String?> loadBuildingModelId() async {
+    return storage.read<String>('buildingModelId');
+  }
+
+
+
+
   void fetchProjects() async {
     try {
       isLoading.value = true; // Start loading
@@ -140,6 +127,34 @@ class BuildingController extends GetxController {
       // Optionally, you can show an error message to the user
     } finally {
       isLoading.value = false; // Stop loading
+    }
+  }
+  Future<BuildingModel?> fetchSingleProjects(String buildingId) async {
+    try {
+      isSingleLoading.value = true; // Start loading
+      final snapshot = await fireStore
+          .collection('building')
+          .doc(buildingId)
+          .get(); // Fetch specific document
+
+      if (snapshot.exists) {
+        // Return the BuildingModel if the document exists
+        return BuildingModel.fromFirestore(snapshot.data()!, snapshot.id);
+      } else {
+        if (kDebugMode) {
+          print("No project found for ID: $buildingId");
+        }
+        return null; // Return null if the document doesn't exist
+      }
+    } catch (e, stacktrace) {
+      // Handle any errors that occur during fetching
+      if (kDebugMode) {
+        print("Error fetching single project: $e");
+        print("Stacktrace: $stacktrace");
+      }
+      return null; // Return null if an error occurs
+    } finally {
+      isSingleLoading.value = false; // Stop loading
     }
   }
 

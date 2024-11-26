@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   static const bgLight = Color(0xFFF4F4F4);
-  static const bgSecondayLight = Color(0xFFFCFCFC);
+  static  var bgSecondayLight = Colors.grey.withOpacity(0.08);
   static const titleLight = Color(0xFF272B30);
   static const textLight = Color(0xFF6F767E);
   static const textGrey = Color(0xFF9A9FA5);
@@ -19,6 +19,7 @@ class AppColors {
   static const primaryPurple = Color(0xFF8E59FF);
   static const success = Color(0xFF83BF6E);
   static const error = Color(0xFFFF6A55);
+  static Color focusColor(context)    => Theme.of(context).focusColor;
 
   static const secondaryMistyrose = Color(0xFFFFE7E4);
   static const secondaryPeach = Color(0xFFFFBC99);
@@ -36,6 +37,6 @@ class AppColors {
   static const textColorw1            = Color.fromARGB(232, 255, 255, 255);
   static const textColorw2            = Colors.white60;
   static const textColorw3            = Colors.white54;
-  static const seed                   = Color(0xff071f37);
+  static var seed                   = const Color(0xff2987d0).withOpacity(0.5);
 
 }

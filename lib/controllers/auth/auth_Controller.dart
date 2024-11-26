@@ -36,57 +36,48 @@ class AuthController extends GetxController {
 
       // GoRouter.of(Get.context!).go('/login'); // Redirect to login
     } else {
-     // GoRouter.of(Get.context!).go('/entry-point'); // Redirect to entry point
+      // GoRouter.of(Get.context!).go('/entry-point'); // Redirect to entry point
     }
   }
 
   void register(String email, String password) async {
     try {
-      await auth.createUserWithEmailAndPassword(email: email, password: password).then((v) async{
-
-
-       // GoRouter.of(Get.context!).go('/entry-point'); // Redirect after registration
+      await auth
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((v) async {
+        // GoRouter.of(Get.context!).go('/entry-point'); // Redirect after registration
       });
     } catch (e) {
       Get.snackbar("Error", e.toString());
     }
   }
 
-  void login(String email, String password,BuildContext context) async {
+  void login(String email, String password, BuildContext context) async {
     appLoader(context, "Sign In , please wait...");
 
     try {
-      await auth.signInWithEmailAndPassword(email: email, password: password).then((v) async{
+      await auth
+          .signInWithEmailAndPassword(email: email, password: password)
+          .then((v) async {
         await LocalDB.postLoginInfo(
           email: email,
           password: password,
         );
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const EntryPoint()),
-        );
-        // Get.offAll(EntryPoint());
-        // Navigator.push(context, Matat)
 
-
-
+        Get.toNamed("/entryPoint");
       });
-    }
-
-    on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException catch (e) {
       Navigator.pop(context); // Close loader dialog
 
       print(e.code);
       print(e.message);
 
-
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(e.message.toString()),
+          content: Text(e.code.toString()),
         ),
       );
-    }
-    catch (e) {
+    } catch (e) {
       Navigator.pop(context);
       Get.snackbar("Login Error", e.toString());
     }
@@ -94,7 +85,7 @@ class AuthController extends GetxController {
 
   void logout(BuildContext context) async {
     await auth.signOut().then((_) {
-      AppRoutes.push(context, page:  SignInPage());
+      AppRoutes.push(context, page: SignInPage());
 
       // GoRouter.of(Get.context!).go('/login'); // Redirect to login after logout
     });

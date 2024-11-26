@@ -20,9 +20,7 @@ class SplashScreen extends StatefulWidget {
   @override
   SplashScreenState createState() => SplashScreenState();
 }
-
-class SplashScreenState extends State<SplashScreen>
-    with SingleTickerProviderStateMixin {
+class SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
   late AnimationController animationController;
   late Animation<double> animation;
   final GlobalKey<ScaffoldState> scaffoldKeySplash = GlobalKey<ScaffoldState>();
@@ -38,34 +36,36 @@ class SplashScreenState extends State<SplashScreen>
     super.initState();
 
     animationController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 1));
+        AnimationController(vsync: this, duration: const Duration(seconds: 3));
     animation =
         CurvedAnimation(parent: animationController, curve: Curves.easeOut);
     animationController.forward();
 
     // Trigger visibility event after 500ms
-    Future.delayed(const Duration(seconds: 2), ()  {
-      pageRoute();
-
+    Future.delayed(const Duration(seconds: 2), () async {
+      if (mounted) {  // Check if the widget is still mounted
+        await pageRoute();
+      }
     });
   }
 
-  pageRoute()async{
+  pageRoute() async {
     final myData = await LocalDB.getLoginInfo();
-    if (myData?['email'] == "") {
+    print("info.................$myData");
+    print("info.................${myData?['email']}");
+    if (myData?['email'] != "") {
       // AppRoutes.push(context, page: SignInPage());
       // Navigator.pushNamed(context, '/signInPage');
-      Get.toNamed( '/signInPage');
+      if (mounted) { // Check if the widget is still mounted
+        Get.toNamed('/entryPoint');
+      }
     } else {
-
-
-      print("info.................$myData");
-      Get.toNamed( '/entryPoint');
-      print("info.................${myData?['email']}");
-
+      if (mounted) { // Check if the widget is still mounted
+        Get.toNamed('/signInPage');
+      }
     }
-
   }
+
   @override
   Widget build(BuildContext context) {
     final Uri toLaunch = Uri(
@@ -75,75 +75,73 @@ class SplashScreenState extends State<SplashScreen>
 
     return Scaffold(
       key: scaffoldKeySplash,
-        backgroundColor: Colors.white,
-        body: Container(
-          decoration: const BoxDecoration(color: AppColors.white),
-          child: Stack(
-            fit: StackFit.expand,
-            children: <Widget>[
-              Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 30.0),
-                    child: TextButton(
-                      onPressed: () => _launchInBrowser(toLaunch),
-                      child: const Text.rich(
-                        TextSpan(
-                          text: 'Developed by ',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.black,
-                          ),
-                          children: [
-                            TextSpan(
-                              text: "M360 ICT",
-                              style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 12,
-                                color: Colors.indigoAccent,
-                              ),
+      backgroundColor: Colors.white,
+      body: Container(
+        decoration: const BoxDecoration(color: AppColors.white),
+        child: Stack(
+          fit: StackFit.expand,
+          children: <Widget>[
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 30.0),
+                  child: TextButton(
+                    onPressed: () => _launchInBrowser(toLaunch),
+                    child: const Text.rich(
+                      TextSpan(
+                        text: 'Developed by ',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.black,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: "M360 ICT",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12,
+                              color: Colors.indigoAccent,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Hero(
-                    tag: 1,
-                    child: Lottie.asset(
-                      AppImage.splashLottie,
-                    ),
+                ),
+              ],
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Hero(
+                  tag: 1,
+                  child: Lottie.asset(
+                    AppImage.splashLottie,
                   ),
-
-                  gapH24,
-
-                  AnimatedOpacity(
-                    opacity: 0.5,
-                    // opacity: isVisible ? 1.0 : 0.5,
-                    duration: const Duration(milliseconds: 500),
-                    child: Hero(
-                      tag: 2,
-                      child: Text(
-                        AppConstants.appName,
-                        style: GoogleFonts.lobster().copyWith(
-                          fontSize:  Responsive.isMobile(context)?20:40,
-                        ),
+                ),
+                gapH24,
+                AnimatedOpacity(
+                  opacity: 0.5,
+                  duration: const Duration(milliseconds: 500),
+                  child: Hero(
+                    tag: 2,
+                    child: Text(
+                      AppConstants.appName,
+                      style: GoogleFonts.lobster().copyWith(
+                        fontSize: Responsive.isMobile(context) ? 20 : 40,
                       ),
                     ),
                   ),
-                ],
-              ),
-            ],
-          ),
-        ));
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Future<void> _launchInBrowser(Uri url) async {

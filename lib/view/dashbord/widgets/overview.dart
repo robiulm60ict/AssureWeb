@@ -21,10 +21,10 @@ class _OverviewState extends State<Overview> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(AppDefaults.padding),
-      decoration: const BoxDecoration(
+      decoration:  BoxDecoration(
         color: AppColors.bgSecondayLight,
         borderRadius:
-        BorderRadius.all(Radius.circular(AppDefaults.borderRadius)),
+        const BorderRadius.all(Radius.circular(AppDefaults.borderRadius)),
       ),
       child: Column(
         children: [

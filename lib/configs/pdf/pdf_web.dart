@@ -636,7 +636,7 @@ Future<void> savePdfWeb( Map<String, dynamic> buildingSaleData) async {
   final blob = html.Blob([data], 'application/pdf');
   final url = html.Url.createObjectUrlFromBlob(blob);
   final anchor = html.AnchorElement(href: url)
-    ..setAttribute('download', 'document.pdf')
+    ..setAttribute('download', '${building['projectName']}.pdf')
     ..click();
   html.Url.revokeObjectUrl(url);
 }

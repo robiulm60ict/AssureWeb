@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 
+import '../../configs/app_colors.dart';
 import '../../configs/app_constants.dart';
 import '../../configs/database/login.dart';
 import '../../configs/defaults.dart';
@@ -18,8 +19,10 @@ class Sidebar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      // width: Responsive.isMobile(context) ? double.infinity : null,
-      // width: MediaQuery.of(context).size.width < 1300 ? 260 : null,
+        // width: Responsive.isMobile(context) ? double.infinity : null,
+        // width: MediaQuery.of(context).size.width < 1300 ? 260 : null,
+        child: Container(
+      color: AppColors.bg,
       child: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,15 +56,15 @@ class Sidebar extends StatelessWidget {
                       color: Colors.black,
                       size: 40.0,
                     )
-                  //  child: Image.asset(AppImage.logo,height: MediaQuery.of(context).size.height*0.20,),
-                ),
+                    //  child: Image.asset(AppImage.logo,height: MediaQuery.of(context).size.height*0.20,),
+                    ),
               ],
             ),
             const Divider(),
             gapH16,
             Expanded(
               child: Obx(
-                    () => Padding(
+                () => Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppDefaults.padding,
                   ),
@@ -83,134 +86,139 @@ class Sidebar extends StatelessWidget {
                           // AppRoutes.pushReplacement(context, page: const EntryPoint());
                         },
                       ),
-                      ExpansionTile(
-
-
-
-                        leading: const HugeIcon(
-                          icon: HugeIcons.strokeRoundedPropertyNew,
-                          color: Colors.black,
-                          size: 24.0,
-                        ),
-                        title: Text(
-                          "Building",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color:
-                            Theme.of(context).textTheme.bodyMedium!.color,
+                      Theme(
+                        data: ThemeData()
+                            .copyWith(dividerColor: Colors.transparent),
+                        child: ExpansionTile(
+                          leading: const HugeIcon(
+                            icon: HugeIcons.strokeRoundedPropertyNew,
+                            color: Colors.black,
+                            size: 24.0,
                           ),
-                        ),
-                        children: [
-                          MenuTile(
-                            isActive:
-                            dashbordScreenController.dataIndex.value == 1
-                                ? true
-                                : false,
-                            isSubmenu:
-                            dashbordScreenController.dataIndex.value == 1
-                                ? true
-                                : false,
-                            title: "Building Create",
-                            onPressed: () {
-
-                              if (Responsive.isMobile(context)) {
-                                Navigator.pop(context);
-                              }
-                              buildingController.clearData();
-
-                              dashbordScreenController.dataIndex.value = 1;
-                              // AppRoutes.push(context, page: EntryPointBuildingSetup());
-                              // AppRoutes.push(context, page: BuildingSetup());
-
-                              // context.go('/buildingSetup');
-                            },
+                          title: Text(
+                            "Building",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color:
+                                  Theme.of(context).textTheme.bodyMedium!.color,
+                            ),
                           ),
-                          Obx(
-                                () => MenuTile(
+                          children: [
+                            MenuTile(
                               isActive:
-                              dashbordScreenController.dataIndex.value == 2
-                                  ? true
-                                  : false,
+                                  dashbordScreenController.dataIndex.value == 1
+                                      ? true
+                                      : false,
                               isSubmenu:
-                              dashbordScreenController.dataIndex.value == 2
-                                  ? true
-                                  : false,
-                              title: "Building List",
-                              count: buildingController.projects.length,
+                                  dashbordScreenController.dataIndex.value == 1
+                                      ? true
+                                      : false,
+                              title: "Building Create",
                               onPressed: () {
                                 if (Responsive.isMobile(context)) {
                                   Navigator.pop(context);
                                 }
-                                dashbordScreenController.dataIndex.value = 2;
-                                // AppRoutes.push(context,
-                                //     page: const BuildingView());
+                                buildingController.clearData();
 
-                                // context.go('/buildingView');
+                                dashbordScreenController.dataIndex.value = 1;
+                                // AppRoutes.push(context, page: EntryPointBuildingSetup());
+                                // AppRoutes.push(context, page: BuildingSetup());
+
+                                // context.go('/buildingSetup');
                               },
                             ),
-                          ),
-                        ],
-                      ),
-                      ExpansionTile(
-                        leading: const HugeIcon(
-                          icon: HugeIcons.strokeRoundedSaleTag02,
-                          color: Colors.black,
-                          size: 24.0,
-                        ),
-                        title: Text(
-                          "Building Sale",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color:
-                            Theme.of(context).textTheme.bodyMedium!.color,
-                          ),
-                        ),
-                        children: [
-                          MenuTile(
-                            isActive:
-                            dashbordScreenController.dataIndex.value == 3
-                                ? true
-                                : false,
-                            isSubmenu:
-                            dashbordScreenController.dataIndex.value == 3
-                                ? true
-                                : false,
-                            title: "Available Building",
-                            onPressed: () {
-                              if (Responsive.isMobile(context)) {
-                                Navigator.pop(context);
-                              }
-                              dashbordScreenController.dataIndex.value = 3;
+                            Obx(
+                              () => MenuTile(
+                                isActive:
+                                    dashbordScreenController.dataIndex.value ==
+                                            2
+                                        ? true
+                                        : false,
+                                isSubmenu:
+                                    dashbordScreenController.dataIndex.value ==
+                                            2
+                                        ? true
+                                        : false,
+                                title: "Building List",
+                                count: buildingController.projects.length,
+                                onPressed: () {
+                                  if (Responsive.isMobile(context)) {
+                                    Navigator.pop(context);
+                                  }
+                                  dashbordScreenController.dataIndex.value = 2;
+                                  // AppRoutes.push(context,
+                                  //     page: const BuildingView());
 
-                              // AppRoutes.push(context,
-                              //     page: const SaleBuildingListView());
-                            },
-                          ),
-                          Obx(
-                                () => MenuTile(
-                              isActive:
-                              dashbordScreenController.dataIndex.value == 4
-                                  ? true
-                                  : false,
-                              isSubmenu:
-                              dashbordScreenController.dataIndex.value == 4
-                                  ? true
-                                  : false,
-                              title: "Sale List",
-                              count:
-                              buildingSaleController.buildingSales.value.length,
-                              onPressed: () {
-                                if (Responsive.isMobile(context)) {
-                                  Navigator.pop(context);
-                                }
-                                dashbordScreenController.dataIndex.value = 4;
-                                // AppRoutes.push(context,
-                                //     page: BuildingSalesScreen());
-                              },
+                                  // context.go('/buildingView');
+                                },
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
+                      Theme(
+                          data: ThemeData()
+                              .copyWith(dividerColor: Colors.transparent),
+                          child:    ExpansionTile(
+                            leading: const HugeIcon(
+                              icon: HugeIcons.strokeRoundedSaleTag02,
+                              color: Colors.black,
+                              size: 24.0,
+                            ),
+                            title: Text(
+                              "Building Sale",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color:
+                                Theme.of(context).textTheme.bodyMedium!.color,
+                              ),
+                            ),
+                            children: [
+                              MenuTile(
+                                isActive:
+                                dashbordScreenController.dataIndex.value == 3
+                                    ? true
+                                    : false,
+                                isSubmenu:
+                                dashbordScreenController.dataIndex.value == 3
+                                    ? true
+                                    : false,
+                                title: "Available Building",
+                                onPressed: () {
+                                  if (Responsive.isMobile(context)) {
+                                    Navigator.pop(context);
+                                  }
+                                  dashbordScreenController.dataIndex.value = 3;
+
+                                  // AppRoutes.push(context,
+                                  //     page: const SaleBuildingListView());
+                                },
+                              ),
+                              Obx(
+                                    () => MenuTile(
+                                  isActive:
+                                  dashbordScreenController.dataIndex.value == 4
+                                      ? true
+                                      : false,
+                                  isSubmenu:
+                                  dashbordScreenController.dataIndex.value == 4
+                                      ? true
+                                      : false,
+                                  title: "Sale List",
+                                  count:
+                                  buildingSaleController.buildingSales.value.length,
+                                  onPressed: () {
+                                    if (Responsive.isMobile(context)) {
+                                      Navigator.pop(context);
+                                    }
+                                    dashbordScreenController.dataIndex.value = 4;
+                                    // AppRoutes.push(context,
+                                    //     page: BuildingSalesScreen());
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),),
                       ExpansionTile(
                         leading: const HugeIcon(
                           icon: HugeIcons.strokeRoundedAccountSetting01,
@@ -222,20 +230,20 @@ class Sidebar extends StatelessWidget {
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             color:
-                            Theme.of(context).textTheme.bodyMedium!.color,
+                                Theme.of(context).textTheme.bodyMedium!.color,
                           ),
                         ),
                         children: [
                           Obx(
-                                () => MenuTile(
+                            () => MenuTile(
                               isActive:
-                              dashbordScreenController.dataIndex.value == 5
-                                  ? true
-                                  : false,
+                                  dashbordScreenController.dataIndex.value == 5
+                                      ? true
+                                      : false,
                               isSubmenu:
-                              dashbordScreenController.dataIndex.value == 5
-                                  ? true
-                                  : false,
+                                  dashbordScreenController.dataIndex.value == 5
+                                      ? true
+                                      : false,
                               title: "Customer List",
                               count: customerController.customers.length,
                               onPressed: () {
@@ -262,23 +270,23 @@ class Sidebar extends StatelessWidget {
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             color:
-                            Theme.of(context).textTheme.bodyMedium!.color,
+                                Theme.of(context).textTheme.bodyMedium!.color,
                           ),
                         ),
                         children: [
                           Obx(
-                                () => MenuTile(
+                            () => MenuTile(
                               isActive:
-                              dashbordScreenController.dataIndex.value == 6
-                                  ? true
-                                  : false,
+                                  dashbordScreenController.dataIndex.value == 6
+                                      ? true
+                                      : false,
                               isSubmenu:
-                              dashbordScreenController.dataIndex.value == 6
-                                  ? true
-                                  : false,
+                                  dashbordScreenController.dataIndex.value == 6
+                                      ? true
+                                      : false,
                               title: "Sales report List",
                               count:
-                              reportController.buildingSalesReport.length,
+                                  reportController.buildingSalesReport.length,
                               onPressed: () {
                                 if (Responsive.isMobile(context)) {
                                   Navigator.pop(context);
@@ -292,52 +300,53 @@ class Sidebar extends StatelessWidget {
                           ),
                         ],
                       ),
-                    if(Responsive.isMobile(context))  Container(
-                        decoration: BoxDecoration(
-                            color: Colors.grey.shade300,
-                            borderRadius: BorderRadius.circular(8)),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 12, horizontal: 10),
-                        margin: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 4),
-                        child: InkWell(
-                          onTap: () {
-                            appAlertDialog(context, "Are you sure to logout?",
-                                title: "Logout",
-                                actions: [
-                                  TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: const Text("Dismiss")),
-                                  TextButton(
-                                      onPressed: () {
-                                        LocalDB.delLoginInfo();
-                                        AppRoutes.pushAndRemoveUntil(context,
-                                            page: SignInPage());
-                                      },
-                                      child: const Text(
-                                        "Logout",
-                                        style: TextStyle(color: Colors.red),
-                                      ))
-                                ]);
-                          },
-                          child: const Row(
-                            children: [
-                              HugeIcon(
-                                icon: HugeIcons.strokeRoundedLogout01,
-                                color: Colors.black,
-                                size: 24.0,
-                              ),
-                              gapW16,
-                              Text(
-                                "LogOut",
-                                style: TextStyle(fontWeight: FontWeight.w700),
-                              )
-                            ],
+                      if (Responsive.isMobile(context))
+                        Container(
+                          decoration: BoxDecoration(
+                              color: Colors.grey.shade300,
+                              borderRadius: BorderRadius.circular(8)),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 10),
+                          margin: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 4),
+                          child: InkWell(
+                            onTap: () {
+                              appAlertDialog(context, "Are you sure to logout?",
+                                  title: "Logout",
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text("Dismiss")),
+                                    TextButton(
+                                        onPressed: () {
+                                          LocalDB.delLoginInfo();
+                                          AppRoutes.pushAndRemoveUntil(context,
+                                              page: SignInPage());
+                                        },
+                                        child: const Text(
+                                          "Logout",
+                                          style: TextStyle(color: Colors.red),
+                                        ))
+                                  ]);
+                            },
+                            child: const Row(
+                              children: [
+                                HugeIcon(
+                                  icon: HugeIcons.strokeRoundedLogout01,
+                                  color: Colors.black,
+                                  size: 24.0,
+                                ),
+                                gapW16,
+                                Text(
+                                  "LogOut",
+                                  style: TextStyle(fontWeight: FontWeight.w700),
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                      )
+                        )
                     ],
                   ),
                 ),
@@ -346,63 +355,6 @@ class Sidebar extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class InstallmentTable extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Installment Table'),
-      ),
-      body: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        // Allows horizontal scrolling if needed
-        child: DataTable(
-          columns: const <DataColumn>[
-            DataColumn(
-              label: Text('Installment'),
-            ),
-            DataColumn(
-              label: Text('Taka (Schedule)'),
-            ),
-            DataColumn(
-              label: Text('Date'),
-            ),
-            DataColumn(
-              label: Text('Status'),
-            ),
-          ],
-          rows: const <DataRow>[
-            DataRow(
-              cells: <DataCell>[
-                DataCell(Text('1st Installment')),
-                DataCell(Text('5000')),
-                DataCell(Text('2024-09-01')),
-                DataCell(Text('Paid')),
-              ],
-            ),
-            DataRow(
-              cells: <DataCell>[
-                DataCell(Text('2nd Installment')),
-                DataCell(Text('6000')),
-                DataCell(Text('2024-10-01')),
-                DataCell(Text('Unpaid')),
-              ],
-            ),
-            DataRow(
-              cells: <DataCell>[
-                DataCell(Text('3rd Installment')),
-                DataCell(Text('7000')),
-                DataCell(Text('2024-11-01')),
-                DataCell(Text('Unpaid')),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
+    ));
   }
 }

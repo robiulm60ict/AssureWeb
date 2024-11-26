@@ -17,6 +17,17 @@ class AppConstants {
   static const String appName = "AssureD&D";
 }
 
+
+class AppSizes{
+  static const double bodyPadding     = 12;
+  static const double bodyTabPadding     = 45;
+  static const double preferredBottom = 25;
+  static const double borderRadiusSize = 8;
+
+  static double height(context) => MediaQuery.sizeOf(context).height;
+  static double width(context)  => MediaQuery.sizeOf(context).width;
+}
+
 AuthController authController = Get.put(AuthController());
 BuildingController buildingController = Get.put(BuildingController());
 GetImageController imageController = Get.put(GetImageController());
@@ -42,7 +53,7 @@ Future<void> exitAlertDialog(BuildContext context, {required String from}) async
               TextSpan(text: 'Are you sure want to ${from == 'exit' ? 'exit' : from == 'delete' ? 'delete' : 'logout'} ${from == 'delete' ? '' : 'from '}'),
               TextSpan(
                 text: from == 'exit' ? '${AppConstants.appName}?' : "",
-                style: const TextStyle(
+                style:  TextStyle(
                   fontWeight: FontWeight.bold,
                   color: AppColors.seed,
                 ),
@@ -55,7 +66,7 @@ Future<void> exitAlertDialog(BuildContext context, {required String from}) async
             onPressed: () => Navigator.of(context).pop(false),
             child: Text(
               from == 'exit' ? 'No' : 'Cancel',
-              style: const TextStyle(color: AppColors.seed),
+              style:  TextStyle(color: AppColors.seed),
             ),
           ),
           TextButton(
